@@ -6,18 +6,22 @@ const ModalWindow_Square = (props) => {
     const [time, setTime] = useState(120);
 
     useEffect(() => {
-        time > 0 ? setTimeout(() => setTime(time - 1), 1000) : handleSurrender();
+        time > 0 ? setTimeout(() => setTime(time - 1), 1000) : handleAnswer();
     }, [time]);
 
+
+    const handleAnswer = () => {
+        if (isCloseQuestions[numberQuestion - 1] === undefined) {
+            //#region Обработки ответа
+
+            //#endregion
+            setActive(false)
+        }
+    }
     const handleSurrender = () => {
         CloseQuestion(false)
         setActive(false)
     }
-    const handleAnswers = () => {
-        CloseQuestion(true)
-        setActive(false)
-    }
-
     const CloseQuestion = (status) => {
         isCloseQuestions[numberQuestion - 1] = status
         setisCloseQuestions(isCloseQuestions)
@@ -31,10 +35,17 @@ const ModalWindow_Square = (props) => {
                 </div>
                 <div className={classes.content_answer}>
                     <textarea defaultValue='some text' className={classes.text_answer} />
-                    <span className={classes.time}>{time}</span>
+                    {isCloseQuestions[numberQuestion - 1] === undefined ?
+                        <span className={classes.time}>{time}</span> :
+                        isCloseQuestions[numberQuestion - 1] ?
+                            <span className={classes.time}>&#9989;</span> :
+                            <span className={classes.time}>&#10060;</span>
+                    }
                     <div className={classes.content_buttons}>
-                        <button className={`${classes.button} ${classes.green}`} onClick={() => handleAnswers()}>Ответить</button>
-                        <button className={`${classes.button} ${classes.red}`} onClick={() => handleSurrender()}>Сдаться (-500)</button>
+                        {isCloseQuestions[numberQuestion - 1] === undefined ?
+                            <><button className={`${classes.button} ${classes.green}`} onClick={() => handleAnswer()}>Ответить</button>
+                                <button className={`${classes.button} ${classes.red}`} onClick={() => handleSurrender()}>Сдаться (-500)</button></> :
+                            <button className={`${classes.button} ${classes.red}`} onClick={() => setActive(false)}>Закрыть</button>}
                     </div>
                 </div>
             </div>

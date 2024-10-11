@@ -53,8 +53,12 @@
 }
 
 .question_button.green{
-    background: rgb(68, 255, 0);
+    background: rgb(46, 240, 101);
+    border: 3px solid green;
+    backdrop-filter: blur(3px);
 }
 .question_button.red{
-    background: rgb(255, 0, 0);
+    background: rgb(247, 49, 73);
+    border: 3px solid rgb(166, 10, 28);
+    backdrop-filter: blur(3px);
 }

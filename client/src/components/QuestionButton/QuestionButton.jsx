@@ -12,9 +12,9 @@ const QuestionButton = (props) => {
                 <a href='#' className={classes.question_button} onClick={() => handleClick()}>{level ? level * 10 : '?'}</a>
                 :
                 isCloseQuestions ?
-                    <a href='#' className={`${classes.question_button} ${classes.green}`}>{level ? level * 10 : '?'}</a>
+                    <a href='#' className={`${classes.question_button} ${classes.green}`} onClick={() => handleClick()}>{level ? level * 10 : '?'} &#9989;</a>
                     :
-                    <a href='#' className={`${classes.question_button} ${classes.red}`}>{level ? level * 10 : '?'}</a>
+                    <a href='#' className={`${classes.question_button} ${classes.red}`} onClick={() => handleClick()}>{level ? level * 10 : '?'} &#10060;</a>
             }
         </td>
     );

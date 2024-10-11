@@ -14,6 +14,10 @@ const Square_answer = sequelize.define('square_answer', {
     points: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    user_answer: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 })
 
