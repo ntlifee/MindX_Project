@@ -1,29 +1,83 @@
-import './carouselgame.css'
+import classes from './carouselgame.module.css'
 
-import questionData from './Questions_Carousel.json'
-import InputComponent from '../../components/Input/Input';
-/* 
-import axios from 'axios' */
-import { useEffect, useState } from 'react';
+import WindowQuestion from '../../components/WindowQuestion/Windowquestion'
+
+import Data from './Questions_Carousel.json'
+
+/*import axios from 'axios' */
+import { useState } from 'react'
 
 const CarouselGame = () => {
-    /* const [carouselData, setCarouselData] = useState();
+
+    const { scoreFirstQuestion, scoreSuccess, scoreFailure, progressUser, questionsGame } = Data
+    const [idx, setIdx] = useState(0) //индекс вопроса
+    const [value, setValue] = useState('') //значение введенное пользователем
+    const [score, setScore] = useState(scoreFirstQuestion) //балл текущего вопроса
+    const [questions] = useState(questionsGame) //вопросы
+    const [progress, setProgress] = useState(progressUser) //прогресс пользователя
+
+
+    //проверяем ответ
+    const isCorrectAnswer = () => {
+        return questions[idx].answer === value
+    }
+
+    const handleSubmit = () => {
+        const isCorrect = isCorrectAnswer()
+        setProgress([...progress, { points: score, isCorrect: isCorrect }]) //обновление прогресса пользователя
+
+        //балл для следующего вопроса
+        if (isCorrect) {
+            setScore(score + scoreSuccess)
+        } else {
+            setScore(Math.max(scoreFirstQuestion, score - scoreFailure))
+        }
+        setValue('')
+        setIdx(idx + 1)
+    }
+
+    return (
+        <main className="section">
+            <div className="container">
+                <div className={classes.carousel_game}>
+                    {idx > 0 && <WindowQuestion key={idx - 1}
+                        question={questions[idx - 1].question}
+                        point={progress[idx - 1].points}
+                        inputValue={progress[idx - 1].isCorrect ? 'Верный ответ' : 'Не верный ответ'}
+                        isCorrect={progress[idx - 1].isCorrect}
+                        readOnly={true} />
+                    }
+                    {idx !== questions.length && <WindowQuestion key={idx}
+                        question={questions[idx].question}
+                        point={score}
+                        inputValue={value}
+                        readOnly={false}
+                        action={setValue} />}
+                    {idx !== questions.length && <button onClick={handleSubmit} className={classes.button_answer}>Следующий вопрос</button>}
+                </div>
+            </div>
+        </main>
+    )
+
+
+
+    /* const [carouselData, setCarouselData] = useState()
 
     useEffect(() => {
-        const apiUrl = '';
+        const apiUrl = ''
         axios.get(apiUrl).then((resp) => {
-            const allData = resp.data;
+            const allData = resp.data
             console.log(allData)
-            setCarouselData(allData);
-        });
-    }, [setCarouselData]);
- */
-    const { scoreFirstQuestion, scoreSuccess, scoreFailure, questions } = questionData;
+            setCarouselData(allData)
+        })
+    }, [setCarouselData])
+
+    const { scoreFirstQuestion, scoreSuccess, scoreFailure, questions } = questionData
     const [idx, setIdx] = useState(0) //индекс вопроса
     const [value, setValue] = useState('') //значение введенное пользователем
     const [question, setQuestion] = useState('') //текущий вопрос
-    const [answeredStatus, setAnsweredStatus] = useState(Array(questions.length).fill(null)); //массив статуса строк
-    const [scores, setScores] = useState([scoreFirstQuestion, ...Array(questions.length - 1).fill(null)]); // первая ячейка с баллом, остальные пустые
+    const [answeredStatus, setAnsweredStatus] = useState(Array(questions.length).fill(null)) //массив статуса строк
+    const [scores, setScores] = useState([scoreFirstQuestion, ...Array(questions.length - 1).fill(null)]) // первая ячейка с баллом, остальные пустые
 
     useEffect(() => {
         console.log(idx)
@@ -32,28 +86,28 @@ const CarouselGame = () => {
         } else {
             setQuestion('Тест окончен')
         }
-    }, [idx]);
+    }, [idx])
 
     const handleSubmit = () => {
         if (idx === questions.length) {
             return
         }
-        const isCorrect = questions[idx].answer === value; //проверяем ответ
-        const updatedStatus = [...answeredStatus]; // копируем массив статусов
-        updatedStatus[idx] = isCorrect ? 'correct' : 'incorrect'; // обновляем статус текущего вопроса
+        const isCorrect = questions[idx].answer === value //проверяем ответ
+        const updatedStatus = [...answeredStatus] // копируем массив статусов
+        updatedStatus[idx] = isCorrect ? 'correct' : 'incorrect' // обновляем статус текущего вопроса
 
-        const updatedScores = [...scores]; // копируем массив баллов
+        const updatedScores = [...scores] // копируем массив баллов
         if (isCorrect) {
-            updatedScores[idx + 1] = updatedScores[idx] + scoreSuccess; // добавляем scoreSuccess
+            updatedScores[idx + 1] = updatedScores[idx] + scoreSuccess // добавляем scoreSuccess
         } else {
-            updatedScores[idx + 1] = Math.max(scoreFirstQuestion, updatedScores[idx] - scoreFailure); // вычитаем scoreFailure, но не меньше scoreFirstQuestion
+            updatedScores[idx + 1] = Math.max(scoreFirstQuestion, updatedScores[idx] - scoreFailure) // вычитаем scoreFailure, но не меньше scoreFirstQuestion
         }
 
-        setAnsweredStatus(updatedStatus); // обновляем статус строк
-        setScores(updatedScores); // обновляем баллы
+        setAnsweredStatus(updatedStatus) // обновляем статус строк
+        setScores(updatedScores) // обновляем баллы
         setValue('')
         setIdx(idx + 1)
-    };
+    }
 
     return (
         <main className="section">
@@ -90,8 +144,8 @@ const CarouselGame = () => {
                     </div>
                 </div>
             </div>
-        </main>
-    );
+        </main> 
+    )*/
 }
 
-export default CarouselGame;
+export default CarouselGame

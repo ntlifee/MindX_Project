@@ -1,0 +1,27 @@
+.window_question{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 70%;
+    border: dashed;
+    border-width: 2px 4px;
+    border-radius: 40px;
+    padding: 20px;
+}
+
+.label{
+    font-size: 20px;
+    text-align: center;
+}
+
+.input_answer{
+    font-size: 20px;
+}
+
+.correct {
+    background-color: lightgreen;
+}
+
+.incorrect {
+    background-color: lightcoral;
+}

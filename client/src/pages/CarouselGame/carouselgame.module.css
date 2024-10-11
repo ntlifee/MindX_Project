@@ -1,4 +1,18 @@
-.carousel-info-window{
+.carousel_game{
+    display: flex;
+    flex-direction: column;
+    row-gap: 50px;
+    width: 100%;
+    align-items: center
+}
+
+.button_answer{
+    font-size: 20px;
+    width: 20%;
+}
+
+
+/* .carousel-info-window{
     display: flex;
     flex-direction: row;
     column-gap: 30px;
@@ -33,9 +47,10 @@
 }
 
 .correct {
-    background-color: lightgreen; /* Цвет для правильных ответов */
+    background-color: lightgreen;
 }
 
 .incorrect {
-    background-color: lightcoral; /* Цвет для неправильных ответов */
+    background-color: lightcoral;
 }
+ */

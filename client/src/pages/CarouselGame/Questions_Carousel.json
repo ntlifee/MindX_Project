@@ -2,26 +2,32 @@
     "scoreFirstQuestion": 3,
     "scoreSuccess": 1,
     "scoreFailure": 3,
-    "questions": [
+    "progressUser": [],
+    "questionsGame": [
         {
             "question": "Кто написал 'Мастер и Маргарита'?",
-            "answer": "Михаил Булгаков"
+            "answer": "Михаил Булгаков",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Mikhail_Bulgakov.jpg/220px-Mikhail_Bulgakov.jpg"
         },
         {
             "question": "Какое животное является символом России?",
-            "answer": "Медведь"
+            "answer": "Медведь",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Elephant_in_Africa.jpg/220px-Elephant_in_Africa.jpg"
         },
         {
             "question": "Сколько континентов на Земле?",
-            "answer": "Семь"
+            "answer": "Семь",
+            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Seven_Continents_Map.svg/220px-Seven_Continents_Map.svg.png"
         },
         {
             "question": "Как называется процесс превращения воды в пар?",
-            "answer": "Испарение"
+            "answer": "Испарение",
+            "image": null
         },
         {
             "question": "Как называется главный герой сказки 'Красная шапочка'?",
-            "answer": "Красная Шапочка"
+            "answer": "Красная Шапочка",
+            "image": null
         }
     ]
 }
