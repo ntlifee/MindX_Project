@@ -11,6 +11,11 @@
     width: 20%;
 }
 
+.button_wrapper{
+    display: flex;
+    flex-direction: row;
+    column-gap: 50px;
+}
 
 /* .carousel-info-window{
     display: flex;

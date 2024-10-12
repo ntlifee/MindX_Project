@@ -5,147 +5,115 @@ import WindowQuestion from '../../components/WindowQuestion/Windowquestion'
 import Data from './Questions_Carousel.json'
 
 /*import axios from 'axios' */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const CarouselGame = () => {
 
     const { scoreFirstQuestion, scoreSuccess, scoreFailure, progressUser, questionsGame } = Data
-    const [idx, setIdx] = useState(0) //индекс вопроса
+    const [idx, setIdx] = useState(progressUser.length) //индекс вопроса ожидающего ответа
+    const [idxPre, setIdxPre] = useState(idx) //индекс текещего вопроса
     const [value, setValue] = useState('') //значение введенное пользователем
-    const [score, setScore] = useState(scoreFirstQuestion) //балл текущего вопроса
     const [questions] = useState(questionsGame) //вопросы
-    const [progress, setProgress] = useState(progressUser) //прогресс пользователя
-
+    const [progress, setProgress] = useState([
+        ...progressUser,
+        ...new Array(questions.length - progressUser.length + 1).fill({ points: scoreFirstQuestion, isCorrect: null })
+    ]) //прогресс пользователя
 
     //проверяем ответ
     const isCorrectAnswer = () => {
         return questions[idx].answer === value
     }
 
+    useEffect(() => {
+        if (idx === questions.length) {
+            setIdx(idx - 1)
+            setIdxPre(prevIdx => {
+                const newIdx = prevIdx - 1
+                return newIdx; // возвращаем новый индекс
+            });
+            alert('Игра окончена!')
+        }
+    }, [idx, questions])
+
     const handleSubmit = () => {
         const isCorrect = isCorrectAnswer()
-        setProgress([...progress, { points: score, isCorrect: isCorrect }]) //обновление прогресса пользователя
 
         //балл для следующего вопроса
         if (isCorrect) {
-            setScore(score + scoreSuccess)
+            setProgress(prevState => {
+                const newProgress = [...prevState]
+                newProgress[idx] = { points: newProgress[idx].points + scoreSuccess, isCorrect: isCorrect }
+                return newProgress
+            })
         } else {
-            setScore(Math.max(scoreFirstQuestion, score - scoreFailure))
+            setProgress(prevState => {
+                const newProgress = [...prevState]
+                newProgress[idx] = { points: Math.max(scoreFirstQuestion, newProgress[idx].points - scoreFailure), isCorrect: isCorrect }
+                return newProgress
+            })
         }
+
         setValue('')
+        setIdxPre(idxPre + 1)
         setIdx(idx + 1)
+        console.log(idxPre + 1)
+    }
+
+    const idxPreSub = () => {
+        if (idxPre > 0)
+            setIdxPre(idxPre - 1)
+        return
+    }
+
+    const idxPreInc = () => {
+        if (idxPre < idx)
+            setIdxPre(idxPre + 1)
+        return
     }
 
     return (
         <main className="section">
             <div className="container">
                 <div className={classes.carousel_game}>
-                    {idx > 0 && <WindowQuestion key={idx - 1}
-                        question={questions[idx - 1].question}
-                        point={progress[idx - 1].points}
-                        inputValue={progress[idx - 1].isCorrect ? 'Верный ответ' : 'Не верный ответ'}
-                        isCorrect={progress[idx - 1].isCorrect}
-                        readOnly={true} />
+
+                    {idxPre > 0 && <WindowQuestion key={idxPre - 1}
+                        question={questions[idxPre - 1].question}
+                        point={progress[idxPre - 1].points}
+                        inputValue={progress[idxPre - 1].isCorrect ? 'Вы дали верный ответ' : 'Вы дали неверный ответ'}
+                        isCorrect={progress[idxPre - 1].isCorrect}
+                        readOnly={true}
+                        idx={idxPre} />
                     }
-                    {idx !== questions.length && <WindowQuestion key={idx}
-                        question={questions[idx].question}
-                        point={score}
-                        inputValue={value}
-                        readOnly={false}
-                        action={setValue} />}
-                    {idx !== questions.length && <button onClick={handleSubmit} className={classes.button_answer}>Следующий вопрос</button>}
+
+                    {idxPre !== questions.length && <WindowQuestion key={idxPre}
+                        question={questions[idxPre].question}
+                        point={progress[idxPre].points}
+                        inputValue={progress[idxPre].isCorrect ? 'Вы дали верный ответ' :
+                            progress[idxPre].isCorrect === false ? 'Вы дали неверный ответ' : value}
+                        isCorrect={progress[idxPre].isCorrect}
+                        readOnly={progress[idxPre].isCorrect === null ? false : true}
+                        action={progress[idxPre].isCorrect === null ? setValue : null}
+                        idx={idxPre + 1} />
+                    }
+
+                    {idxPre !== idx && <WindowQuestion key={idxPre + 1}
+                        question={questions[idxPre + 1].question}
+                        point={progress[idxPre + 1].points}
+                        inputValue={progress[idxPre].isCorrect ? 'Вы дали верный ответ' :
+                            progress[idxPre + 1].isCorrect === false ? 'Вы дали неверный ответ' : value}
+                        isCorrect={progress[idxPre + 1].isCorrect}
+                        readOnly={true}
+                        idx={idxPre + 2} />
+                    }
+                    <div className={classes.button_wrapper}>
+                        {idxPre !== 0 && <button onClick={idxPreSub} className={classes.button_answer}>{'<'}</button>}
+                        {idx !== questions.length && idxPre === idx && <button onClick={handleSubmit} className={classes.button_answer}>Ответить</button>}
+                        {idxPre !== idx && <button onClick={idxPreInc} className={classes.button_answer}>{'>'}</button>}
+                    </div>
                 </div>
             </div>
         </main>
     )
-
-
-
-    /* const [carouselData, setCarouselData] = useState()
-
-    useEffect(() => {
-        const apiUrl = ''
-        axios.get(apiUrl).then((resp) => {
-            const allData = resp.data
-            console.log(allData)
-            setCarouselData(allData)
-        })
-    }, [setCarouselData])
-
-    const { scoreFirstQuestion, scoreSuccess, scoreFailure, questions } = questionData
-    const [idx, setIdx] = useState(0) //индекс вопроса
-    const [value, setValue] = useState('') //значение введенное пользователем
-    const [question, setQuestion] = useState('') //текущий вопрос
-    const [answeredStatus, setAnsweredStatus] = useState(Array(questions.length).fill(null)) //массив статуса строк
-    const [scores, setScores] = useState([scoreFirstQuestion, ...Array(questions.length - 1).fill(null)]) // первая ячейка с баллом, остальные пустые
-
-    useEffect(() => {
-        console.log(idx)
-        if (idx !== questions.length) {
-            setQuestion(questions[idx].question)
-        } else {
-            setQuestion('Тест окончен')
-        }
-    }, [idx])
-
-    const handleSubmit = () => {
-        if (idx === questions.length) {
-            return
-        }
-        const isCorrect = questions[idx].answer === value //проверяем ответ
-        const updatedStatus = [...answeredStatus] // копируем массив статусов
-        updatedStatus[idx] = isCorrect ? 'correct' : 'incorrect' // обновляем статус текущего вопроса
-
-        const updatedScores = [...scores] // копируем массив баллов
-        if (isCorrect) {
-            updatedScores[idx + 1] = updatedScores[idx] + scoreSuccess // добавляем scoreSuccess
-        } else {
-            updatedScores[idx + 1] = Math.max(scoreFirstQuestion, updatedScores[idx] - scoreFailure) // вычитаем scoreFailure, но не меньше scoreFirstQuestion
-        }
-
-        setAnsweredStatus(updatedStatus) // обновляем статус строк
-        setScores(updatedScores) // обновляем баллы
-        setValue('')
-        setIdx(idx + 1)
-    }
-
-    return (
-        <main className="section">
-            <div className="container">
-                <div className="carousel-game">
-                    <div className="carousel-wrapper-progress-table">
-                        <table id="carousel-progress-table">
-                            <thead>
-                                <tr>
-                                    <th>№</th>
-                                    <th>Цена</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className={answeredStatus[0]} key={0}>
-                                    <td>1</td>
-                                    <td>{scoreFirstQuestion}</td>
-                                </tr>
-                                {questions.slice(1).map((_, index) => (
-                                    <tr className={answeredStatus[index + 1]} key={index + 1}>
-                                        <td>{index + 2}</td>
-                                        <td>{scores[index + 1]}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div className="carousel-wrapper-question">
-                        <label className="carousel-label" htmlFor="input-answer">{question}</label>
-                        <div className="carousel-form-answer">
-                            <InputComponent inputValue={value} action={setValue} inputId={"input-answer"} placeholder={"Введите ответ!"} />
-                            <button onClick={handleSubmit} className="carousel-button-form-answer">Следующий вопрос</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main> 
-    )*/
 }
 
 export default CarouselGame
