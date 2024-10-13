@@ -14,12 +14,13 @@
     background: linear-gradient(90deg, orange, #f60, #ffeb3b, orange);
     background-size: 400%;
     border-radius: 20px 0 20px 0;
-    display: flex; 
+    display: flex;
+    border: 3px solid #FF6400;
     aspect-ratio: 1/1;
 }
 
 .question_button:hover {
-    animation: animate 8s linear infinite;
+    animation: animate 6s linear infinite;
 }
 
 @keyframes animate {
@@ -50,4 +51,15 @@
     filter: blur(20px);
     opacity: 1;
     animation: animate 8s linear infinite;
+}
+
+.question_button.green{
+    background: rgb(46,240,101);
+    background: linear-gradient(90deg, rgba(46,240,101,1) 0%, rgba(79,242,53,1) 46%, rgba(9,209,25,1) 88%);
+    border: 3px solid green;
+}
+.question_button.red{
+    background: rgb(247,49,73);
+    background: linear-gradient(90deg, rgba(247,49,73,1) 0%, rgba(237,20,46,1) 46%, rgba(213,5,30,1) 88%);
+    border: 3px solid rgb(166, 10, 28);
 }
