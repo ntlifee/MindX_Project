@@ -4,6 +4,7 @@ import QuestionButton from '../../components/QuestionButton/QuestionButton'
 import ModalWindow_Square from '../../components/ModalWindow_Square/ModalWindow_Square'
 import classes from './squaregame.module.css'
 import useDidMountEffect from './../../customHooks/useDidMountEffect'
+import BonusSquare from '../../components/BonusSquare/BonusSquare'
 
 const SquareGame = (props) => {
     let { levels, themes } = props
@@ -13,32 +14,55 @@ const SquareGame = (props) => {
     const [bonusRow, setBonusRow] = useState(new Array(5).fill(undefined))
     const [bonusCol, setBonusCol] = useState(new Array(5).fill(undefined))
     const [score, setScore] = useState(0)
+
     useDidMountEffect(() => {
         if (isCloseQuestions[numberQuestion - 1] !== undefined) {
-            const indexRow = (numberQuestion - (numberQuestion % 5)) / 5
-            const indexCol = numberQuestion % 5 - 1
-            if (bonusRow[indexRow] === undefined) {
-                bonusRow[indexRow] = true;
+            const indexRow = Math.floor((numberQuestion - 1) / 5)
+            const indexCol = (numberQuestion - 1) % 5
+
+            let newBonusRow = [...bonusRow]
+            let newBonusCol = [...bonusCol]
+
+            if (newBonusRow[indexRow] === undefined) {
+                let count = 0
                 for (let i = 0; i < 5; i++) {
-                    if (isCloseQuestions[indexRow * 5 + i] === false) {
-                        bonusRow[indexRow] = false;
-                        break;
+                    if (isCloseQuestions[indexRow * 5 + i] === true) {
+                        count++
+                        continue
+                    } else if (isCloseQuestions[indexRow * 5 + i] === false) {
+                        newBonusRow[indexRow] = false
+                        break
                     }
                 }
-                setBonusRow(bonusRow)
+                if (count === 5) {
+                    newBonusRow[indexRow] = true
+                    setScore(score + (indexRow + 1) * 10)
+                }
             }
-            if (bonusCol[indexCol] === undefined) {
-                bonusCol[indexCol] = true;
+
+
+            if (newBonusCol[indexCol] === undefined) {
+                let count = 0
                 for (let i = 0; i < 5; i++) {
-                    if (isCloseQuestions[i * 5 + indexCol] === false) {
-                        bonusCol[indexCol] = false;
-                        break;
+                    if (isCloseQuestions[i * 5 + indexCol] === true) {
+                        count++
+                        continue
+                    } else if (isCloseQuestions[i * 5 + indexCol] === false) {
+                        newBonusCol[indexCol] = false
+                        break
                     }
                 }
-                setBonusCol(bonusCol)
+                if (count === 5) {
+                    newBonusCol[indexCol] = true
+                    setScore(score + (indexCol + 1) * 10)
+                }
             }
+            setBonusRow(newBonusRow)
+            setBonusCol(newBonusCol)
         }
     }, [isCloseQuestions[numberQuestion - 1]])
+
+
     //#region development
     levels = [];
     for (let i = 1; i <= 5; i++) {
@@ -78,12 +102,12 @@ const SquareGame = (props) => {
                                             numberQuestion={themeNumber * 5 + level}
                                             setNumberQuestion={setNumberQuestion} isCloseQuestions={isCloseQuestions[themeNumber * 5 + level - 1]} />
                                     ))}
-                                    <td className={`${classes.bonus} ${classes.td_square}`}>+{(themeNumber + 1) * 10}</td>
+                                    <BonusSquare key={themeNumber + 1} value={(themeNumber + 1) * 10} bonus={bonusRow[themeNumber]} />
                                 </tr>
                             ))}
                             <tr className={classes.tr_square}>
                                 <th className={classes.th_square}>Бонус</th>
-                                {levels.map(level => (<td className={classes.td_square} key={level}>+{level * 10}</td>))}
+                                {levels.map(level => (<BonusSquare key={level} value={level * 10} bonus={bonusCol[level - 1]} />))}
                             </tr>
                         </tbody>
                     </table>

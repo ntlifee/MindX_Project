@@ -14,12 +14,13 @@
     background: linear-gradient(90deg, orange, #f60, #ffeb3b, orange);
     background-size: 400%;
     border-radius: 20px 0 20px 0;
-    display: flex; 
+    display: flex;
+    border: 3px solid #FF6400;
     aspect-ratio: 1/1;
 }
 
 .question_button:hover {
-    animation: animate 8s linear infinite;
+    animation: animate 6s linear infinite;
 }
 
 @keyframes animate {

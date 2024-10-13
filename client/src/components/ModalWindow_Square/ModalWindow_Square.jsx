@@ -34,7 +34,7 @@ const ModalWindow_Square = (props) => {
         setisCloseQuestions(isCloseQuestions)
     }
     const ChangeScore = (number) => {
-        setScore(score + (number * 10))
+        setScore(score + (((number - 1) % 5 + 1) * 10))
     }
 
     return (
