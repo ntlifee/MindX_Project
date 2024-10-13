@@ -3,6 +3,7 @@
     font-size: clamp(6.5px, 1.5vw, 16px);
     border-radius: 20px 0 20px 0;
     border: none;
+    text-align: center;
 }
 
 .bonus.true{

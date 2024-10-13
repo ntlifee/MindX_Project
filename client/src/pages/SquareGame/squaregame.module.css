@@ -23,6 +23,8 @@ main {
 .td_square, .th_square{
     font-family: 'DM Sans', sans-serif;
     font-size: clamp(6.5px, 1.5vw, 16px);
+    width: 100px;
+    text-align: center;
 }
 
 .td_square{
