@@ -1,17 +1,17 @@
-import './input.css'
-
 const InputComponent = (props) => {
-    const { placeholder, action, inputValue, inputId } = props
+    const { className, inputId, inputValue, placeholder, readOnly, action } = props
     return (
         <input
+            className={className}
             id={inputId}
             value={inputValue}
-            type={"text"}
             placeholder={placeholder}
+            readOnly={readOnly}
             onChange={event => {
                 const newValue = event.target.value
-                action(newValue)
+                action && action(newValue)
             }}
+            type={"text"}
         />
     )
 }

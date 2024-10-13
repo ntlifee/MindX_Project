@@ -1,0 +1,26 @@
+.carousel_game{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 100%;
+    align-items: center
+}
+
+.button_wrapper{
+    display: flex;
+    flex-direction: row;
+    column-gap: 50px;
+    align-items: center;
+}
+
+.button_answer{
+    font-size:  clamp(4px, 2vw, 20px);
+}
+
+.visible{
+    visibility:visible;
+}
+
+.hidden{
+    visibility: hidden;
+}
