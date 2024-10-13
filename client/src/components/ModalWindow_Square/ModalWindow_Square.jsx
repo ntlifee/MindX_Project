@@ -5,6 +5,7 @@ const ModalWindow_Square = (props) => {
     const { active, setActive, numberQuestion, isCloseQuestions, setisCloseQuestions, score, setScore } = props;
     const [time, setTime] = useState(120);
     const checkCloseQuestions = isCloseQuestions[numberQuestion - 1]
+    const scoreQuestion = (((numberQuestion - 1) % 5 + 1) * 10)
     useEffect(() => {
         time > 0 ? setTimeout(() => setTime(time - 1), 1000) : handleAnswer();
     }, [time]);
@@ -18,7 +19,7 @@ const ModalWindow_Square = (props) => {
 
             //#region development
             CloseQuestion(true)
-            ChangeScore(numberQuestion)
+            ChangeScore(1)
             //#endregion
 
             setActive(false)
@@ -26,15 +27,15 @@ const ModalWindow_Square = (props) => {
     }
     const handleSurrender = () => {
         CloseQuestion(false)
-        ChangeScore(-numberQuestion)
+        ChangeScore(-1)
         setActive(false)
     }
     const CloseQuestion = (status) => {
         isCloseQuestions[numberQuestion - 1] = status
         setisCloseQuestions(isCloseQuestions)
     }
-    const ChangeScore = (number) => {
-        setScore(score + (((number - 1) % 5 + 1) * 10))
+    const ChangeScore = (koef) => {
+        setScore(score + scoreQuestion * koef)
     }
 
     return (
@@ -56,7 +57,7 @@ const ModalWindow_Square = (props) => {
                     <div className={classes.content_buttons}>
                         {checkCloseQuestions === undefined ?
                             <><button className={`${classes.button} ${classes.green}`} onClick={() => handleAnswer()}>Ответить</button>
-                                <button className={`${classes.button} ${classes.red}`} onClick={() => handleSurrender()}>Сдаться (-{numberQuestion * 10})</button></> :
+                                <button className={`${classes.button} ${classes.red}`} onClick={() => handleSurrender()}>Сдаться (-{scoreQuestion})</button></> :
                             <button className={`${classes.button} ${classes.red}`} onClick={() => setActive(false)}>Закрыть</button>}
                     </div>
                 </div>
