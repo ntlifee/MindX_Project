@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 
 const ModalWindow_Square = (props) => {
     const { active, setActive, numberQuestion, isCloseQuestions, setisCloseQuestions, score, setScore } = props;
-    const [time, setTime] = useState(120);
     const checkCloseQuestions = isCloseQuestions[numberQuestion - 1]
+    const [time, setTime] = useState(checkCloseQuestions === undefined ? 120 : 0);
     const scoreQuestion = (((numberQuestion - 1) % 5 + 1) * 10)
     useEffect(() => {
         time > 0 ? setTimeout(() => setTime(time - 1), 1000) : handleAnswer();

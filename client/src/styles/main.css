@@ -36,3 +36,11 @@ body {
 	width: 100%;
 	position: relative;
 }
+
+main {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}

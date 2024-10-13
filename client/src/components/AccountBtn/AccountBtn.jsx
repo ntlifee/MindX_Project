@@ -1,12 +1,12 @@
 import accountIcon from './account.svg'
-import './accountbtn.css'
+import classes from './accountbtn.module.css'
 
 const AccountBtn = () => {
-    return (  
-        <button className="account-button">
-            <img src={accountIcon} alt="account"/>
-        </button>    
+    return (
+        <button className={classes.account_button}>
+            <img src={accountIcon} alt="account" />
+        </button>
     );
 }
- 
+
 export default AccountBtn;
