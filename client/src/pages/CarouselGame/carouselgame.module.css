@@ -1,61 +1,26 @@
 .carousel_game{
     display: flex;
     flex-direction: column;
-    row-gap: 50px;
+    row-gap: 20px;
     width: 100%;
     align-items: center
-}
-
-.button_answer{
-    font-size: 20px;
-    width: 20%;
 }
 
 .button_wrapper{
     display: flex;
     flex-direction: row;
     column-gap: 50px;
+    align-items: center;
 }
 
-/* .carousel-info-window{
-    display: flex;
-    flex-direction: row;
-    column-gap: 30px;
-    margin-bottom: 50px;
+.button_answer{
+    font-size:  clamp(4px, 2vw, 20px);
 }
 
-.carousel-wrapper-score{
-    display: flex;
-    flex-direction: row;
+.visible{
+    visibility:visible;
 }
 
-.carousel-count-value{
-    margin-left: 5px;
+.hidden{
+    visibility: hidden;
 }
-
-.carousel-game{
-    display: flex;
-    flex-direction: row;
-    column-gap: 50px;
-}
-
-#carousel-progress-table{
-    margin: 10px;
-    border: 1px solid black;
-    border-collapse: collapse;
-}   
-
-#carousel-progress-table th, td{
-    border: 1px solid black;   
-    text-align: center;
-    width: 100px;
-}
-
-.correct {
-    background-color: lightgreen;
-}
-
-.incorrect {
-    background-color: lightcoral;
-}
- */

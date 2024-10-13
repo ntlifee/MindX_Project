@@ -1,21 +1,32 @@
 .window_question{
     display: flex;
     flex-direction: column;
-    row-gap: 20px;
-    width: 70%;
+    row-gap: 10px;
     border: dashed;
     border-width: 2px 4px;
     border-radius: 40px;
     padding: 20px;
 }
 
+.window_question_big{
+    width: 60%;
+}
+
+.window_question_small{
+    width: 40%;
+}
+
+.points{
+    font-size:  clamp(4px, 2vw, 16px);
+}
+
 .label{
-    font-size: 20px;
+    font-size:  clamp(4px, 2vw, 16px);
     text-align: center;
 }
 
 .input_answer{
-    font-size: 20px;
+    font-size:  clamp(4px, 2vw, 16px);
 }
 
 .correct {

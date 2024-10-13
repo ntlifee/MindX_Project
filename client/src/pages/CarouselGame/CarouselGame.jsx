@@ -5,7 +5,7 @@ import WindowQuestion from '../../components/WindowQuestion/Windowquestion'
 import Data from './Questions_Carousel.json'
 
 /*import axios from 'axios' */
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const CarouselGame = () => {
 
@@ -23,17 +23,6 @@ const CarouselGame = () => {
     const isCorrectAnswer = () => {
         return questions[idx].answer === value
     }
-
-    useEffect(() => {
-        if (idx === questions.length) {
-            setIdx(idx - 1)
-            setIdxPre(prevIdx => {
-                const newIdx = prevIdx - 1
-                return newIdx; // возвращаем новый индекс
-            });
-            alert('Игра окончена!')
-        }
-    }, [idx, questions])
 
     const handleSubmit = () => {
         const isCorrect = isCorrectAnswer()
@@ -54,9 +43,10 @@ const CarouselGame = () => {
         }
 
         setValue('')
-        setIdxPre(idxPre + 1)
         setIdx(idx + 1)
-        console.log(idxPre + 1)
+        if (idx + 1 !== questions.length) {
+            setIdxPre(idxPre + 1)
+        }
     }
 
     const idxPreSub = () => {
@@ -66,7 +56,7 @@ const CarouselGame = () => {
     }
 
     const idxPreInc = () => {
-        if (idxPre < idx)
+        if (idxPre < idx && idxPre < questions.length - 1)
             setIdxPre(idxPre + 1)
         return
     }
@@ -76,39 +66,53 @@ const CarouselGame = () => {
             <div className="container">
                 <div className={classes.carousel_game}>
 
-                    {idxPre > 0 && <WindowQuestion key={idxPre - 1}
-                        question={questions[idxPre - 1].question}
-                        point={progress[idxPre - 1].points}
-                        inputValue={progress[idxPre - 1].isCorrect ? 'Вы дали верный ответ' : 'Вы дали неверный ответ'}
-                        isCorrect={progress[idxPre - 1].isCorrect}
+                    <WindowQuestion key={idxPre - 1}
+                        question={questions[idxPre - 1]?.question}
+                        point={progress[idxPre - 1]?.points}
+                        inputValue={progress[idxPre - 1]?.isCorrect ? 'Вы дали верный ответ' : 'Вы дали неверный ответ'}
+                        isCorrect={progress[idxPre - 1]?.isCorrect}
                         readOnly={true}
-                        idx={idxPre} />
-                    }
+                        idx={idxPre}
+                        visibility={idxPre > 0 ? classes.visible : classes.hidden} />
 
-                    {idxPre !== questions.length && <WindowQuestion key={idxPre}
-                        question={questions[idxPre].question}
+                    <WindowQuestion key={idxPre}
+                        question={questions[idxPre]?.question}
                         point={progress[idxPre].points}
                         inputValue={progress[idxPre].isCorrect ? 'Вы дали верный ответ' :
                             progress[idxPre].isCorrect === false ? 'Вы дали неверный ответ' : value}
                         isCorrect={progress[idxPre].isCorrect}
                         readOnly={progress[idxPre].isCorrect === null ? false : true}
                         action={progress[idxPre].isCorrect === null ? setValue : null}
-                        idx={idxPre + 1} />
-                    }
+                        idx={idxPre + 1}
+                        isCentre={true}
+                        isVisibility={classes.visible} />
 
-                    {idxPre !== idx && <WindowQuestion key={idxPre + 1}
-                        question={questions[idxPre + 1].question}
-                        point={progress[idxPre + 1].points}
-                        inputValue={progress[idxPre].isCorrect ? 'Вы дали верный ответ' :
-                            progress[idxPre + 1].isCorrect === false ? 'Вы дали неверный ответ' : value}
-                        isCorrect={progress[idxPre + 1].isCorrect}
+                    <WindowQuestion key={idxPre + 1}
+                        question={questions[idxPre + 1]?.question}
+                        point={progress[idxPre + 1]?.points}
+                        inputValue={progress[idxPre]?.isCorrect ? 'Вы дали верный ответ' :
+                            progress[idxPre + 1]?.isCorrect === false ? 'Вы дали неверный ответ' : value}
+                        isCorrect={progress[idxPre + 1]?.isCorrect}
                         readOnly={true}
-                        idx={idxPre + 2} />
-                    }
+                        idx={idxPre + 2}
+                        visibility={idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden} />
+
+
                     <div className={classes.button_wrapper}>
-                        {idxPre !== 0 && <button onClick={idxPreSub} className={classes.button_answer}>{'<'}</button>}
-                        {idx !== questions.length && idxPre === idx && <button onClick={handleSubmit} className={classes.button_answer}>Ответить</button>}
-                        {idxPre !== idx && <button onClick={idxPreInc} className={classes.button_answer}>{'>'}</button>}
+                        <button
+                            onClick={idxPreSub}
+                            className={`${classes.button_answer} ${idxPre !== 0 ? classes.visible : classes.hidden}`}
+                        >{'<'}</button>
+
+                        <button
+                            onClick={idx !== questions.length ? handleSubmit : null}
+                            className={`${classes.button_answer} ${idxPre === idx && idx !== questions.length ? classes.visible : classes.hidden}`}
+                        >Ответить</button>
+
+                        <button
+                            onClick={idxPreInc}
+                            className={`${classes.button_answer} ${idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}`}
+                        >{'>'}</button>
                     </div>
                 </div>
             </div>
