@@ -62,7 +62,7 @@ const CarouselGame = () => {
     }
 
     return (
-        <main className="section">
+        <main className={classes.section}>
             <div className="container">
                 <div className={classes.carousel_game}>
 

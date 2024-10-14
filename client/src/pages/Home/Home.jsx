@@ -1,11 +1,11 @@
-import './home.css'
+import classes from './home.module.css'
 
 const Home = () => {
     return (
         <>
-            <main className="section">               
-                <h1 className="title-home">Mind<strong className='strong_X'>X</strong></h1>
-                <p className='description-home'>
+            <main className={classes.section}>
+                <h1 className={classes.title_home}>Mind<strong className={classes.strong_X}>X</strong></h1>
+                <p className={classes.description_home}>
                     Современный сервис для организации интеллектуальных игр
                 </p>
             </main>

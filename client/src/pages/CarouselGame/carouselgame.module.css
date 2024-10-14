@@ -1,3 +1,8 @@
+.section{
+    justify-content: center;
+    align-items: center;
+}
+
 .carousel_game{
     display: flex;
     flex-direction: column;

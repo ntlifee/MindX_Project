@@ -74,7 +74,7 @@ const SquareGame = (props) => {
     }
     //#endregion
     return (
-        <main className="section">
+        <main className={classes.section}>
             <div className="container">
                 <div className={classes.wrapper}>
                     <GameInformationPanel score={score} />
