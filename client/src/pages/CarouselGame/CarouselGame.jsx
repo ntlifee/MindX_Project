@@ -102,7 +102,7 @@ const CarouselGame = () => {
                         <button
                             onClick={idxPreSub}
                             className={`${classes.button_answer} ${idxPre !== 0 ? classes.visible : classes.hidden}`}
-                        >{'<'}</button>
+                        >Предыдущий</button>
 
                         <button
                             onClick={idx !== questions.length ? handleSubmit : null}
@@ -112,7 +112,7 @@ const CarouselGame = () => {
                         <button
                             onClick={idxPreInc}
                             className={`${classes.button_answer} ${idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}`}
-                        >{'>'}</button>
+                        >Следующий</button>
                     </div>
                 </div>
             </div>

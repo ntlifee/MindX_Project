@@ -7,9 +7,9 @@ const WindowQuestion = (props) => {
     return (
         <div className={`
             ${classes.window_question} 
-            ${isCentre ? classes.window_question_big : classes.window_question_small} 
+            ${isCentre ? classes.window_question_big : classes.window_question_small + ' ' + classes.darkening} 
             ${isCorrect ? classes.correct : isCorrect === false ? classes.incorrect : ''}
-            ${visibility}`
+            ${visibility} `
         }>
 
             <div className={classes.points}>Вопрос #{idx} стоимость: <strong>{point}</strong></div>

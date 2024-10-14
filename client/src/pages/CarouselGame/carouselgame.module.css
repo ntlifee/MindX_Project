@@ -9,12 +9,12 @@
 .button_wrapper{
     display: flex;
     flex-direction: row;
-    column-gap: 50px;
+    column-gap: 30px;
     align-items: center;
 }
 
 .button_answer{
-    font-size:  clamp(4px, 2vw, 20px);
+    font-size:  20px;
 }
 
 .visible{
