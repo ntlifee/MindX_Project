@@ -7,7 +7,7 @@ const WindowQuestion = (props) => {
     return (
         <div className={`
             ${classes.window_question} 
-            ${isCentre ? classes.window_question_big : classes.window_question_small + ' ' + classes.darkening} 
+            ${isCentre ? classes.window_question_big : classes.window_question_small} 
             ${isCorrect ? classes.correct : isCorrect === false ? classes.incorrect : ''}
             ${visibility}
             ${animation}`
@@ -16,12 +16,12 @@ const WindowQuestion = (props) => {
             <div className={classes.points}>Вопрос #{idx} стоимость: <strong>{point}</strong></div>
 
             <label
-                className={classes.label}
-                htmlFor="input-answer">{question || '???'}</label>
+                className={!animation && isCentre ? classes.label_centre : classes.label}
+                htmlFor={idx}>{question || '???'}</label>
 
             <InputComponent
                 className={classes.input_answer}
-                inputId={"input-answer"}
+                inputId={idx}
                 inputValue={inputValue}
                 placeholder={"Введите ответ!"}
                 readOnly={readOnly}

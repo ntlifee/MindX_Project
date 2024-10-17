@@ -3,7 +3,8 @@
     flex-direction: column;
     row-gap: 20px;
     width: 100%;
-    align-items: center
+    align-items: center;
+    padding: 2%;
 }
 
 .button_wrapper{
@@ -11,6 +12,7 @@
     flex-direction: row;
     column-gap: 30px;
     align-items: center;
+    margin-bottom: 5%;
 }
 
 .button_answer{

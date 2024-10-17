@@ -58,22 +58,24 @@ const CarouselGame = () => {
     }
 
     const idxPreSub = () => {
-        setIsAnimationDown(true)
-        setTimeout(() => {
-            if (idxPre > 0)
+        if (idxPre > 0) {
+            setIsAnimationDown(true)
+            setTimeout(() => {
                 setIdxPre(idxPre - 1)
-            setIsAnimationDown(false); // Сброс анимации после 1 секунды            
-        }, 950);
+                setIsAnimationDown(false); // Сброс анимации после 1 секунды            
+            }, 950);
+        }
         return
     }
 
     const idxPreInc = () => {
-        setIsAnimationUp(true)
-        setTimeout(() => {
-            if (idxPre < idx && idxPre < questions.length - 1)
+        if (idxPre < idx && idxPre < questions.length - 1) {
+            setIsAnimationUp(true)
+            setTimeout(() => {
                 setIdxPre(idxPre + 1)
-            setIsAnimationUp(false); // Сброс анимации после 1 секунды            
-        }, 950);
+                setIsAnimationUp(false); // Сброс анимации после 1 секунды            
+            }, 950);
+        }
         return
     }
 
@@ -90,7 +92,7 @@ const CarouselGame = () => {
                         readOnly={true}
                         idx={idxPre}
                         visibility={(isAnimationDown && idxPre > 0) || idxPre > 0 ? classes.visible : classes.hidden}
-                        animation={isAnimationDown && classes.action_down_previous} />
+                        animation={isAnimationDown ? classes.action_down_previous : ''} />
 
                     <WindowQuestion key={idxPre}
                         question={questions[idxPre]?.question}
@@ -105,7 +107,7 @@ const CarouselGame = () => {
                         visibility={classes.visible}
                         animation={isAnimationDown ? classes.action_down_center : isAnimationUp ? classes.action_up_center : ''} />
 
-                    <WindowQuestion key={idxPre + 1}
+                    {((isAnimationUp && idxPre !== idx && idxPre !== questions.length - 1) || (idxPre !== idx && idxPre !== questions.length - 1)) && <WindowQuestion key={idxPre + 1}
                         question={questions[idxPre + 1]?.question}
                         point={progress[idxPre + 1]?.points}
                         inputValue={progress[idxPre]?.isCorrect ? 'Вы дали верный ответ' :
@@ -113,14 +115,14 @@ const CarouselGame = () => {
                         isCorrect={progress[idxPre + 1]?.isCorrect}
                         readOnly={true}
                         idx={idxPre + 2}
-                        visibility={(isAnimationUp && idxPre !== idx && idxPre !== questions.length - 1) || (idxPre !== idx && idxPre !== questions.length - 1) ? classes.visible : classes.hidden}
-                        animation={isAnimationUp && classes.action_up_next} />
+                        visibility={true ? classes.visible : classes.hidden}
+                        animation={isAnimationUp ? classes.action_up_next : ''} />}
 
 
                     <div className={classes.button_wrapper}>
                         <button
                             onClick={idxPreSub}
-                            className={`${classes.button_answer} ${!isAnimationDown && idxPre !== 0 ? classes.visible : classes.hidden}`}
+                            className={`${classes.button_answer} ${!isAnimationDown && !isAnimationUp && idxPre !== 0 ? classes.visible : classes.hidden}`}
                         >Предыдущий</button>
 
                         <button
@@ -130,7 +132,7 @@ const CarouselGame = () => {
 
                         <button
                             onClick={idxPreInc}
-                            className={`${classes.button_answer} ${!isAnimationUp && idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}`}
+                            className={`${classes.button_answer} ${!isAnimationUp && !isAnimationDown && idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}`}
                         >Следующий</button>
                     </div>
                 </div>
