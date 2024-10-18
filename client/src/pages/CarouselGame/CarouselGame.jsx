@@ -107,7 +107,24 @@ const CarouselGame = () => {
                         visibility={classes.visible}
                         animation={isAnimationDown ? classes.action_down_center : isAnimationUp ? classes.action_up_center : ''} />
 
-                    {((isAnimationUp && idxPre !== idx && idxPre !== questions.length - 1) || (idxPre !== idx && idxPre !== questions.length - 1)) && <WindowQuestion key={idxPre + 1}
+                    {(!isAnimationDown && !isAnimationUp) && <div className={classes.button_wrapper}>
+                        <button
+                            onClick={idxPreSub}
+                            className={`${classes.button_answer} ${idxPre !== 0 ? classes.visible : classes.hidden}`}
+                        >Предыдущий</button>
+
+                        <button
+                            onClick={!isAnimationUp && idx !== questions.length ? handleSubmit : null}
+                            className={`${classes.button_answer} ${idxPre === idx && idx !== questions.length ? classes.visible : classes.hidden}`}
+                        >Ответить</button>
+
+                        <button
+                            onClick={idxPreInc}
+                            className={`${classes.button_answer} ${idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}`}
+                        >Следующий</button>
+                    </div>}
+
+                    <WindowQuestion key={idxPre + 1}
                         question={questions[idxPre + 1]?.question}
                         point={progress[idxPre + 1]?.points}
                         inputValue={progress[idxPre]?.isCorrect ? 'Вы дали верный ответ' :
@@ -115,26 +132,8 @@ const CarouselGame = () => {
                         isCorrect={progress[idxPre + 1]?.isCorrect}
                         readOnly={true}
                         idx={idxPre + 2}
-                        visibility={true ? classes.visible : classes.hidden}
-                        animation={isAnimationUp ? classes.action_up_next : ''} />}
-
-
-                    <div className={classes.button_wrapper}>
-                        <button
-                            onClick={idxPreSub}
-                            className={`${classes.button_answer} ${!isAnimationDown && !isAnimationUp && idxPre !== 0 ? classes.visible : classes.hidden}`}
-                        >Предыдущий</button>
-
-                        <button
-                            onClick={!isAnimationUp && idx !== questions.length ? handleSubmit : null}
-                            className={`${classes.button_answer} ${!isAnimationUp && !isAnimationDown && idxPre === idx && idx !== questions.length ? classes.visible : classes.hidden}`}
-                        >Ответить</button>
-
-                        <button
-                            onClick={idxPreInc}
-                            className={`${classes.button_answer} ${!isAnimationUp && !isAnimationDown && idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}`}
-                        >Следующий</button>
-                    </div>
+                        visibility={idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}
+                        animation={isAnimationUp ? classes.action_up_next : ''} />
                 </div>
             </div>
         </main>
