@@ -87,7 +87,7 @@ const CarouselGame = () => {
                     <WindowQuestion key={idxPre - 1}
                         question={questions[idxPre - 1]?.question}
                         point={progress[idxPre - 1]?.points}
-                        inputValue={progress[idxPre - 1]?.isCorrect ? 'Вы дали верный ответ' : 'Вы дали неверный ответ'}
+                        inputValue={progress[idxPre - 1]?.isCorrect ? 'Верный ответ' : 'Неверный ответ'}
                         isCorrect={progress[idxPre - 1]?.isCorrect}
                         readOnly={true}
                         idx={idxPre}
@@ -97,8 +97,8 @@ const CarouselGame = () => {
                     <WindowQuestion key={idxPre}
                         question={questions[idxPre]?.question}
                         point={progress[idxPre].points}
-                        inputValue={progress[idxPre].isCorrect ? 'Вы дали верный ответ' :
-                            progress[idxPre].isCorrect === false ? 'Вы дали неверный ответ' : value}
+                        inputValue={progress[idxPre].isCorrect ? 'Вверный ответ' :
+                            progress[idxPre].isCorrect === false ? 'Неверный ответ' : value}
                         isCorrect={progress[idxPre].isCorrect}
                         readOnly={progress[idxPre].isCorrect === null ? false : true}
                         action={progress[idxPre].isCorrect === null ? setValue : null}
@@ -127,8 +127,8 @@ const CarouselGame = () => {
                     <WindowQuestion key={idxPre + 1}
                         question={questions[idxPre + 1]?.question}
                         point={progress[idxPre + 1]?.points}
-                        inputValue={progress[idxPre]?.isCorrect ? 'Вы дали верный ответ' :
-                            progress[idxPre + 1]?.isCorrect === false ? 'Вы дали неверный ответ' : value}
+                        inputValue={progress[idxPre]?.isCorrect ? 'Верный ответ' :
+                            progress[idxPre + 1]?.isCorrect === false ? 'Неверный ответ' : value}
                         isCorrect={progress[idxPre + 1]?.isCorrect}
                         readOnly={true}
                         idx={idxPre + 2}
