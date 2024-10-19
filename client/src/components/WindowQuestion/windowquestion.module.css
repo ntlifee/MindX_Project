@@ -3,36 +3,53 @@
     flex-direction: column;
     row-gap: 10px;
     border: dashed;
+    border-color:rgb(0, 0, 0);
     border-width: 2px 4px;
     border-radius: 40px;
-    padding: 20px;
+    padding: 20px;   
 }
 
 .window_question_big{
-    width: 60%;
+    width: 62%;
 }
 
 .window_question_small{
-    width: 40%;
+    width: 42%;
+    opacity: 0.4;
 }
 
-.points{
-    font-size:  clamp(4px, 2vw, 16px);
+@media (max-width:768px) {
+    .window_question_big{
+        width: 98%;
+    }
+    .window_question_small{
+        width: 82%;
+        opacity: 0.4;
+    }
 }
 
 .label{
-    font-size:  clamp(4px, 2vw, 16px);
+    font-size:  16px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.label_centre{
+    font-size:  16px;
     text-align: center;
 }
 
-.input_answer{
-    font-size:  clamp(4px, 2vw, 16px);
+.input_answer, 
+.points {
+    font-size:  16px;
 }
 
-.correct {
-    background-color: lightgreen;
+.correct{
+    color: rgb(0, 160, 0);
 }
 
-.incorrect {
-    background-color: lightcoral;
+.incorrect{
+    color: rgb(255, 0, 0);
 }
