@@ -11,9 +11,22 @@ const SquareGame = (props) => {
     const [modalActive, setModalActive] = useState(false)
     const [numberQuestion, setNumberQuestion] = useState(0)
     const [isCloseQuestions, setisCloseQuestions] = useState(new Array(25).fill(undefined))
+    const isQuestionTemporary = []
     const [bonusRow, setBonusRow] = useState(new Array(5).fill(undefined))
     const [bonusCol, setBonusCol] = useState(new Array(5).fill(undefined))
     const [score, setScore] = useState(0)
+
+    //#region development
+    for(let i = 0; i < 25; i++) {
+        if(i % 2 === 0) {
+            isQuestionTemporary[i] = true;
+        }
+        else{
+            isQuestionTemporary[i] = false;
+        }
+    }
+    //#endregion
+    
 
     useDidMountEffect(() => {
         if (isCloseQuestions[numberQuestion - 1] !== undefined) {
@@ -82,7 +95,9 @@ const SquareGame = (props) => {
                         active={modalActive} setActive={setModalActive}
                         numberQuestion={numberQuestion}
                         isCloseQuestions={isCloseQuestions} setisCloseQuestions={setisCloseQuestions}
-                        score={score} setScore={setScore} />
+                        score={score} setScore={setScore}
+                        isQuestionTemporary={isQuestionTemporary[numberQuestion-1]} 
+                        />
                     <table className={classes.table_square}>
                         <thead>
                             <tr className={classes.tr_square}>
@@ -99,8 +114,9 @@ const SquareGame = (props) => {
                                         <QuestionButton key={themeNumber * 5 + level}
                                             setModalActive={setModalActive}
                                             level={level}
-                                            numberQuestion={themeNumber * 5 + level}
-                                            setNumberQuestion={setNumberQuestion} isCloseQuestions={isCloseQuestions[themeNumber * 5 + level - 1]} />
+                                            numberQuestion={themeNumber * 5 + level} setNumberQuestion={setNumberQuestion} 
+                                            isCloseQuestions={isCloseQuestions[themeNumber * 5 + level - 1]} 
+                                            isQuestionTemporary={isQuestionTemporary[themeNumber * 5 + level - 1]}/>
                                     ))}
                                     <BonusSquare key={themeNumber + 1} value={(themeNumber + 1) * 10} bonus={bonusRow[themeNumber]} />
                                 </tr>

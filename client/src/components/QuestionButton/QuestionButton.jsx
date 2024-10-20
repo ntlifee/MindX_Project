@@ -1,7 +1,7 @@
 import classes from './questionButton.module.css'
 
 const QuestionButton = (props) => {
-    const { setModalActive, level, numberQuestion, setNumberQuestion, isCloseQuestions } = props;
+    const { setModalActive, level, numberQuestion, setNumberQuestion, isCloseQuestions, isQuestionTemporary } = props;
     const handleClick = () => {
         setModalActive(true)
         setNumberQuestion(numberQuestion);
@@ -9,7 +9,7 @@ const QuestionButton = (props) => {
     return (
         <td className={classes.question_button_wrapper}>
             {isCloseQuestions === undefined ?
-                <a href='#' className={classes.question_button} onClick={() => handleClick()}>{level ? level * 10 : '?'}</a>
+                <a href="#" className={classes.question_button} onClick={() => handleClick()}>{level ? level * 10 : '?'} {isQuestionTemporary && '\u231B'}</a>
                 :
                 isCloseQuestions ?
                     <a href='#' className={`${classes.question_button} ${classes.green}`} onClick={() => handleClick()}>{level ? level * 10 : '?'} &#9989;</a>

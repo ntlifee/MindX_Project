@@ -2,12 +2,13 @@ import classes from './modalWindow_Square.module.css'
 import { useState, useEffect } from 'react'
 
 const ModalWindow_Square = (props) => {
-    const { active, setActive, numberQuestion, isCloseQuestions, setisCloseQuestions, score, setScore } = props;
+    const { active, setActive, numberQuestion, isCloseQuestions, setisCloseQuestions, score, setScore, isQuestionTemporary } = props;
     const checkCloseQuestions = isCloseQuestions[numberQuestion - 1]
-    const [time, setTime] = useState(checkCloseQuestions === undefined ? 120 : 0);
+    const [time, setTime] = useState(checkCloseQuestions === undefined && isQuestionTemporary ? 120 : 0);
     const scoreQuestion = (((numberQuestion - 1) % 5 + 1) * 10)
     useEffect(() => {
-        time > 0 ? setTimeout(() => setTime(time - 1), 1000) : handleAnswer();
+        time > 0 ? setTimeout(() => setTime(time - 1), 1000) 
+        : isQuestionTemporary && handleAnswer();
     }, [time]);
 
 
@@ -49,7 +50,11 @@ const ModalWindow_Square = (props) => {
                         <textarea defaultValue='' placeholder='Введите ответ:' className={classes.text_answer} /> :
                         <textarea defaultValue='your answer' readOnly className={classes.text_answer} />}
                     {checkCloseQuestions === undefined ?
-                        <span className={classes.time}>{time}</span> :
+                        <>
+                            {isQuestionTemporary ?
+                            <span className={classes.time}>{time}</span> :
+                            <span className={classes.time}>	&#8734;</span>}
+                        </> :
                         checkCloseQuestions ?
                             <span className={classes.time}>&#9989;</span> :
                             <span className={classes.time}>&#10060;</span>
