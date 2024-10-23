@@ -20,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/carousel" element={<CarouselGame />} />
+          <Route path="/carousel/:id" element={<CarouselGame />} />
           <Route path="/square" element={<SquareLobby />} />
           <Route path="/square/:id" element={<SquareGame />} />
         </Routes>
