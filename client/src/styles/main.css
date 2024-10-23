@@ -6,7 +6,7 @@ html,
 body {
 	display: flex;
 	flex-direction: column;
-	max-height: 100vh;
+	min-height: 100vh;
 	font-family: 'DM Sans', sans-serif;
 	letter-spacing: -0.5px;
     background: url('./../img/background-site.jpg') no-repeat;
@@ -37,6 +37,4 @@ main {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-	max-height: 83vh;
-	overflow: auto;
 }

@@ -4,6 +4,6 @@ const carouselController = require('../controllers/carouselController')
 
 router.get('/', carouselController.getAll)
 router.get('/:id', carouselController.getOne)
-router.post('/add', carouselController.create)
+router.post('/', carouselController.create)
 
 module.exports = router
