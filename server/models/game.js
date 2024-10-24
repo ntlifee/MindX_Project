@@ -5,8 +5,7 @@ const Game = sequelize.define('game', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
-        unique: true
+        autoIncrement: true
     },
     name: {
         type: DataTypes.STRING,
