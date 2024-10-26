@@ -1,7 +1,7 @@
 const sequelize = require('./../database')
-const { DataTypes } = require('sequelize')
+const DataTypes = require('sequelize')
 
-const Carousel_data = sequelize.define('carousel_data', {
+const CarouselData = sequelize.define('carouselData', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -21,4 +21,4 @@ const Carousel_data = sequelize.define('carousel_data', {
     }
 })
 
-module.exports = Carousel_data
+module.exports = CarouselData

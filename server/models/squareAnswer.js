@@ -1,13 +1,13 @@
-const sequelize = require('./../database')
-const { DataTypes } = require('sequelize')
+const sequelize = require('../database')
+const DataTypes = require('sequelize')
 
-const Carousel_answer = sequelize.define('carousel_answer', {
+const SquareAnswer = sequelize.define('squareAnswer', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    question_number: {
+    questionNumber: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
@@ -15,10 +15,10 @@ const Carousel_answer = sequelize.define('carousel_answer', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    correct: {
-        type: DataTypes.BOOLEAN,
+    userAnswer: {
+        type: DataTypes.STRING,
         allowNull: true
     }
 })
 
-module.exports = Carousel_answer;
+module.exports = SquareAnswer;

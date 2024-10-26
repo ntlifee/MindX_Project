@@ -1,7 +1,7 @@
 const sequelize = require('./../database')
-const { DataTypes } = require('sequelize')
+const DataTypes = require('sequelize')
 
-const User_role = sequelize.define('user_role', {
+const UserRole = sequelize.define('userRole', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -9,5 +9,5 @@ const User_role = sequelize.define('user_role', {
     }
 })
 
-module.exports = User_role;
+module.exports = UserRole;
 

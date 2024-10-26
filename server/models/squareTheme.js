@@ -1,7 +1,7 @@
 const sequelize = require('./../database')
-const { DataTypes } = require('sequelize')
+const DataTypes = require('sequelize')
 
-const Square_theme = sequelize.define('square_theme', {
+const SquareTheme = sequelize.define('squareTheme', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -13,4 +13,4 @@ const Square_theme = sequelize.define('square_theme', {
     }
 })
 
-module.exports = Square_theme
+module.exports = SquareTheme

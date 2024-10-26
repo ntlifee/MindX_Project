@@ -1,5 +1,5 @@
 const sequelize = require('./../database')
-const { DataTypes } = require('sequelize')
+const DataTypes = require('sequelize')
 
 const Game = sequelize.define('game', {
     id: {
@@ -10,6 +10,10 @@ const Game = sequelize.define('game', {
     name: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     start_date: {
         type: DataTypes.DATE,
