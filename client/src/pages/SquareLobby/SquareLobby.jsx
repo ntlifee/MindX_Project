@@ -2,6 +2,7 @@ import classes from './squarelobby.module.css'
 import GameCard from '../../components/GameCard/GameCard';
 
 const SquareLobby = () => {
+    
     //#region development
         const arrayCard = [
             {imgName: '71.jpg', id: 1},
