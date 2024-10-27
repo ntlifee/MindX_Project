@@ -1,5 +1,6 @@
+const { where } = require('sequelize');
 const ApiError = require('../error/ApiError')
-const { Carousel_data, Question } = require('../models/index')
+const { CarouselData, Question, Game } = require('../models/index')
 
 class CarouselController {
     async create(req, res, next) {
@@ -9,24 +10,61 @@ class CarouselController {
             data.gameId = gameId;
         });
 
-        //Добавление в БД
-        const carousel_data_create = await Carousel_data.create({ scoreFirst, scoreSuccess, scoreFailure, gameId })
-        const question_data_create = await Question.bulkCreate([...question_data])
+        //Добавление асинхронно в БД
+        const [CarouselData_create, question_data_create] = await Promise.all([
+            CarouselData.create({ scoreFirst, scoreSuccess, scoreFailure, gameId }),
+            Question.bulkCreate([...question_data])
+        ])
 
-        res.json({ carousel_data_create, question_data_create })
+        res.json({ CarouselData_create, question_data_create })
     }
 
     async getAll(req, res, next) {
-        res.json('Не реализовано1')
+        const carousel_games = await Game.findAll({
+            where: {
+                typeGameId: 2
+            },
+            attributes: {
+                exclude: ['typeGameId'],
+            }
+        })
+        res.json(carousel_games)
     }
 
     async getOne(req, res, next) {
         const { id } = req.params
-        console.log(id)
         if (!id) {
             return next(ApiError.badRequest('Не задан id игры'))
         }
-        res.json(id)
+        const carousel_data = await Promise.all([CarouselData.findOne({
+            where: {
+                gameId: id
+            },
+            attributes: {
+                exclude: ['gameId', 'id']
+            }
+        }), Question.findAll({
+            where: {
+                gameId: id
+            },
+            attributes: {
+                exclude: ['gameId', 'answer']
+            }
+        })])
+        res.json(carousel_data)
+    }
+
+    async delete(req, res, next) {
+        const { id } = req.params
+        if (!id) {
+            return next(ApiError.badRequest('Не задан id игры'))
+        }
+        await Game.destroy({
+            where: {
+                id: id
+            }
+        })
+        res.json({ message: 'Игра удалена' })
     }
 }
 
