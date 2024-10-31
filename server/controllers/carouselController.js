@@ -36,21 +36,30 @@ class CarouselController {
         if (!id) {
             return next(ApiError.badRequest('Не задан id игры'))
         }
-        const carousel_data = await Promise.all([CarouselData.findOne({
-            where: {
-                gameId: id
-            },
-            attributes: {
-                exclude: ['gameId', 'id']
-            }
-        }), Question.findAll({
-            where: {
-                gameId: id
-            },
-            attributes: {
-                exclude: ['gameId', 'answer']
-            }
-        })])
+
+        const isGame = await Game.findOne({ where: { id }, attributes: ['id'] }).then(token => token === null)
+        if (isGame) {
+            return next(ApiError.badRequest('Игра не найдена'))
+        }
+
+        const carousel_data = await Promise.all([
+            CarouselData.findOne({
+                where: {
+                    gameId: id
+                },
+                attributes: {
+                    exclude: ['gameId', 'id']
+                }
+            }),
+            Question.findAll({
+                where: {
+                    gameId: id
+                },
+                attributes: {
+                    exclude: ['gameId', 'answer']
+                }
+            })
+        ])
         res.json(carousel_data)
     }
 
@@ -59,6 +68,7 @@ class CarouselController {
         if (!id) {
             return next(ApiError.badRequest('Не задан id игры'))
         }
+
         await Game.destroy({
             where: {
                 id: id
