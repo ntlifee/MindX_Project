@@ -3,6 +3,7 @@ const router = new Router()
 const carouselController = require('../controllers/carouselController')
 
 router.delete('/:id', carouselController.delete)
+router.put('/:id', carouselController.update)
 router.get('/:id', carouselController.getOne)
 router.get('/', carouselController.getAll)
 router.post('/', carouselController.create)
