@@ -15,7 +15,7 @@ const CarouselGame = () => {
     const [idxPre, setIdxPre] = useState(idx) //индекс текещего вопроса
     const [value, setValue] = useState('') //значение введенное пользователем
     const [questions] = useState(questionsGame) //вопросы
-    const [score, setScore] = useState(progressUser.reduce((acc, cur) => acc + cur.isCorrect ? cur.points : 0, 0))
+    const [score, setScore] = useState(progressUser.reduce((acc, cur) => acc + (cur.isCorrect ? cur.points : 0), 0)) //счет пользователя
     const [progress, setProgress] = useState([
         ...progressUser,
         ...Array.from({ length: questions.length - progressUser.length + 1 }, () => ({
