@@ -1,10 +1,25 @@
 .section{
-    justify-content: center;
+    justify-content: start;
     align-items: center;
+}
+
+.title{
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2%;
 }
 
 .wrapper{
     display:  flex;
     flex-direction: column;
-    row-gap: 20px;
+    padding: 1%;
+}
+
+.select{
+    display:  flex;
+    flex-direction: row;
+    column-gap: 1%;
+    width: 100%;
+    justify-content: center;
 }
