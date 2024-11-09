@@ -1,5 +1,9 @@
+.wrapper{
+    text-align: center;
+}
+
 .input{
-    width: 3%;
+    width: 10%;
     font-weight: 500;
 }
 

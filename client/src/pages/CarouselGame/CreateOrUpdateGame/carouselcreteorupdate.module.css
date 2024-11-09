@@ -19,7 +19,22 @@
 .select{
     display:  flex;
     flex-direction: row;
-    column-gap: 1%;
     width: 100%;
     justify-content: center;
+    margin-bottom: 2%;
+}
+
+#select1{
+    margin-left: 5px;
+}
+
+@media (max-width:768px) {
+    .select{
+        display:  flex;
+        flex-direction: column;
+        row-gap:15px;
+        width: 100%;
+        align-items: center;
+        margin-bottom: 2%;
+    }
 }
