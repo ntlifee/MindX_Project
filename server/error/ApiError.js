@@ -6,7 +6,7 @@ class ApiError extends Error {
     }
 
     static badRequest(message) {
-        return new ApiError(message, 404)
+        return new ApiError(message, 400)
     }
 
     static forbidden(message) {

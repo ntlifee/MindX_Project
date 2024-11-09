@@ -1,6 +1,7 @@
 import classes from './carouselgame.module.css'
 
 import WindowQuestion from '../../components/WindowQuestion/Windowquestion'
+import GameInformationPanel from './../../components/GameInformationPanel/GameInformationPanel'
 
 import Data from './Questions_Carousel.json'
 
@@ -14,9 +15,13 @@ const CarouselGame = () => {
     const [idxPre, setIdxPre] = useState(idx) //индекс текещего вопроса
     const [value, setValue] = useState('') //значение введенное пользователем
     const [questions] = useState(questionsGame) //вопросы
+    const [score, setScore] = useState(progressUser.reduce((acc, cur) => acc + (cur.isCorrect ? cur.points : 0), 0)) //счет пользователя
     const [progress, setProgress] = useState([
         ...progressUser,
-        ...new Array(questions.length - progressUser.length + 1).fill({ points: scoreFirstQuestion, isCorrect: null })
+        ...Array.from({ length: questions.length - progressUser.length + 1 }, () => ({
+            points: scoreFirstQuestion,
+            isCorrect: null,
+        }))
     ]) //прогресс пользователя
 
     const [isAnimationUp, setIsAnimationUp] = useState(false)
@@ -31,22 +36,16 @@ const CarouselGame = () => {
         const isCorrect = isCorrectAnswer()
         if (idxPre !== questions.length - 1)
             setIsAnimationUp(true)
-
-        //балл для следующего вопроса
-        if (isCorrect) {
-            setProgress(prevState => {
-                const newProgress = [...prevState]
-                newProgress[idx] = { points: newProgress[idx].points + scoreSuccess, isCorrect: isCorrect }
-                return newProgress
-            })
-        } else {
-            setProgress(prevState => {
-                const newProgress = [...prevState]
-                newProgress[idx] = { points: Math.max(scoreFirstQuestion, newProgress[idx].points - scoreFailure), isCorrect: isCorrect }
-                return newProgress
-            })
-        }
-
+        const points = isCorrect ? progress[idx].points + scoreSuccess : Math.max(scoreFirstQuestion, progress[idx].points - scoreFailure)
+        //изменение прогресса
+        setProgress(prevState => {
+            const newProgress = [...prevState]
+            newProgress[idx].isCorrect = isCorrect
+            newProgress[idx + 1].points = points
+            return newProgress
+        })
+        console.log(progress)
+        setScore(score + (isCorrect ? progress[idx].points : 0))
         setValue('')
         setIdx(idx + 1)
         setTimeout(() => {
@@ -83,6 +82,8 @@ const CarouselGame = () => {
         <main className={classes.section}>
             <div className="container">
                 <div className={classes.carousel_game}>
+
+                    <GameInformationPanel score={score} />
 
                     <WindowQuestion key={idxPre - 1}
                         question={questions[idxPre - 1]?.question}

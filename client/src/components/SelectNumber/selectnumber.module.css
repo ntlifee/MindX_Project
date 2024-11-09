@@ -1,0 +1,14 @@
+.wrapper{
+    text-align: center;
+}
+
+.input{
+    width: 10%;
+    font-weight: 500;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
