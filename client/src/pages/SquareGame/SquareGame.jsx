@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import GameInformationPanel from './../../components/GameInformationPanel/GameInformationPanel'
 import QuestionButton from '../../components/QuestionButton/QuestionButton'
-import ModalWindow_Square from '../../components/ModalWindow_Square/ModalWindow_Square'
+import ModalWindowSquare from '../../components/ModalWindowSquare/ModalWindowSquare'
 import classes from './squaregame.module.css'
 import useDidMountEffect from './../../customHooks/useDidMountEffect'
 import BonusSquare from '../../components/BonusSquare/BonusSquare'
@@ -91,7 +91,7 @@ const SquareGame = (props) => {
             <div className="container">
                 <div className={classes.wrapper}>
                     <GameInformationPanel score={score} />
-                    <ModalWindow_Square key={numberQuestion}
+                    <ModalWindowSquare key={numberQuestion}
                         active={modalActive} setActive={setModalActive}
                         numberQuestion={numberQuestion}
                         isCloseQuestions={isCloseQuestions} setisCloseQuestions={setisCloseQuestions}

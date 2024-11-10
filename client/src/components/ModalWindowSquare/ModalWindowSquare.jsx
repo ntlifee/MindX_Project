@@ -1,7 +1,7 @@
-import classes from './modalWindow_Square.module.css'
+import classes from './modalWindowSquare.module.css'
 import { useState, useEffect } from 'react'
 
-const ModalWindow_Square = (props) => {
+const ModalWindowSquare = (props) => {
     const { active, setActive, numberQuestion, isCloseQuestions, setisCloseQuestions, score, setScore, isQuestionTemporary } = props;
     const checkCloseQuestions = isCloseQuestions[numberQuestion - 1]
     const [time, setTime] = useState(checkCloseQuestions === undefined && isQuestionTemporary ? 120 : 0);
@@ -71,4 +71,4 @@ const ModalWindow_Square = (props) => {
     );
 }
 
-export default ModalWindow_Square;
+export default ModalWindowSquare;

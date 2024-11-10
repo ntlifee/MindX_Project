@@ -2,12 +2,12 @@ import classes from './gameCard.module.css'
 import { NavLink } from 'react-router-dom';
 
 const GameCard = (props) => {
-    const { imgName, id } = props
+    const { type, imgName, id } = props
     //#region development
     const STATUS = [
         { status: 'Запущена', color: 'green' },
         { status: 'Завершено', color: 'red' },
-        { status: 'Ожидание', color: 'yellow'}
+        { status: 'Ожидание', color: 'yellow' }
     ]
     const min = 0;
     const max = 2;
@@ -25,7 +25,7 @@ const GameCard = (props) => {
                 <img src={imgName ? `/img/${imgName}` : `/img/without_image.png`} className={classes.game_img} alt='gameIMG' />
                 <div className={classes.game_info}>
                 </div>
-                <NavLink to={`/square/${id}`} className={classes.start_game_button}>Начать игру</NavLink>
+                <NavLink to={`/${type}/${id}`} className={classes.start_game_button}>Начать игру</NavLink>
             </div>
         </li>
     );
