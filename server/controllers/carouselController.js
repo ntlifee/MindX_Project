@@ -1,13 +1,16 @@
-const { where } = require('sequelize');
-const ApiError = require('../error/ApiError');
-const { CarouselData, Question, Game } = require('../models/index');
+const { where } = require('sequelize')
+const uuid = require('uuid');
+const path = require('path');
+const ApiError = require('../error/ApiError')
+const { CarouselData, Question, Game } = require('../models/index')
 
 class CarouselController {
 	//Проверка массива на null и пустные строчки
 	isArrayValid(arr) {
-		return !arr.every(
-			(item) =>
-				item.question_number && item.question.trim() && item.answer.trim()
+		return !arr.every((item) =>
+			item.question_number &&
+			item.question.trim() &&
+			item.answer.trim()
 		);
 	}
 
@@ -34,20 +37,15 @@ class CarouselController {
 
 	async create(req, res, next) {
 		try {
-			const { gameId, scoreFirst, scoreSuccess, scoreFailure, questionData } =
-				req.body;
-			validateInputData(
-				gameId,
-				scoreFirst,
-				scoreSuccess,
-				scoreFailure,
-				questionData
-			);
-
-			//Добавление id игры в вопросы
-			questionData.forEach((data) => {
-				data.gameId = gameId;
+			let { gameId, scoreFirst, scoreSuccess,
+				scoreFailure, questionData } = req.body
+			const images = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
+			images.forEach(image => {
+				let fileName = uuid.v4() + '.jpg'
+				image.mv(path.resolve(__dirname, '..', 'static', fileName))
+				questionData[image.name.split('.')[0]].image = fileName
 			});
+			validateInputData(gameId, scoreFirst, scoreSuccess, scoreFailure, questionData);
 
 			//Добавление асинхронно в БД
 			const carouselGameData = await Promise.all([
@@ -55,9 +53,10 @@ class CarouselController {
 				Question.bulkCreate([...questionData]),
 			]);
 
-			res.json(carouselGameData);
+			res.json(carouselGameData)
 		} catch (error) {
-			return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`));
+			console.log(error)
+			return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
 		}
 	}
 
