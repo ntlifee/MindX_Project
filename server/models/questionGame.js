@@ -1,29 +1,21 @@
 const sequelize = require('./../database')
 const DataTypes = require('sequelize')
 
-const Game = sequelize.define('game',
+const QuestionGame = sequelize.define('questionGame',
     {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        name: {
-            type: DataTypes.STRING,
+        numberQuestion: {
+            type: DataTypes.INTEGER,
             allowNull: false
         },
-        start_date: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        end_date: {
-            type: DataTypes.DATE,
-            allowNull: false
-        }
     },
     {
         timestamps: false
     }
 )
 
-module.exports = Game
+module.exports = QuestionGame

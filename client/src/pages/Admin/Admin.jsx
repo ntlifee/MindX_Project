@@ -1,12 +1,12 @@
 import './admin.scss';
 
 const AdminPage = () => {
-  return ( 
+  return (
     <main className="admin-section">
-      <div className='__list-models'></div>
-      <div className='__list-objects'></div>
+      <div className='list-models'></div>
+      <div className='list-objects'></div>
     </main>
-   );
+  );
 }
- 
+
 export default AdminPage;

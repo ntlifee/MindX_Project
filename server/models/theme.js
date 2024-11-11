@@ -1,7 +1,7 @@
-const sequelize = require('./../database')
+const sequelize = require('../database')
 const DataTypes = require('sequelize')
 
-const Game = sequelize.define('game',
+const Theme = sequelize.define('theme',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -11,14 +11,6 @@ const Game = sequelize.define('game',
         name: {
             type: DataTypes.STRING,
             allowNull: false
-        },
-        start_date: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        end_date: {
-            type: DataTypes.DATE,
-            allowNull: false
         }
     },
     {
@@ -26,4 +18,4 @@ const Game = sequelize.define('game',
     }
 )
 
-module.exports = Game
+module.exports = Theme

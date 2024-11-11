@@ -1,7 +1,7 @@
 const sequelize = require('./../database')
 const DataTypes = require('sequelize')
 
-const Game = sequelize.define('game',
+const Image = sequelize.define('image',
     {
         id: {
             type: DataTypes.INTEGER,
@@ -12,18 +12,10 @@ const Game = sequelize.define('game',
             type: DataTypes.STRING,
             allowNull: false
         },
-        start_date: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        end_date: {
-            type: DataTypes.DATE,
-            allowNull: false
-        }
     },
     {
         timestamps: false
     }
 )
 
-module.exports = Game
+module.exports = Image

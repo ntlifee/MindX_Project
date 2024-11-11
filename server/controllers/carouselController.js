@@ -38,8 +38,8 @@ class CarouselController {
 	async create(req, res, next) {
 		try {
 			let { gameId, scoreFirst, scoreSuccess,
-				scoreFailure, questionData } = req.body
-			const images = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
+				scoreFailure, questionData } = req?.body
+			const images = Array.isArray(req?.files?.images) ? req?.files?.images : [req?.files?.images];
 			images.forEach(image => {
 				let fileName = uuid.v4() + '.jpg'
 				image.mv(path.resolve(__dirname, '..', 'static', fileName))

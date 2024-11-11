@@ -7,15 +7,18 @@ const SquareAnswer = require('./squareAnswer.js')
 const CarouselAnswer = require('./carouselAnswer.js')
 const CarouselData = require('./carouselData.js')
 const Question = require('./question.js')
-const SquareTheme = require('./squareTheme.js')
+const Theme = require('./theme.js')
 const TypeGame = require('./typeGame.js')
+const QuestionGame = require('./questionGame.js')
+const ThemeGame = require('./themeGame')
+const Image = require('./image.js')
 
 User.hasMany(UserRole, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 UserRole.belongsTo(User)
 Game.hasMany(Question, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 Question.belongsTo(Game)
-Game.hasMany(SquareTheme, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
-SquareTheme.belongsTo(Game)
+Game.hasMany(Theme, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
+Theme.belongsTo(Game)
 Game.hasOne(CarouselData, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 CarouselData.belongsTo(Game)
 Game.hasMany(AccessGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
@@ -34,10 +37,22 @@ Role.hasMany(AccessGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false }
 AccessGame.belongsTo(Role)
 TypeGame.hasMany(Game, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 Game.belongsTo(TypeGame)
+Game.hasMany(QuestionGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
+QuestionGame.belongsTo(Game)
+Game.hasMany(ThemeGame, { onDelete: 'CASCADE', foreignKey: {allowNull: false } })
+ThemeGame.belongsTo(Game)
+Theme.hasMany(ThemeGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false }})
+ThemeGame.belongsTo(Theme)
+Question.hasMany(QuestionGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false }})
+QuestionGame.belongsTo(Question)
+Image.hasMany(Game, { foreignKey: { allowNull: true } })
+Game.belongsTo(Image)
+Image.hasMany(Question, { foreignKey: { allowNull: true } })
+Question.belongsTo(Image)
 
 module.exports = {
     User, Role, UserRole, Game, AccessGame,
     SquareAnswer, CarouselAnswer, CarouselData,
-    Question, SquareTheme
+    Question, Theme, ThemeGame, QuestionGame, Image,
 }
 

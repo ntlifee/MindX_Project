@@ -21,8 +21,9 @@ const Lobby = (props) => {
     <main className="lobby-section">
       <div className="container">
         <div className="access_text">
-          <h1>Доступные игры</h1>
+          <h1>Список игр</h1>
         </div>
+        {/*  TODO: Сделать select и searchstring */}
         <ul className="games">
           {arrayCard.map((card, index) => {
             return <GameCard key={index} type={type} imgName={card.imgName} id={card.id} />

@@ -8,10 +8,6 @@ const Question = sequelize.define('question',
             primaryKey: true,
             autoIncrement: true
         },
-        question_number: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         question: {
             type: DataTypes.TEXT,
             allowNull: false
@@ -20,10 +16,6 @@ const Question = sequelize.define('question',
             type: DataTypes.TEXT,
             allowNull: false
         },
-        image: {
-            type: DataTypes.STRING,
-            allowNull: true
-        }
     },
     {
         timestamps: false
