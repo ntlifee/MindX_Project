@@ -6,7 +6,8 @@ const Image = sequelize.define('image',
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
-            defaultValue: sequelize.UUIDV4
+            defaultValue: sequelize.UUIDV4,
+            allowNull: false
         }
     },
     {

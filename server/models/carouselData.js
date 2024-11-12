@@ -4,9 +4,10 @@ const DataTypes = require('sequelize')
 const CarouselData = sequelize.define('carouselData',
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: sequelize.UUIDV4,
+            allowNull: false
         },
         scoreFirst: {
             type: DataTypes.INTEGER,

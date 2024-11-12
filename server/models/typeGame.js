@@ -4,9 +4,10 @@ const DataTypes = require('sequelize')
 const TypeGame = sequelize.define('typeGame',
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: sequelize.UUIDV4,
+            allowNull: false
         },
         name: {
             type: DataTypes.STRING,

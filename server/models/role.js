@@ -4,9 +4,9 @@ const DataTypes = require('sequelize')
 const Role = sequelize.define('role',
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             primaryKey: true,
-            autoIncrement: true,
+            defaultValue: sequelize.UUIDV4,
             allowNull: false
         },
         name: {

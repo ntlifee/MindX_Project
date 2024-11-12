@@ -4,9 +4,10 @@ const DataTypes = require('sequelize')
 const SquareAnswer = sequelize.define('squareAnswer',
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             primaryKey: true,
-            autoIncrement: true
+            defaultValue: sequelize.UUIDV4,
+            allowNull: false
         },
         questionNumber: {
             type: DataTypes.INTEGER,
