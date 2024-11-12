@@ -4,14 +4,10 @@ const DataTypes = require('sequelize')
 const Image = sequelize.define('image',
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             primaryKey: true,
-            autoIncrement: true
-        },
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
+            defaultValue: sequelize.UUIDV4
+        }
     },
     {
         timestamps: false
