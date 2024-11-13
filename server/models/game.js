@@ -6,7 +6,7 @@ const Game = sequelize.define('game',
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
-            defaultValue: sequelize.UUIDV4,
+            defaultValue: DataTypes.literal(`gen_random_uuid()`),
             allowNull: false
         },
         name: {

@@ -6,7 +6,7 @@ const Question = sequelize.define('question',
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
-            defaultValue: sequelize.UUIDV4,
+            defaultValue: DataTypes.literal(`gen_random_uuid()`),
             allowNull: false
         },
         question: {
