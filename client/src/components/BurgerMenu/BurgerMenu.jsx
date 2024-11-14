@@ -33,7 +33,7 @@ const BurgerMenu = (props) => {
                         </NavLink>
                     </li>
                     <li className={classes.burger_list_item}>
-                        <NavLink to="/adminpanel">
+                        <NavLink to="/admin">
                             Админ-панель
                         </NavLink>
                     </li>

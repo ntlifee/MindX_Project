@@ -60,7 +60,7 @@ const Navbar = (props) => {
                                     </NavLink>
                                 </li>
                                 <li className="nav-list_item">
-                                    <NavLink to="/adminpanel" className={({ isActive }) => isActive ? activeLink : passiveLink}>
+                                    <NavLink to="/admin" className={({ isActive }) => isActive ? activeLink : passiveLink}>
                                         Админ-панель
                                     </NavLink>
                                 </li>

@@ -1,5 +1,18 @@
-.admin_section {
-  .list-models {}
-
-  .list-models {}
+.admin-section {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  max-width: 1400px;
+  align-self: center;
+  
+  .tabs {
+    width: 20%;
+    display: flex;
+  }
+  
+  .objects-list {
+    width: 80%;
+    display: flex;
+  }
 }
