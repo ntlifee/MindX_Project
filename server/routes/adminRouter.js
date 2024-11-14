@@ -3,6 +3,7 @@ const router = new Router()
 const carouselController = require('../controllers/carouselController')
 const squareController = require('../controllers/squareController')
 const imageController = require('../controllers/imageController')
+const questionController = require('../controllers/questionController')
 
 router.delete('/carousel/:id', carouselController.delete)
 router.put('/carousel/:id', carouselController.update)
@@ -19,5 +20,10 @@ router.post('/square', squareController.create)
 router.delete('/images/:id', imageController.delete)
 router.get('/images', imageController.getAll)
 router.post('/images', imageController.create)
+
+router.delete('/questions/:id', questionController.delete)
+router.put('/questions', questionController.update)
+router.get('/questions', questionController.getAll)
+router.post('/questions', questionController.create)
 
 module.exports = router
