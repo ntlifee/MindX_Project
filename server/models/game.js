@@ -13,11 +13,11 @@ const Game = sequelize.define('game',
             type: DataTypes.STRING,
             allowNull: false
         },
-        start_date: {
+        startDate: {
             type: DataTypes.DATE,
             allowNull: false
         },
-        end_date: {
+        endDate: {
             type: DataTypes.DATE,
             allowNull: false
         }

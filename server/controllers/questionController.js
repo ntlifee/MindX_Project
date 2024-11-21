@@ -7,7 +7,7 @@ class questionController {
     async create(req, res, next) {
         try {
             const questions = req.body
-            validateObjectIsNull(questions, next)
+            validateObjectIsNull(questions)
             const questionsData = await Question.bulkCreate([...questions])
             res.json({ message: questions.length === 1 ? 'Вопрос добавлен' : 'Вопросы добавлены', questionsData })
         } catch (error) {
@@ -21,7 +21,7 @@ class questionController {
             res.json(questions)
         } catch (error) {
             return next(
-                ApiError.badRequest(`Ошибка получения изображений: ${error.massage}`)
+                ApiError.badRequest(`Ошибка получения вопросов: ${error.massage}`)
             )
         }
     }
@@ -48,7 +48,12 @@ class questionController {
 
     async update(req, res, next) {
         try {
-            const { id, question, answer, imageId } = req.body;
+            const { id } = req.params
+            if (!id) {
+                return next(ApiError.badRequest('Не задан id вопроса'))
+            }
+
+            const { question, answer, imageId } = req.body;
             validateIsNull([id, question, answer]);
             const isUpdate = await Question.update(
                 {

@@ -17,6 +17,10 @@ const CarouselAnswer = sequelize.define('carouselAnswer',
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        userAnswer: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         isCorrect: {
             type: DataTypes.BOOLEAN,
             allowNull: true

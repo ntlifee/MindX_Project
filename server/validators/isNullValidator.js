@@ -2,7 +2,7 @@ const ApiError = require('../error/ApiError')
 
 function validateIsNull(array) {
     array.forEach(item => {
-        if (!item?.trim()) {
+        if (((typeof item) === 'number') ? false : !item?.trim()) {
             throw new Error('Все поля должны быть заполнены!')
         }
     });
