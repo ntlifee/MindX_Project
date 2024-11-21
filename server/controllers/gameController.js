@@ -87,7 +87,7 @@ class GameController {
             }
             const { name, imageId, startDate, endDate } = req.body
             validateIsNull([id, name, startDate, endDate])
-            const gameData = await Game.update(
+            const isUpdate = await Game.update(
                 {
                     name: name,
                     imageId: imageId,
@@ -100,6 +100,11 @@ class GameController {
                     }
                 }
             )
+
+            if (!isUpdate[0]) {
+                return next(ApiError.badRequest('Игра не найдена'))
+            }
+
             res.json({ message: 'Игра обновлена' })
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`))

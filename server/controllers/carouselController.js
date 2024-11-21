@@ -1,80 +1,22 @@
 const { where } = require('sequelize')
-const uuid = require('uuid');
-const path = require('path');
 const ApiError = require('../error/ApiError')
-const { CarouselData, Question, Game } = require('../models/index')
+const { CarouselData, QuestionGame, Question } = require('../models/index')
 
 class CarouselController {
-	//Проверка массива на null и пустные строчки
-	isArrayValid(arr) {
-		return !arr.every((item) =>
-			item.question_number &&
-			item.question.trim() &&
-			item.answer.trim()
-		);
-	}
-
-	//Проверка данных на null и пустые строчки
-	validateInputData(
-		gameId,
-		scoreFirst,
-		scoreSuccess,
-		scoreFailure,
-		questionData,
-		next
-	) {
-		if (
-			!gameId ||
-			!scoreFirst ||
-			!scoreSuccess ||
-			!scoreFailure ||
-			!questionData.length ||
-			isArrayValid(questionData)
-		) {
-			return next(ApiError.badRequest('Все поля должны быть заполнены!'));
-		}
-	}
-
 	async create(req, res, next) {
 		try {
-			let { gameId, scoreFirst, scoreSuccess,
-				scoreFailure, questionData } = req?.body
-			const images = Array.isArray(req?.files?.images) ? req?.files?.images : [req?.files?.images];
-			images.forEach(image => {
-				let fileName = uuid.v4() + '.jpg'
-				image.mv(path.resolve(__dirname, '..', 'static', fileName))
-				questionData[image.name.split('.')[0]].image = fileName
-			});
-			validateInputData(gameId, scoreFirst, scoreSuccess, scoreFailure, questionData);
+			const { gameId, scoreFirst, scoreSuccess,
+				scoreFailure, questionGame } = req.body
 
 			//Добавление асинхронно в БД
-			const carouselGameData = await Promise.all([
-				CarouselData.create({ scoreFirst, scoreSuccess, scoreFailure }),
-				Question.bulkCreate([...questionData]),
+			const carouselData = await Promise.all([
+				CarouselData.create({ gameId, scoreFirst, scoreSuccess, scoreFailure }),
+				QuestionGame.bulkCreate([...questionGame]),
 			]);
 
-			res.json(carouselGameData)
+			res.json(carouselData)
 		} catch (error) {
-			console.log(error)
 			return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
-		}
-	}
-
-	async getAll(req, res, next) {
-		try {
-			const carouselGames = await Game.findAll({
-				where: {
-					typeGameId: 2,
-				},
-				attributes: {
-					exclude: ['typeGameId'],
-				},
-			});
-			res.json(carouselGames);
-		} catch (error) {
-			return next(
-				ApiError.badRequest(`Ошибка получения игр: ${error.massage}`)
-			);
 		}
 	}
 
@@ -85,33 +27,25 @@ class CarouselController {
 				return next(ApiError.badRequest('Не задан id игры'));
 			}
 
-			const isGame = await Game.findOne({
-				where: { id },
-				attributes: ['id'],
-			}).then((token) => token === null);
-			if (isGame) {
-				return next(ApiError.badRequest('Игра не найдена'));
-			}
-
-			const carouselGameData = await Promise.all([
+			const carouselData = await Promise.all([
 				CarouselData.findOne({
 					where: {
 						gameId: id,
 					},
 					attributes: {
-						exclude: ['gameId', 'id'],
+						exclude: ['gameId'],
 					},
 				}),
-				Question.findAll({
+				QuestionGame.findAll({
 					where: {
 						gameId: id,
 					},
 					attributes: {
-						exclude: ['gameId', 'answer'],
+						exclude: ['gameId'],
 					},
 				}),
 			]);
-			res.json(carouselGameData);
+			res.json(carouselData);
 		} catch (error) {
 			return next(
 				ApiError.badRequest(`Ошибка получения игры: ${error.massage}`)
@@ -123,19 +57,19 @@ class CarouselController {
 		try {
 			const { id } = req.params;
 			if (!id) {
-				return next(ApiError.badRequest('Не задан id игры'));
+				return next(ApiError.badRequest('Не задан id вопроса'));
 			}
 
-			const count = await Game.destroy({
+			const count = await Question.destroy({
 				where: {
 					id: id,
 				},
 			});
 
 			if (!count) {
-				return next(ApiError.badRequest('Игра не найдена'));
+				return next(ApiError.badRequest('Вопрос не найден'));
 			}
-			res.json({ message: 'Игра удалена' });
+			res.json({ message: 'Вопрос удален' });
 		} catch (error) {
 			return next(ApiError.badRequest(`Ошибка удаления: ${error.massage}`));
 		}
@@ -148,31 +82,43 @@ class CarouselController {
 				return next(ApiError.badRequest('Не задан id игры'));
 			}
 
-			const isGame = await Game.findOne({
-				where: { id },
-				attributes: ['id'],
-			}).then((token) => token === null);
-			if (isGame) {
-				return next(ApiError.badRequest('Игра не найдена'));
-			}
-
-			const { gameId, scoreFirst, scoreSuccess, scoreFailure, questionData } =
-				req.body;
-			validateInputData(
-				gameId,
-				scoreFirst,
-				scoreSuccess,
-				scoreFailure,
-				questionData
-			);
+			const { scoreFirst, scoreSuccess,
+				scoreFailure, questionGame } = req.body
 
 			//Добавление асинхронно в БД
-			carouselGameData = await Promise.all([
-				CarouselData.update({ scoreFirst, scoreSuccess, scoreFailure, gameId }),
-				Question.update([...questionData]),
+			const isUpdate = await Promise.all([
+				CarouselData.update(
+					{
+						scoreFirst: scoreFirst,
+						scoreSuccess: scoreSuccess,
+						scoreFailure: scoreFailure,
+					},
+					{
+						where: {
+							gameId: id,
+						}
+					}
+				),
+				questionGame.forEach(item => {
+					QuestionGame.update(
+						{
+							questionId: item.questionId,
+							numberQuestion: item.numberQuestion
+						},
+						{
+							where: {
+								id: item.id,
+							}
+						}
+					)
+				})
 			]);
 
-			res.json({ message: 'Игра обновлена', carouselGameData });
+			if (!isUpdate[0][0]) {
+				return next(ApiError.badRequest('Данные игры не найдены'))
+			}
+
+			res.json({ message: 'Игра обновлена' });
 		} catch (error) {
 			return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`));
 		}
