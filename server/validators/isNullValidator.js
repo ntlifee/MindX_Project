@@ -1,5 +1,3 @@
-const ApiError = require('../error/ApiError')
-
 function validateIsNull(array) {
     array.forEach(item => {
         if (((typeof item) === 'number') ? false : !item?.trim()) {
@@ -18,4 +16,10 @@ function validateObjectIsNull(array) {
     }
 }
 
-module.exports = { validateIsNull, validateObjectIsNull };
+function validateCheck(isBool, msg) {
+    if (isBool) {
+        throw new Error(`${msg}`)
+    }
+}
+
+module.exports = { validateIsNull, validateObjectIsNull, validateCheck };

@@ -1,7 +1,7 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { Game } = require('../models/index')
-const { validateIsNull } = require('../validators/isNullValidator')
+const { validateIsNull, validateCheck } = require('../validators/isNullValidator')
 
 class GameController {
     async create(req, res, next) {
@@ -11,7 +11,7 @@ class GameController {
             const gameData = await Game.create({ typeGameId, name, imageId, startDate, endDate })
             res.json({ message: 'Игра добавлена', gameData })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания игры: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
         }
     }
 
@@ -27,64 +27,46 @@ class GameController {
             })
             res.json(gamesData)
         } catch (error) {
-            return next(
-                ApiError.badRequest(`Ошибка получения игр: ${error.massage}`)
-            )
+            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
         }
     }
 
     async getOne(req, res, next) {
         try {
             const { id } = req.params
-            if (!id) {
-                return next(ApiError.badRequest('Не задан id игры'))
-            }
-
+            validateCheck(!id, 'Не задан id игры')
             const gameData = await Game.findOne({
                 where: {
                     id: id,
                 }
             })
-            if (!gameData) {
-                return next(ApiError.badRequest('Игра не найдена'))
-            }
-
+            validateCheck(!gameData, 'Игра не найдена')
             res.json(gameData)
         } catch (error) {
-            return next(
-                ApiError.badRequest(`Ошибка получения игры: ${error.massage}`)
-            )
+            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
         }
     }
 
     async delete(req, res, next) {
         try {
             const { id } = req.params
-            if (!id) {
-                return next(ApiError.badRequest('Не задан id игры'))
-            }
-
+            validateCheck(!id, 'Не задан id игры')
             const count = await Game.destroy({
                 where: {
                     id: id,
                 },
             })
-
-            if (!count) {
-                return next(ApiError.badRequest('Игра не найдена'))
-            }
+            validateCheck(!count, 'Игра не найдена')
             res.json({ message: 'Игра удалена' })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка удаления игры: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка удаления: ${error.massage}`))
         }
     }
 
     async update(req, res, next) {
         try {
             const { id } = req.params
-            if (!id) {
-                return next(ApiError.badRequest('Не задан id игры'))
-            }
+            validateCheck(!id, 'Не задан id игры')
             const { name, imageId, startDate, endDate } = req.body
             validateIsNull([id, name, startDate, endDate])
             const isUpdate = await Game.update(
@@ -100,11 +82,7 @@ class GameController {
                     }
                 }
             )
-
-            if (!isUpdate[0]) {
-                return next(ApiError.badRequest('Игра не найдена'))
-            }
-
+            validateCheck(!isUpdate[0], 'Игра не найдена')
             res.json({ message: 'Игра обновлена' })
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`))
