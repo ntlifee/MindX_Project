@@ -6,7 +6,7 @@ const { validateIsNull, validateObjectIsNull, validateCheck } = require('../vali
 class questionController {
     async create(req, res, next) {
         try {
-            const questions = req.body
+            const questions = Array.isArray(req.body) ? req.body : [req.body]
             validateObjectIsNull(questions)
             const questionsData = await Question.bulkCreate([...questions])
             res.json({ message: questions.length === 1 ? 'Вопрос добавлен' : 'Вопросы добавлены', questionsData })
@@ -20,9 +20,7 @@ class questionController {
             const questions = await Question.findAll()
             res.json(questions)
         } catch (error) {
-            return next(
-                ApiError.badRequest(`Ошибка получения: ${error.massage}`)
-            )
+            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
         }
     }
 
@@ -63,7 +61,6 @@ class questionController {
             validateCheck(!isUpdate[0], 'Вопрос не найден')
             res.json({ message: 'Вопрос обновлен' });
         } catch (error) {
-            console.log(error);
             return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`));
         }
     }

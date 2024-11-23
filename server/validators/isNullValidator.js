@@ -7,10 +7,11 @@ function validateIsNull(array) {
 }
 
 function validateObjectIsNull(array) {
-    const isArray = !array.every((item) =>
-        item.question?.trim() &&
-        item.answer?.trim()
-    );
+    const isArray = !array.every((item) => {
+        return Object.keys(item).every((key) => {
+            return item[key]?.trim();
+        });
+    });
     if (isArray) {
         throw new Error('Все поля должны быть заполнены!')
     }
