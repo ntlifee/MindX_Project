@@ -9,6 +9,10 @@ const Game = sequelize.define('game',
             defaultValue: DataTypes.literal(`gen_random_uuid()`),
             allowNull: false
         },
+        typeGame: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         name: {
             type: DataTypes.STRING,
             allowNull: false

@@ -6,9 +6,9 @@ const { validateIsNull, validateCheck } = require('../validators/isNullValidator
 class GameController {
     async create(req, res, next) {
         try {
-            const { typeGameId, name, imageId, startDate, endDate } = req.body
-            validateIsNull([typeGameId, name, startDate, endDate])
-            const gameData = await Game.create({ typeGameId, name, imageId, startDate, endDate })
+            const { typeGame, name, imageId, startDate, endDate } = req.body
+            validateIsNull([typeGame, name, startDate, endDate])
+            const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate })
             res.json({ message: 'Игра добавлена', gameData })
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
@@ -16,15 +16,19 @@ class GameController {
     }
 
     async getAll(req, res, next) {
+        const { typeGame } = req.query
         try {
-            const gamesData = await Game.findAll({
-                where: {
-                    typeGameId: "06f06aef-c44d-4122-b87e-1ea0efd05bed",
-                },
+            const queryOptions = {
                 attributes: {
-                    exclude: ['typeGameId'],
+                    exclude: ['typeGame'],
                 },
-            })
+            };
+            if (typeGame) {
+                queryOptions.where = {
+                    typeGame: typeGame,
+                };
+            }
+            const gamesData = await Game.findAll(queryOptions)
             res.json(gamesData)
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
