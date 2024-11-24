@@ -18,12 +18,11 @@ class GameController {
     async getAll(req, res, next) {
         const { typeGame } = req.query
         try {
-            let queryOptions = {};
-            if (typeGame) {
-                queryOptions.where = {
-                    typeGame: typeGame,
-                };
-            }
+            const queryOptions = {
+                where: {
+                    ...(typeGame && { typeGame })
+                },
+            };
             const gamesData = await Game.findAll(queryOptions)
             res.json(gamesData)
         } catch (error) {
