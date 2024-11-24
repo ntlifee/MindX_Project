@@ -1,7 +1,7 @@
 const sequelize = require('../database')
 const DataTypes = require('sequelize')
 
-const CarouselAnswer = sequelize.define('carouselAnswer',
+const UserAnswer = sequelize.define('userAnswer',
     {
         id: {
             type: DataTypes.UUID,
@@ -31,4 +31,4 @@ const CarouselAnswer = sequelize.define('carouselAnswer',
     }
 )
 
-module.exports = CarouselAnswer;
+module.exports = UserAnswer;
