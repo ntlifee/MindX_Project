@@ -11,7 +11,7 @@ class GameController {
             const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate })
             res.json({ message: 'Игра добавлена', gameData })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
 
@@ -26,7 +26,7 @@ class GameController {
             const gamesData = await Game.findAll(queryOptions)
             res.json(gamesData)
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
         }
     }
 
@@ -42,7 +42,7 @@ class GameController {
             validateCheck(!gameData, 'Игра не найдена')
             res.json(gameData)
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
         }
     }
 
@@ -58,7 +58,8 @@ class GameController {
             validateCheck(!count, 'Игра не найдена')
             res.json({ message: 'Игра удалена' })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка удаления: ${error.massage}`))
+            console.log(error.message)
+            return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`))
         }
     }
 
@@ -84,7 +85,7 @@ class GameController {
             validateCheck(!isUpdate[0], 'Игра не найдена')
             res.json({ message: 'Игра обновлена' })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))
         }
     }
 }

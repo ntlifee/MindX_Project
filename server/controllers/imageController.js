@@ -18,7 +18,7 @@ class imageController {
             const imageData = await Image.bulkCreate([...images])
             res.json({ message: images.length === 1 ? 'Изображение добавлено' : 'Изображения добавлены', imageData })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
 
@@ -27,7 +27,7 @@ class imageController {
             const images = await Image.findAll()
             res.json(images)
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
         }
     }
 
@@ -44,7 +44,7 @@ class imageController {
             fs.unlinkSync(path.resolve(__dirname, '..', 'static', id + '.jpg'))
             res.json({ message: 'Изображение удалено' })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка удаления: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`))
         }
     }
 }

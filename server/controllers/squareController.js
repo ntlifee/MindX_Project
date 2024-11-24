@@ -8,7 +8,7 @@ class squareController {
             res.json()
         } catch (error) {
             console.log(error)
-            return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
 
@@ -18,7 +18,7 @@ class squareController {
             res.json();
         } catch (error) {
             return next(
-                ApiError.badRequest(`Ошибка получения игр: ${error.massage}`)
+                ApiError.badRequest(`Ошибка получения игр: ${error.message}`)
             );
         }
     }
@@ -29,7 +29,7 @@ class squareController {
             res.json();
         } catch (error) {
             return next(
-                ApiError.badRequest(`Ошибка получения игры: ${error.massage}`)
+                ApiError.badRequest(`Ошибка получения игры: ${error.message}`)
             );
         }
     }
@@ -39,7 +39,7 @@ class squareController {
             //TODO: реализовать delete square
             res.json();
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка удаления: ${error.massage}`));
+            return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`));
         }
     }
 
@@ -48,7 +48,7 @@ class squareController {
             //TODO: реализовать update square
             res.json();
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`));
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`));
         }
     }
 }

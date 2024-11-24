@@ -14,7 +14,7 @@ class CarouselController {
 			]);
 			res.json(carouselData)
 		} catch (error) {
-			return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
+			return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
 		}
 	}
 
@@ -43,7 +43,7 @@ class CarouselController {
 			validateCheck(!carouselData[0] && !carouselData[1].length, 'Не найдены данные игры')
 			res.json(carouselData);
 		} catch (error) {
-			return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`));
+			return next(ApiError.badRequest(`Ошибка получения: ${error.message}`));
 		}
 	}
 
@@ -59,7 +59,7 @@ class CarouselController {
 			validateCheck(!count, 'Вопрос игры не найден')
 			res.json({ message: 'Вопрос игры удален' });
 		} catch (error) {
-			return next(ApiError.badRequest(`Ошибка удаления: ${error.massage}`));
+			return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`));
 		}
 	}
 
@@ -99,7 +99,7 @@ class CarouselController {
 			validateCheck(!isUpdate[0][0], 'Данные игры не найдены')
 			res.json({ message: 'Игра обновлена' });
 		} catch (error) {
-			return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`));
+			return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`));
 		}
 	}
 }

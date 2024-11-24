@@ -11,7 +11,7 @@ class questionController {
             const questionsData = await Question.bulkCreate([...questions])
             res.json({ message: questions.length === 1 ? 'Вопрос добавлен' : 'Вопросы добавлены', questionsData })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
 
@@ -20,7 +20,7 @@ class questionController {
             const questions = await Question.findAll()
             res.json(questions)
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
         }
     }
 
@@ -36,7 +36,7 @@ class questionController {
             validateCheck(!isDelete, 'Вопрос не найден')
             res.json({ message: 'Вопрос удален' })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка удаления: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`))
         }
     }
 
@@ -61,7 +61,7 @@ class questionController {
             validateCheck(!isUpdate[0], 'Вопрос не найден')
             res.json({ message: 'Вопрос обновлен' });
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`));
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`));
         }
     }
 }

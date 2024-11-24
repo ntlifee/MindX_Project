@@ -11,7 +11,7 @@ class themeController {
             const themesData = await Theme.bulkCreate([...themes])
             res.json({ message: themes.length === 1 ? 'Тема добавлена' : 'Темы добавлены', themesData })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
 
@@ -20,7 +20,7 @@ class themeController {
             const themes = await Theme.findAll()
             res.json(themes)
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
         }
     }
 
@@ -36,7 +36,7 @@ class themeController {
             validateCheck(!isDelete, 'Тема не найдена')
             res.json({ message: 'Тема удалена' })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка удаления: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`))
         }
     }
 
@@ -60,7 +60,7 @@ class themeController {
             res.json({ message: 'Тема обновлена' });
         } catch (error) {
             console.log(error);
-            return next(ApiError.badRequest(`Ошибка обновления: ${error.massage}`));
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`));
         }
     }
 }

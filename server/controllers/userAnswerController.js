@@ -11,7 +11,7 @@ class GameController {
             const userAnswerData = await UserAnswer.create({ gameId, userId, questionNumber, points, userAnswer, isCorrect })
             res.json({ message: 'Ответ добавлен', userAnswerData })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
 
@@ -27,7 +27,7 @@ class GameController {
             const gamesData = await UserAnswer.findAll(queryOptions)
             res.json(gamesData)
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка получения: ${error.massage}`))
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
         }
     }
 }
