@@ -5,6 +5,7 @@
   flex-direction: row;
   max-width: 1400px;
   align-self: center;
+  background-color: rgba(255,255,255,0.4);
   
   .tabs {
     width: 20%;
@@ -14,7 +15,6 @@
   .objects-list {
     width: 80%;
     border: 1px solid #F79361;
-    border-radius: 10px;
     overflow: auto;
   }
 }

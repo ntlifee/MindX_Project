@@ -24,7 +24,42 @@ const gameTemplate = {
 	],
 };
 
+const themeTemplate = {
+	type: 'theme',
+	label: 'Темы',
+	api: API.theme,
+	fileds: [
+		{ type: 'name', label: 'Название' },
+	],
+};
+
+const userTemplate = {
+	type: 'user',
+	label: 'Пользователи',
+	api: API.user,
+	fileds: [
+		{ type: 'username', label: 'Имя пользователя' },
+		{ type: 'email', label: 'Электронная почта' },
+		{ type: 'password', label: 'Пароль' },
+	],
+}
+
+const userAnswerTemplate = {
+	type: 'userAnswer',
+	label: 'Ответы пользователей',
+	api: API.userAnswer,
+	fileds: [
+		{ type: 'questionNumber', label: 'Номер вопроса' },
+		{ type: 'userAnswer', label: 'Ответ' },
+		{ type: 'points', label: 'Очки' },
+		{ type: 'isCorrect', label: 'Правильно' },
+	],
+}
+
 export const templates = {
 	question: questionTemplate,
 	game: gameTemplate,
+	theme: themeTemplate,
+	user: userTemplate,
+	userAnswer: userAnswerTemplate,
 };

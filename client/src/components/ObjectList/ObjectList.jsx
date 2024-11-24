@@ -1,32 +1,50 @@
 import './objectList.scss';
+import { FaTrashAlt, FaEdit } from 'react-icons/fa';
+import { Image } from 'react-bootstrap';
 
 const ObjectList = (props) => {
-  const { template, data } = props;
-  return (
-    <table className="objectlist-section">
-      <thead>
-        <tr>
-          {template?.map((column, index) => (
-            <th key={index}>{column.label}</th>
-          ))}
-          <th>Действия</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data?.map((row, index) =>  (
-          <tr key={index}>
-            {template?.map((column, index) => (
-              <td key={index}>{row[column.type]}</td>
-            ))}
-            <td>
-              <button>1</button>
-              <button>2</button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+	const { template, data } = props;
+	return (
+		<table className='objectlist-section'>
+			<thead>
+				<tr>
+					{template?.map((column, index) => (
+						<th key={index}>{column.label}</th>
+					))}
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{data?.map((row, index) => (
+					<tr key={index}>
+						{template?.map((column, index) => (
+							<td key={index}>
+								{column.type === 'imageId' ? (
+									<Image
+										width={100}
+										height={100}
+										src={
+											'http://localhost:3001/fa3595e1-1a19-4b58-bec9-16f2863f539f.jpg'
+										}
+									/>
+								) : (
+									row[column.type]
+								)}
+							</td>
+						))}
+						<td className='command-icons'>
+							<button>
+								<FaEdit />
+							</button>
+							<button>
+								<FaTrashAlt />
+							</button>
+						</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	);
 };
 
 export default ObjectList;

@@ -1,10 +1,10 @@
 .tabs-section {
   width: 100%;
   display: flex;
-  background-color: aqua;
   flex-direction: column;
   overflow-y: auto;
-
+  border: 1px solid #F79361;
+  gap: 5px;
   .tab {
     display: flex;
     width: 100%;
@@ -13,10 +13,10 @@
     font-size: clamp(10px, 3vh, 25px);
     padding: 10px;
     background-color: white;
-    margin-top: 1px;
 
     &.active {
-      background-color: blue;   
+      color: #F79361;
+      font-weight: 700;
     }
   }
 }

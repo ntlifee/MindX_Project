@@ -18,6 +18,10 @@ const Tabs = (props) => {
   }));
 	const [currentTab, setTab] = useState(0);
   function changeTab(tab) {
+		if(tab !== currentTab) {
+			setData(null);
+			setTemplate(null);
+		}
     setTab(tab)
     setTemplate(templates[TAB_LIST[tab]?.type])
     templates[TAB_LIST[tab].type]?.api.getList().then(response => setData(response));
