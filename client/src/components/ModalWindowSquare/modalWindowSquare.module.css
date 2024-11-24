@@ -126,7 +126,7 @@
 
 .time{
     width: 13%;
-    border: 2px solid orange;
+    border: 2px solid rgb(255, 165, 0);
     border-radius: 10px;
     display: flex;
     justify-content: center;

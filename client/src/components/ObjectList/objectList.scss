@@ -1,4 +1,32 @@
 .objectlist-section {
+  border-collapse: collapse;
+  font-family: "Lucida Grande", sans-serif;
   width: 100%;
-  background-color: brown;
+  border-radius: 10px;
+  background-color: white;
+  thead {
+    border-bottom: 1px solid #F79361;
+  }
+  td, th {
+    padding: 10px;
+    text-align: center;
+  }
+  th {
+    font-size: 18px;
+  }
+  tr:nth-child(2n) {
+    background: rgba(255, 165, 0,0.2);
+  }
+  a {
+    display: inline-block;
+    padding: 5px 10px;
+    background: #F79361;
+    box-shadow: 2px 2px 0 0 #a22800;
+    position: relative;
+  }
+  a:hover {
+    box-shadow: none;
+    top: 2px;
+    left: 2px;
+  }
 }

@@ -19,9 +19,9 @@ class GameController {
         const { typeGame } = req.query
         try {
             const queryOptions = {
-                attributes: {
+                /* attributes: {
                     exclude: ['typeGame'],
-                },
+                }, */
             };
             if (typeGame) {
                 queryOptions.where = {

@@ -13,6 +13,8 @@
   
   .objects-list {
     width: 80%;
-    display: flex;
+    border: 1px solid #F79361;
+    border-radius: 10px;
+    overflow: auto;
   }
 }

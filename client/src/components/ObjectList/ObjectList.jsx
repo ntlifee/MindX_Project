@@ -9,6 +9,7 @@ const ObjectList = (props) => {
           {template?.map((column, index) => (
             <th key={index}>{column.label}</th>
           ))}
+          <th>Действия</th>
         </tr>
       </thead>
       <tbody>
@@ -17,6 +18,10 @@ const ObjectList = (props) => {
             {template?.map((column, index) => (
               <td key={index}>{row[column.type]}</td>
             ))}
+            <td>
+              <button>1</button>
+              <button>2</button>
+            </td>
           </tr>
         ))}
       </tbody>
