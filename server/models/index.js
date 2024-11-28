@@ -1,6 +1,5 @@
 const User = require('./user.js')
 const Role = require('./role.js')
-const UserRole = require('./userRole.js')
 const Game = require('./game.js')
 const AccessGame = require('./accessGame.js')
 const UserAnswer = require('./userAnswer.js')
@@ -11,16 +10,14 @@ const QuestionGame = require('./questionGame.js')
 const ThemeGame = require('./themeGame')
 const Image = require('./image.js')
 
-User.hasMany(UserRole, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
-UserRole.belongsTo(User)
+Role.hasMany(User, { onDelete: 'SET NULL' })
+User.belongsTo(Role)
 Game.hasOne(CarouselData, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 CarouselData.belongsTo(Game)
 Game.hasMany(AccessGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 AccessGame.belongsTo(Game)
 Game.hasMany(UserAnswer, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 UserAnswer.belongsTo(Game)
-Role.hasMany(UserRole, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
-UserRole.belongsTo(Role)
 User.hasMany(UserAnswer, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 UserAnswer.belongsTo(User)
 Role.hasMany(AccessGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
@@ -39,7 +36,7 @@ Image.hasMany(Question, { foreignKey: { allowNull: true } })
 Question.belongsTo(Image)
 
 module.exports = {
-    User, Role, UserRole, Game, AccessGame,
+    User, Role, Game, AccessGame,
     UserAnswer, CarouselData,
     Question, Theme, ThemeGame, QuestionGame, Image,
 }

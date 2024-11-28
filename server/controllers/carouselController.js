@@ -1,12 +1,14 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { CarouselData, QuestionGame, Question } = require('../models/index')
-const { validateCheck } = require('../validators/isNullValidator')
+const { validateCheck, validateIsNull, validateObjectIsNull } = require('../validators/isNullValidator')
 
 class CarouselController {
 	async create(req, res, next) {
 		try {
 			const { gameId, scoreFirst, scoreSuccess, scoreFailure, questionGame } = req.body
+			validateIsNull([gameId, scoreFirst, scoreSuccess, scoreFailure])
+			validateObjectIsNull(questionGame)
 			//Добавление асинхронно в БД
 			const carouselData = await Promise.all([
 				CarouselData.create({ gameId, scoreFirst, scoreSuccess, scoreFailure }),
