@@ -10,7 +10,7 @@ const QuestionGame = require('./questionGame.js')
 const ThemeGame = require('./themeGame')
 const Image = require('./image.js')
 
-Role.hasMany(User, { onDelete: 'SET NULL' })
+Role.hasMany(User, { onDelete: 'SET DEFAULT', foreignKey: { allowNull: false, defaultValue: 'aff50f23-2fbc-41be-ba07-c1c69c5e388c' } })
 User.belongsTo(Role)
 Game.hasOne(CarouselData, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 CarouselData.belongsTo(Game)
