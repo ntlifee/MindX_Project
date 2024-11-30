@@ -7,6 +7,7 @@ const questionController = require('../controllers/questionController')
 const gameController = require('../controllers/gameController')
 const themeController = require('../controllers/themeController')
 const userAnswerController = require('../controllers/userAnswerController')
+const userController = require('../controllers/userController')
 
 router.delete('/carousel/:id', carouselController.delete)
 router.put('/carousel/:id', carouselController.update)
@@ -40,5 +41,10 @@ router.post('/theme', themeController.create)
 
 router.get('/userAnswer', userAnswerController.getAll)
 router.post('/userAnswer', userAnswerController.create)
+
+router.delete('/user/:id', userController.delete)
+router.put('/user/:id', userController.update)
+router.get('/user', userController.getAll)
+router.post('/user', userController.signup)
 
 module.exports = router
