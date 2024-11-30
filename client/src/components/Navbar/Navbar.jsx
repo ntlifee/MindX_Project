@@ -1,4 +1,4 @@
-import './navbar.css';
+import './navbar.scss';
 import AccountBtn from '../AccountBtn/AccountBtn';
 import { NavLink } from 'react-router-dom';
 import Logo from './../../components/Logo/Logo';
@@ -26,13 +26,11 @@ const Navbar = (props) => {
         <nav className="nav">
             <div className="container">
                 <div className="nav-row">
-                    {/* Используем тернарный оператор для условного рендеринга */}
                     {!isMobile ? (
                         <>
                             <NavLink to="/" className="logo_left">
                                 <Logo Width='70px' Height='42px' />
                             </NavLink>
-                            <AccountBtn />
                             <ul className="nav-list">
                                 <li className="nav-list_item">
                                     <NavLink to="/square" className={({ isActive }) => `${isActive ? activeLink : passiveLink} ${strongLink}`}>
@@ -62,6 +60,11 @@ const Navbar = (props) => {
                                 <li className="nav-list_item">
                                     <NavLink to="/admin" className={({ isActive }) => isActive ? activeLink : passiveLink}>
                                         Админ-панель
+                                    </NavLink>
+                                </li>
+                                <li className="nav-list_item">
+                                    <NavLink to="/signin" className='button authorize'>
+                                        Войти / Зарегистрироваться
                                     </NavLink>
                                 </li>
                             </ul>

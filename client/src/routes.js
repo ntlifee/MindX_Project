@@ -4,6 +4,8 @@ import Home from './pages/Home/Home';
 import CarouselGame from './pages/CarouselGame/CarouselGame';
 import Lobby from './pages/Lobby/Lobby';
 import SquareGame from './pages/SquareGame/SquareGame';
+import SignIn from './pages/Auth/SignIn';
+import SignUp from './pages/Auth/SingUp';
 
 export const PUBLIC_ROUTES = [
 	{
@@ -28,7 +30,22 @@ export const PUBLIC_ROUTES = [
 		path: `${ROUTES.SQUARE_ROUTE}/:id`,
 		Component: SquareGame,
 	},
+	{
+		path: ROUTES.SIGNUP_ROUTE,
+		Component: SignUp,
+	},
+	{
+		path: ROUTES.SIGNIN_ROUTE,
+		Component: SignIn,
+	},
 ];
+
+/* export const NOT_AUTH_ROUTES = [
+	{
+		path: ROUTES.SignUp_ROUTE,
+		Component: SignUp,
+	},
+]; */
 
 export const AUTH_ROUTES = [
 	{

@@ -24,7 +24,9 @@ const Tabs = (props) => {
 		}
     setTab(tab)
     setTemplate(templates[TAB_LIST[tab]?.type])
-    templates[TAB_LIST[tab].type]?.api.getList().then(response => setData(response));
+    templates[TAB_LIST[tab].type]?.api.getList()
+			.then(response => setData(response))
+			.catch(error => console.error(error));
   }
   useEffect(() => {
     changeTab(0)

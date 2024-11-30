@@ -3,4 +3,6 @@ export const ROUTES = {
 	CAROUSEL_ROUTE: '/carousel',
 	SQUARE_ROUTE: '/square',
 	HOME_ROUTE: '/',
+	SIGNIN_ROUTE: '/signin',
+	SIGNUP_ROUTE: '/signup',
 };
