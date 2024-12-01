@@ -19,6 +19,8 @@ const App = observer(() => {
     API.user.check().then(data => {
 			user.setUser(data);
 			user.setIsAuth(true);
+		}).catch((error) => {
+
 		}).finally(() => {
 			setLoading(false);
 		});

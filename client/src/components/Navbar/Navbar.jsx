@@ -26,6 +26,7 @@ const Navbar = observer((props) => {
     const logout = () => {
         user.setUser({});
         user.setIsAuth(false);
+        localStorage.setItem(`token`, null);
     };
 
     return (
