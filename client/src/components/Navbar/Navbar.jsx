@@ -2,10 +2,13 @@ import './navbar.scss';
 import AccountBtn from '../AccountBtn/AccountBtn';
 import { NavLink } from 'react-router-dom';
 import Logo from './../../components/Logo/Logo';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import BurgerButton from './../BurgerButton/BurgerButton';
+import { Context } from '../../index';
+import { observer } from 'mobx-react-lite';
 
-const Navbar = (props) => {
+const Navbar = observer((props) => {
+    const { user } = useContext(Context);
     const strongLink = ' link-strong';
     const activeLink = 'nav-list_link nav-list_link-active';
     const passiveLink = 'nav-list_link';
@@ -14,13 +17,16 @@ const Navbar = (props) => {
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
-        };
-
+        };       
         handleResize();
         window.addEventListener("resize", handleResize);
-
         return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    const logout = () => {
+        user.setUser({});
+        user.setIsAuth(false);
+    };
 
     return (
         <nav className="nav">
@@ -62,11 +68,22 @@ const Navbar = (props) => {
                                         Админ-панель
                                     </NavLink>
                                 </li>
-                                <li className="nav-list_item">
-                                    <NavLink to="/signin" className='button authorize'>
-                                        Войти / Зарегистрироваться
-                                    </NavLink>
-                                </li>
+                                { !user.isAuth ? 
+                                    <li className="nav-list_item">
+                                        <NavLink to="/signin" className='button authorize'>
+                                            Войти / Зарегистрироваться
+                                        </NavLink>
+                                    </li> 
+                                    :
+                                    <li className="nav-list_item auth">
+                                        <NavLink className='button authorize'>
+                                            {user.user.username}
+                                        </NavLink>
+                                        <button className='button unauthorize' onClick={() => logout()}>
+                                            Выйти
+                                        </button>
+                                    </li>
+                                }
                             </ul>
                         </>
                     ) : (
@@ -81,6 +98,6 @@ const Navbar = (props) => {
             </div>
         </nav>
     );
-};
+});
 
 export default Navbar;

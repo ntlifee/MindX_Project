@@ -1,16 +1,25 @@
 import './auth.scss'
 import { ROUTES } from '../../utils/consts.js';
 import { API } from '../../http/API.js';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { Context } from '../../index.js';
 
-const SignUp = () => {
+const SignUp = observer(() => {
+  const { user } = useContext(Context);
+  const navigate = useNavigate()
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const click = async () => {
     try {
-      const response = await API.user.SignUp(username, password, repeatPassword);
+      const data = await API.user.SignUp(username, password, repeatPassword);
+      if (data) {
+        user.setUser(data);
+        user.setIsAuth(true);
+        navigate(ROUTES.HOME_ROUTE);
+      }
     } catch(e) {
       console.error(e);
     }
@@ -43,6 +52,6 @@ const SignUp = () => {
       </div>
     </main>
   );
-}
+});
  
 export default SignUp;

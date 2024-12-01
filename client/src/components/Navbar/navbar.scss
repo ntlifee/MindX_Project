@@ -67,19 +67,31 @@
 		width: 100%;
 		background-color: var(--accent);
 	}
+	
+	.nav-list_item {
 
-	.button {
-		background-color: var(--accent);
-		padding: 10px;
-		border-radius: 10px;
-		color: white;
-		font-weight: 700;
+		&.auth {
+			display: flex;
+		}
 
-		&:hover {
-			border-radius: 50px;
-      transition: all 0.5s ease 0s;
-			color: wheat;
-    }
+		& .button {
+			background-color: var(--accent);
+			padding: 10px;
+			border-radius: 10px;
+			color: white;
+			font-weight: 700;
+	
+			&:hover {
+				border-radius: 50px;
+				transition: all 0.5s ease 0s;
+				color: wheat;
+			}
+			&.unauthorize {
+				background-color: white !important;
+				font-weight: 500;
+				color: black;
+			}
+		}
 	}
 }
 

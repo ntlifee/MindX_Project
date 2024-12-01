@@ -2,29 +2,37 @@ import { $host, $authHost } from './index';
 import { jwtDecode } from 'jwt-decode';
 
 const getList = async () => {
-    const response = await $host.get('/api/admin/user');
-    return response;
+    const { data } = await $host.get('/api/admin/user');
+    return data;
 };
 
 const getById = async (id) => {
-    const response = await $host.get(`/api/admin/user/${id}`);
-    return response;
+    const { data } = await $host.get(`/api/admin/user/${id}`);
+    return data;
 };
 
-const SingIn = async (username, password) => {
-    const response = await $host.post(`/api/user/signin`, { username, password });
-    console.log(response);
-    return jwtDecode(response.data.token);
-}
+const SignIn = async (username, password) => {
+    const { data } = await $host.post(`/api/user/signin`, { username, password });
+    localStorage.setItem(`token`, data.token);
+    return jwtDecode(data.token);
+};
 
-const SingUp = async (username, password, repeatPassword) => {
-    const { response } = await $host.post(`/api/user/signup`, { username, password, repeatPassword });
-    return jwtDecode(response.data.token);
-}
+const SignUp = async (username, password, repeatPassword) => {
+    const { data } = await $host.post(`/api/user/signup`, { username, password, repeatPassword });
+    localStorage.setItem(`token`, data.token);
+    return jwtDecode(data.token);
+};
+
+const check = async () => {
+    const { data } = await $authHost.get(`/api/user/auth`);
+    localStorage.setItem(`token`, data.token);
+    return jwtDecode(data.token);
+};
 
 export const userAPI = {
   getList,
   getById,
-  SingIn,
-  SingUp,
+  SignIn,
+  SignUp,
+  check
 };
