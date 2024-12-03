@@ -3,10 +3,10 @@ const router = new Router()
 const userRouter = require('./userRouter')
 const carouselRouter = require('./carouselRouter')
 const adminRouter = require('./adminRouter')
-const checkRole = require('../middleware/authAndCheckRoleMiddleware')
+const checkRoleMiddleware = require('../middleware/checkRoleMiddleware')
 
 router.use('/user', userRouter)
 router.use('/carousel', carouselRouter)
-router.use('/admin'/* , checkRole('ADMIN') */, adminRouter)
+router.use('/admin'/* , checkRoleMiddleware('ADMIN') */, adminRouter)
 
 module.exports = router

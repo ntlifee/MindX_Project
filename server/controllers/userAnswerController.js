@@ -9,7 +9,7 @@ class GameController {
             const { gameId, userId, questionNumber, points, userAnswer, isCorrect } = req.body
             validateIsNull([gameId, userId, questionNumber, points, userAnswer])
             const userAnswerData = await UserAnswer.create({ gameId, userId, questionNumber, points, userAnswer, isCorrect })
-            res.json({ message: 'Ответ добавлен', userAnswerData })
+            res.json({ message: 'Ответ добавлен' })
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
