@@ -10,7 +10,13 @@ const getById = async (id) => {
 	return data;
 };
 
+const update = async (model) => {
+	const { data } = await $host.put(`/api/admin/question/${model.id}`, model);
+	return data;
+}
+
 export const questionAPI = {
 	getList,
 	getById,
+	update,
 };

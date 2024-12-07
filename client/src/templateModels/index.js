@@ -39,8 +39,7 @@ const userTemplate = {
 	api: API.user,
 	fileds: [
 		{ type: 'username', label: 'Имя пользователя' },
-		{ type: 'email', label: 'Электронная почта' },
-		{ type: 'password', label: 'Пароль' },
+		{ type: 'role_name', label: 'Роль'}
 	],
 }
 

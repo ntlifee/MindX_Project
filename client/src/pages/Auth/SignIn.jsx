@@ -5,6 +5,7 @@ import { useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../../index.js';
+import { Notify, ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
 
 const SignIn = observer( () => {
   const { user } = useContext(Context);
@@ -19,7 +20,8 @@ const SignIn = observer( () => {
         user.setIsAuth(true);
         navigate(ROUTES.HOME_ROUTE);
       }
-    } catch(e) {
+    } catch(e) {     
+      ErrorEmmiter(e.response.data.message);
       console.error(e);
     }
   };
@@ -30,12 +32,12 @@ const SignIn = observer( () => {
         <form className='auth-form' onSubmit={e => e.preventDefault()}>
           <div>
             <label htmlFor='login'>Логин</label>
-            <input type='text' id='login' className='auth-input'
+            <input type='text' required id='login' className='auth-input'
                   value={username} onChange={e => setUsername(e.target.value)}/>
           </div>
           <div>
             <label htmlFor='password'>Пароль</label>
-            <input type='password' id='password' className='auth-input'
+            <input type='password' required id='password' className='auth-input'
                   value={password} onChange={e => setPassword(e.target.value)}/>
           </div>
           <div className='btn-section'>
@@ -44,6 +46,7 @@ const SignIn = observer( () => {
           </div>
         </form>
       </div>
+      <Notify/>
     </main>
   );
 }

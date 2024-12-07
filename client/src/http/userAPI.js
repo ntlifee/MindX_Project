@@ -3,6 +3,9 @@ import { jwtDecode } from 'jwt-decode';
 
 const getList = async () => {
     const { data } = await $host.get('/api/admin/user');
+    for(const user of data) {
+        user.role_name = user.role.name;
+    }
     return data;
 };
 

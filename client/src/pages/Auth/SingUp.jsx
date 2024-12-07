@@ -21,7 +21,7 @@ const SignUp = observer(() => {
         navigate(ROUTES.HOME_ROUTE);
       }
     } catch(e) {
-      console.error(e);
+      console.error(e.response.data.message);
     }
   };
   return ( 

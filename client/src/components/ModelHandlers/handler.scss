@@ -1,0 +1,39 @@
+.handler-section {
+  position: absolute;
+  width: 500px;
+  height: 100%;
+  background-color: #FFA07A;
+  display: flex;
+  z-index: 999;
+  right: 0;
+  flex-direction: column;
+
+  .btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: 5px;
+    gap: 3px;
+    flex-direction: row;
+    height: 40px;
+
+    .btn {
+      color: white;
+      padding: 5px;
+			border-radius: 10px;
+
+      &:hover {
+				border-radius: 50px;
+				transition: all 0.5s ease 0s;
+				color: wheat;
+			}
+
+      &.success {
+        background-color: rgb(46,240,101);
+      }
+
+      &.cancel {
+        background-color: rgb(247,49,73);
+      }
+    }
+  }
+}

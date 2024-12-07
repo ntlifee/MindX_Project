@@ -1,10 +1,23 @@
 import './objectList.scss';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 import { Image } from 'react-bootstrap';
+import Handler from './../ModelHandlers/Handler';
+import { useState } from 'react';
+import { Notify, ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
 
 const ObjectList = (props) => {
-	const { template, data } = props;
+	const { template, data, type } = props;
+	const [selected, setSelected] = useState(null);
+	const editItem = (item) => {
+    item.mode = 'edit';
+		setSelected(item);
+  };
 	return (
+		<>
+		<Notify/>
+		{selected ? <Handler model={selected} type={type} 
+								setSelected={setSelected} 
+								ErrorEmmiter={ErrorEmmiter} SuccessEmmiter={SuccessEmmiter}/> : <></>}
 		<table className='objectlist-section'>
 			<thead>
 				<tr>
@@ -33,7 +46,7 @@ const ObjectList = (props) => {
 							</td>
 						))}
 						<td className='command-icons'>
-							<button>
+							<button onClick={() => editItem(row)}>
 								<FaEdit />
 							</button>
 							<button>
@@ -44,6 +57,7 @@ const ObjectList = (props) => {
 				))}
 			</tbody>
 		</table>
+		</>
 	);
 };
 

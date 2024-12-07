@@ -20,7 +20,7 @@ const App = observer(() => {
 			user.setUser(data);
 			user.setIsAuth(true);
 		}).catch((error) => {
-
+			
 		}).finally(() => {
 			setLoading(false);
 		});

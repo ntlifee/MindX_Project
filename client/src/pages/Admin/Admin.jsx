@@ -1,5 +1,4 @@
 import './admin.scss';
-import AddEdit from '../../components/AddEditSidebar/index';
 import ObjectList from '../../components/ObjectList/ObjectList';
 import Tabs from '../../components/Tabs/Tabs';
 import { useState } from 'react';
@@ -13,7 +12,7 @@ const AdminPage = () => {
         <Tabs setTemplate={setTemplate} setData={setData}/>
       </div>
       <div className='objects-list'>
-        <ObjectList template={template?.fileds} data={data}/>
+        <ObjectList template={template?.fileds} type={template?.type} data={data}/>
       </div>
     </main>
   );
