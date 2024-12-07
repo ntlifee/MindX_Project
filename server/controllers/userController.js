@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User, Role } = require('../models/index')
 const { validateIsNull, validateCheck } = require('../validators/isNullValidator')
-const { where } = require('sequelize')
+const { where, Op } = require('sequelize')
 
 const generateJwt = (id, username, role) => {
     return jwt.sign(
@@ -12,6 +12,23 @@ const generateJwt = (id, username, role) => {
         { expiresIn: '24h' }
     )
 }
+const FindUser = async (username) => {
+    const candidate = await User.findOne({
+        attributes: ['id'],
+        where: {
+            username: {
+                [Op.iLike]: username
+            }
+        }
+    })
+    validateCheck(candidate, 'Пользователь с таким именем уже существует!')
+}
+const FindRole = async (roleId) => {
+    const role = (await Role.findByPk(roleId, { attributes: ['id'] }))?.dataValues.id
+    validateCheck(!role, 'Не удалось найти роль!')
+    return role
+}
+
 class UserController {
     async signup(req, res, next) {
         try {
@@ -19,14 +36,12 @@ class UserController {
             validateIsNull([username, password])
             let role
             if (roleId) {
-                role = (await Role.findByPk(roleId, { attributes: { exclude: ['id'] } }))?.dataValues.name
-                validateCheck(!role, 'Не удалось найти роль!')
+                role = await FindRole(roleId)
             }
             else {
                 role = 'USER'
             }
-            const candidate = await User.findOne({ where: { username } })
-            validateCheck(candidate, 'Пользователь с таким именем уже существует!')
+            await FindUser(username)
             const hashPassword = bcrypt.hashSync(password, 5)
             const user = await User.create({ username, password: hashPassword, roleId })
             const token = generateJwt(user.id, user.username, role)
@@ -54,8 +69,7 @@ class UserController {
     async check(req, res, next) {
         try {
             const roleId = (await User.findByPk(req.user.id, { attributes: ['roleId'] }))?.dataValues.roleId
-            const role = (await Role.findByPk(roleId, { attributes: { exclude: ['id'] } }))?.dataValues.name
-            validateCheck(!role, 'Не удалось найти роль!')
+            const role = await FindRole(roleId)
             const token = generateJwt(req.user.id, req.user.username, role)
             res.json({ token })
         } catch (error) {
@@ -100,8 +114,8 @@ class UserController {
             validateCheck(!id, 'Не задан id пользователя')
             const { username, password, roleId } = req.body;
             validateIsNull([id, username, password]);
-            const role = (await Role.findByPk(roleId, { attributes: { exclude: ['id'] } }))?.dataValues.name
-            validateCheck(!role, 'Не удалось найти роль!')
+            await FindUser(username)
+            await FindRole(roleId)
             const isUpdate = await User.update(
                 {
                     username: username,
