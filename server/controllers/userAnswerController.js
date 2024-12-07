@@ -1,6 +1,6 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
-const { UserAnswer } = require('../models/index')
+const { UserAnswer, User, Game } = require('../models/index')
 const { validateIsNull } = require('../validators/isNullValidator')
 
 class GameController {
@@ -23,7 +23,20 @@ class GameController {
                     ...(gameId && { gameId }),
                     ...(userId && { userId }),
                 },
+                attributes: { exclude: ['id', 'gameId', 'userId'] }
             };
+            if (req.user.role === 'ADMIN') {
+                queryOptions.include = [{
+                    model: User,
+                    attributes: { exclude: ['password'] },
+                    required: false
+                },
+                {
+                    model: Game,
+                    attributes: ['typeGame', 'name'],
+                    required: false
+                }]
+            }
             const gamesData = await UserAnswer.findAll(queryOptions)
             res.json(gamesData)
         } catch (error) {

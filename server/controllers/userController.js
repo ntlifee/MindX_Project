@@ -65,7 +65,13 @@ class UserController {
 
     async getAll(req, res, next) {
         try {
-            const users = await User.findAll({ attributes: { exclude: ['password'] } })
+            const users = await User.findAll({
+                attributes: { exclude: ['password', 'roleId'] },
+                include: [{
+                    model: Role,
+                    required: false
+                }]
+            })
             res.json(users)
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
