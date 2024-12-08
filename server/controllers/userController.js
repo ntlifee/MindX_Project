@@ -12,15 +12,17 @@ const generateJwt = (id, username, role) => {
         { expiresIn: '24h' }
     )
 }
-const FindUser = async (username) => {
-    const candidate = await User.findOne({
+const FindUser = async (username, id) => {
+    const queryOptions = {
         attributes: ['id'],
         where: {
             username: {
                 [Op.iLike]: username
-            }
+            },
+            ...(id && { id: { [Op.not]: id } })
         }
-    })
+    };
+    const candidate = await User.findOne(queryOptions)
     validateCheck(candidate, 'Пользователь с таким именем уже существует!')
 }
 const FindRole = async (roleId) => {
@@ -113,8 +115,8 @@ class UserController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id пользователя')
             const { username, password, roleId } = req.body;
-            validateIsNull([id, username, password]);
-            await FindUser(username)
+            validateIsNull([username, password, roleId]);
+            await FindUser(username, id)
             await FindRole(roleId)
             const isUpdate = await User.update(
                 {
