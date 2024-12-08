@@ -5,7 +5,7 @@ import { useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../../index.js';
-import { Notify, ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
+import { ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
 
 const SignIn = observer( () => {
   const { user } = useContext(Context);
@@ -46,7 +46,6 @@ const SignIn = observer( () => {
           </div>
         </form>
       </div>
-      <Notify/>
     </main>
   );
 }

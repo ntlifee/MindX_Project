@@ -15,8 +15,19 @@ const update = async (model) => {
 	return data;
 }
 
+const deleteById = async (id) => {
+	const { data } = await $host.delete(`/api/admin/question/${id}`);
+	return data;
+}
+
+const addItem = async (item) => {
+	const { data } = await $host.post(`/api/admin/question`, item);
+  return data;
+}
+
 export const questionAPI = {
 	getList,
 	getById,
 	update,
+	deleteById,
 };

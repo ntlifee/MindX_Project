@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { templates } from '../../templateModels/index'
 
 const Tabs = (props) => {
-	const { setTemplate, setData } = props;
+	const { setTemplate, setData, reload, setReload } = props;
 	//TODO: Использовать для теста overflow
 	/* const TAB_LIST = [
 		{ type: 'question', label: 'Вопросы' },
@@ -31,6 +31,13 @@ const Tabs = (props) => {
   useEffect(() => {
     changeTab(0)
   }, [])
+	
+	useEffect(() => {
+		if (reload) {
+			changeTab(currentTab);
+			setReload(false);
+		}
+	}, [reload])
 	return (
 		//TODO: Решить проблему с overflow
 		<div className='tabs-section'>

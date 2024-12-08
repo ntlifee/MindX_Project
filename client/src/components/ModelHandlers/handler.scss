@@ -2,7 +2,12 @@
   position: absolute;
   width: 500px;
   height: 100%;
-  background-color: #FFA07A;
+  background: url(./../../img/background-site.jpg) no-repeat;
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
+  border: 3px solid #ffa600;
+  border-radius: 20px 0 0 20px;
   display: flex;
   z-index: 999;
   right: 0;

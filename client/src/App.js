@@ -10,6 +10,7 @@ import Loading from './components/Loading/Loading';
 import { observer } from 'mobx-react-lite';
 import { Context } from './index.js';
 import { API } from './http/API';
+import { Notify } from './components/Toastify/Notify.jsx';
 
 const App = observer(() => {
 	const [isActiveBurger, setIsActiveBurger] = useState(false);
@@ -27,6 +28,7 @@ const App = observer(() => {
   }, []);
 	return (
 		<div className='App'>
+			<Notify/>
 			<BrowserRouter>
 				{loading ? <Loading /> : <></>}
 				<BurgerMenu

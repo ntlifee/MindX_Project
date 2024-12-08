@@ -1,21 +1,31 @@
 import './objectList.scss';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 import { Image } from 'react-bootstrap';
-import Handler from './../ModelHandlers/Handler';
+import ModelHandler from './../ModelHandlers/ModelHandler';
 import { useState } from 'react';
-import { Notify, ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
+import { ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
+import { API } from './../../http/API'
 
 const ObjectList = (props) => {
-	const { template, data, type } = props;
+	const { template, data, type, setReload } = props;
 	const [selected, setSelected] = useState(null);
 	const editItem = (item) => {
     item.mode = 'edit';
 		setSelected(item);
   };
+	const deleteItem = async (item) => {
+    try {
+			const data = await API[type].deleteById(item.id);
+      SuccessEmmiter(data.message);
+			setReload(true);
+		} catch (error) {
+			ErrorEmmiter(error.response.data.message);
+      console.error(error);
+		}
+  };
 	return (
 		<>
-		<Notify/>
-		{selected ? <Handler model={selected} type={type} 
+		{selected ? <ModelHandler model={selected} type={type} 
 								setSelected={setSelected} 
 								ErrorEmmiter={ErrorEmmiter} SuccessEmmiter={SuccessEmmiter}/> : <></>}
 		<table className='objectlist-section'>
@@ -50,7 +60,7 @@ const ObjectList = (props) => {
 								<FaEdit />
 							</button>
 							<button>
-								<FaTrashAlt />
+								<FaTrashAlt onClick={() => deleteItem(row)}/>
 							</button>
 						</td>
 					</tr>
