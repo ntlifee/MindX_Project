@@ -41,7 +41,6 @@ router.get('/theme', themeController.getAll)
 router.post('/theme', themeController.create)
 
 router.get('/userAnswer', userAnswerController.getAll)
-router.post('/userAnswer', userAnswerController.create)
 
 router.delete('/user/:id', userController.delete)
 router.put('/user/:id', userController.update)
