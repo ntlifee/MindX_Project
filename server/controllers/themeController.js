@@ -3,6 +3,12 @@ const ApiError = require('../error/ApiError')
 const { Theme } = require('../models/index')
 const { validateObjectIsNull, validateCheck, validateIsNull } = require('../validators/isNullValidator')
 
+function errorHandling(error, msg) {
+    if (error.name === 'SequelizeUniqueConstraintError') {
+        error.message = `Похожая тема '${error.fields.name}' уже существует! Отменена ${msg} записей!`
+    }
+}
+
 class themeController {
     async create(req, res, next) {
         try {
@@ -11,6 +17,7 @@ class themeController {
             const themesData = await Theme.bulkCreate([...themes])
             res.json({ message: themes.length === 1 ? 'Тема добавлена' : 'Темы добавлены', themesData })
         } catch (error) {
+            errorHandling(error, 'вставки')
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
@@ -59,8 +66,8 @@ class themeController {
             validateCheck(!isUpdate[0], 'Тема не найдена')
             res.json({ message: 'Тема обновлена' });
         } catch (error) {
-            console.log(error);
-            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`));
+            errorHandling(error, 'обновления')
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))
         }
     }
 }

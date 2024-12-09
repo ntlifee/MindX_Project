@@ -10,7 +10,7 @@ const User = sequelize.define('user',
             allowNull: false
         },
         username: {
-            type: DataTypes.STRING,
+            type: DataTypes.CITEXT,
             allowNull: false,
             unique: true
         },

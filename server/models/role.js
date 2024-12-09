@@ -10,7 +10,7 @@ const Role = sequelize.define('role',
             allowNull: false
         },
         name: {
-            type: DataTypes.STRING,
+            type: DataTypes.CITEXT,
             allowNull: false,
             unique: true
         }

@@ -10,8 +10,9 @@ const Theme = sequelize.define('theme',
             allowNull: false
         },
         name: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.CITEXT,
+            allowNull: false,
+            unique: true
         }
     },
     {

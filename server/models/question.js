@@ -10,7 +10,7 @@ const Question = sequelize.define('question',
             allowNull: false
         },
         question: {
-            type: DataTypes.TEXT,
+            type: DataTypes.CITEXT,
             allowNull: false
         },
         answer: {

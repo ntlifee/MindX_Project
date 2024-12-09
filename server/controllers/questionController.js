@@ -3,6 +3,12 @@ const ApiError = require('../error/ApiError')
 const { Question } = require('../models/index')
 const { validateIsNull, validateObjectIsNull, validateCheck } = require('../validators/isNullValidator')
 
+function errorHandling(error, msg) {
+    if (error.name === 'SequelizeUniqueConstraintError') {
+        error.message = `Похожий вопрос '${error.fields.name}' уже существует! Отменена ${msg} записей!`
+    }
+}
+
 class questionController {
     async create(req, res, next) {
         try {
@@ -11,6 +17,7 @@ class questionController {
             const questionsData = await Question.bulkCreate([...questions])
             res.json({ message: questions.length === 1 ? 'Вопрос добавлен' : 'Вопросы добавлены', questionsData })
         } catch (error) {
+            errorHandling(error, 'вставки')
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
@@ -61,7 +68,8 @@ class questionController {
             validateCheck(!isUpdate[0], 'Вопрос не найден')
             res.json({ message: 'Вопрос обновлен' });
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`));
+            errorHandling(error, 'обновления')
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))
         }
     }
 }

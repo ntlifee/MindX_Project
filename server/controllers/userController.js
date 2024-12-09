@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User, Role } = require('../models/index')
 const { validateIsNull, validateCheck } = require('../validators/isNullValidator')
-const { where, Op } = require('sequelize')
+const { where } = require('sequelize')
 
 const generateJwt = (id, username, role) => {
     return jwt.sign(
@@ -12,23 +12,18 @@ const generateJwt = (id, username, role) => {
         { expiresIn: '24h' }
     )
 }
-const FindUser = async (username, id) => {
-    const queryOptions = {
-        attributes: ['id'],
-        where: {
-            username: {
-                [Op.iLike]: username
-            },
-            ...(id && { id: { [Op.not]: id } })
-        }
-    };
-    const candidate = await User.findOne(queryOptions)
-    validateCheck(candidate, 'Пользователь с таким именем уже существует!')
-}
+
 const FindRole = async (roleId) => {
-    const role = (await Role.findByPk(roleId, { attributes: ['id'] }))?.dataValues.id
+    const role = (await Role.findByPk(roleId, { attributes: ['name'] }))?.dataValues.name
     validateCheck(!role, 'Не удалось найти роль!')
     return role
+}
+
+function errorHandling(error) {
+    if (error.name === 'SequelizeUniqueConstraintError') {
+        error.message = 'Пользователь с таким именем уже существует!'
+    }
+
 }
 
 class UserController {
@@ -43,12 +38,12 @@ class UserController {
             else {
                 role = 'USER'
             }
-            await FindUser(username)
             const hashPassword = bcrypt.hashSync(password, 5)
             const user = await User.create({ username, password: hashPassword, roleId })
             const token = generateJwt(user.id, user.username, role)
             return res.json({ token })
         } catch (error) {
+            errorHandling(error)
             return next(ApiError.badRequest(`Ошибка регистрации: ${error.message}`))
         }
     }
@@ -116,7 +111,6 @@ class UserController {
             validateCheck(!id, 'Не задан id пользователя')
             const { username, password, roleId } = req.body;
             validateIsNull([username, password, roleId]);
-            await FindUser(username, id)
             await FindRole(roleId)
             const isUpdate = await User.update(
                 {
@@ -133,6 +127,7 @@ class UserController {
             validateCheck(!isUpdate[0], 'Пользователь не найден')
             res.json({ message: 'Данные пользователя обновлены' });
         } catch (error) {
+            errorHandling(error)
             return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))
         }
     }

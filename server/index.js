@@ -24,6 +24,7 @@ app.use(errorHandler)
 const start = async () => {
     try {
         await sequelize.authenticate()
+        await sequelize.query('CREATE EXTENSION IF NOT EXISTS citext');
         await sequelize.sync()
         app.listen(PORT, () => console.log(`Сервер запущен на ${PORT} порту`))
     } catch (e) {
