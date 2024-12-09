@@ -52,7 +52,7 @@ class themeController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id темы')
             const { name } = req.body;
-            validateIsNull([id, name]);
+            validateIsNull([name]);
             const isUpdate = await Theme.update(
                 {
                     name: name,

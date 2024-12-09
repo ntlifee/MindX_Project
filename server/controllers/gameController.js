@@ -68,7 +68,7 @@ class GameController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id игры')
             const { name, imageId, startDate, endDate } = req.body
-            validateIsNull([id, name, startDate, endDate])
+            validateIsNull([name, startDate, endDate])
             const isUpdate = await Game.update(
                 {
                     name: name,

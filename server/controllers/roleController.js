@@ -52,7 +52,7 @@ class roleController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id роли')
             const { name } = req.body;
-            validateIsNull([id, name]);
+            validateIsNull([name]);
             const isUpdate = await Role.update(
                 {
                     name: name,

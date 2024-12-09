@@ -3,7 +3,7 @@ const ApiError = require('../error/ApiError')
 const { UserAnswer, User, Game } = require('../models/index')
 const { validateIsNull } = require('../validators/isNullValidator')
 
-class GameController {
+class userAnswerController {
     async create(req, res, next) {
         try {
             const { gameId, userId, questionNumber, points, userAnswer, isCorrect } = req.body
@@ -45,4 +45,4 @@ class GameController {
     }
 }
 
-module.exports = new GameController()
+module.exports = new userAnswerController()

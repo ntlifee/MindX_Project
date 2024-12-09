@@ -11,7 +11,8 @@ const Question = sequelize.define('question',
         },
         question: {
             type: DataTypes.CITEXT,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         answer: {
             type: DataTypes.TEXT,

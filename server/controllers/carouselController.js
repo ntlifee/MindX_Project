@@ -70,6 +70,7 @@ class CarouselController {
 			const { id } = req.params;
 			validateCheck(!id, 'Не задан id игры')
 			const { scoreFirst, scoreSuccess, scoreFailure, questionGame } = req.body
+			validateObjectIsNull(questionGame)
 			//Добавление асинхронно в БД
 			const isUpdate = await Promise.all([
 				CarouselData.update(

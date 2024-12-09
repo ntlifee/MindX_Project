@@ -7,6 +7,6 @@ const checkRoleMiddleware = require('../middleware/checkRoleMiddleware')
 
 router.use('/user', userRouter)
 router.use('/carousel', carouselRouter)
-router.use('/admin'/* , checkRoleMiddleware('ADMIN') */, adminRouter)
+router.use('/admin', checkRoleMiddleware('ADMIN'), adminRouter)
 
 module.exports = router

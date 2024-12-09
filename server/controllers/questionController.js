@@ -5,7 +5,7 @@ const { validateIsNull, validateObjectIsNull, validateCheck } = require('../vali
 
 function errorHandling(error, msg) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-        error.message = `Похожий вопрос '${error.fields.name}' уже существует! Отменена ${msg} записей!`
+        error.message = `Похожий вопрос '${error.fields.question}' уже существует! Отменена ${msg} записей!`
     }
 }
 
@@ -52,7 +52,7 @@ class questionController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id вопроса')
             const { question, answer, imageId } = req.body;
-            validateIsNull([id, question, answer]);
+            validateIsNull([question, answer]);
             const isUpdate = await Question.update(
                 {
                     question: question,
