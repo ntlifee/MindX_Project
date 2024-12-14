@@ -1,14 +1,14 @@
 import './handler.scss'
 import Model from './Models';
 
-const Handler = (props) => {
-  const { model, type, setSelected, ErrorEmmiter, SuccessEmmiter } = props;
+const ModelHandler = (props) => {
+  const { model, type, setSelected, setCreateMode, setReload } = props;
   const Component = Model[type];
   return ( 
     <div className="handler-section">
-      <Component model={model} setSelected={setSelected}/>
+      {Component ? <Component model={model} setSelected={setSelected} setCreateMode={setCreateMode} setReload={setReload}/> : <></>}
     </div>
    );
 }
- 
-export default Handler;
+
+export default ModelHandler;

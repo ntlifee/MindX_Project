@@ -2,7 +2,7 @@ import { $host, $authHost } from './index';
 import { jwtDecode } from 'jwt-decode';
 
 const getList = async () => {
-    const { data } = await $host.get('/api/admin/user');
+    const { data } = await $authHost.get('/api/admin/user');
     for(const user of data) {
         user.role_name = user.role.name;
     }
@@ -10,7 +10,7 @@ const getList = async () => {
 };
 
 const getById = async (id) => {
-    const { data } = await $host.get(`/api/admin/user/${id}`);
+    const { data } = await $authHost.get(`/api/admin/user/${id}`);
     return data;
 };
 

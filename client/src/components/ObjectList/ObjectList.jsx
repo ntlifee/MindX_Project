@@ -2,14 +2,27 @@ import './objectList.scss';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 import { Image } from 'react-bootstrap';
 import ModelHandler from './../ModelHandlers/ModelHandler';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
 import { API } from './../../http/API'
 
 const ObjectList = (props) => {
-	const { template, data, type, setReload } = props;
+	const { template, data, type, setReload, activeMenu, setActiveMenu } = props;
 	const [selected, setSelected] = useState(null);
+	const [createMode, setCreateMode] = useState(false);
+	const [searchTerm, setSearchTerm] = useState('');
+	useEffect(() => {
+		if (selected) {
+			setCreateMode(false);
+		}
+	}, [selected]);
+	useEffect(() => {
+		if (createMode) {
+			setSelected(null);
+		}
+	}, [createMode]);
 	const editItem = (item) => {
+		setActiveMenu(true);
     item.mode = 'edit';
 		setSelected(item);
   };
@@ -23,11 +36,24 @@ const ObjectList = (props) => {
       console.error(error);
 		}
   };
+	const createItem = () => {
+		setActiveMenu(true);
+		setCreateMode(true);
+	};
 	return (
 		<>
-		{selected ? <ModelHandler model={selected} type={type} 
-								setSelected={setSelected} 
-								ErrorEmmiter={ErrorEmmiter} SuccessEmmiter={SuccessEmmiter}/> : <></>}
+		{ activeMenu && (selected || createMode) ? <ModelHandler model={selected ? selected : {}} type={type} 
+								setSelected={setSelected} setCreateMode={setCreateMode}
+								setReload={setReload}/> : <></>}
+		<div className='table-header'>
+			<input 
+				type='text' 
+				placeholder='Поиск...'
+				value={searchTerm}
+				onChange={(e) => setSearchTerm(e.target.value)}
+			/>
+			<button onClick={createItem}>Создать объект</button>
+		</div>
 		<table className='objectlist-section'>
 			<thead>
 				<tr>

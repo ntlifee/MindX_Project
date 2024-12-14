@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../../index.js';
+import { ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
 
 const SignUp = observer(() => {
   const { user } = useContext(Context);
@@ -19,8 +20,10 @@ const SignUp = observer(() => {
         user.setUser(data);
         user.setIsAuth(true);
         navigate(ROUTES.HOME_ROUTE);
+        window.location.reload();
       }
     } catch(e) {
+      ErrorEmmiter(e.response.data.message);
       console.error(e.response.data.message);
     }
   };

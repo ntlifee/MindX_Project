@@ -4,10 +4,10 @@ import { API } from '../../../http/API';
 import { ErrorEmmiter, SuccessEmmiter } from './../../../components/Toastify/Notify.jsx';
 
 const Question = (props) => { 
-  const { model, setSelected} = props;
+  const { model, setSelected, setCreateMode, setReload} = props;
 
-  const [question, setQuestion] = useState(model.question ? model.question : '');
-  const [answer, setAnswer] = useState(model.answer ? model.answer : '');
+  const [question, setQuestion] = useState(model?.question ? model.question : '');
+  const [answer, setAnswer] = useState(model?.answer ? model.answer : '');
   const [image, setImage] = useState(null);
 
   useEffect(() => {
@@ -17,11 +17,23 @@ const Question = (props) => {
     model.answer = answer;
   }, [answer])
 
-  const send = async () => {
+  const put = async () => {
     try {
       const data = await API.question.update(model);
       SuccessEmmiter(data.message);
       setSelected(null);
+      setReload(true);
+    } catch(error) {     
+      ErrorEmmiter(error.response.data.message);
+      console.error(error);
+    }
+  };
+  const create = async () => {
+    try {
+      const data = await API.question.addItem(model);
+      SuccessEmmiter(data.message);
+      setCreateMode(null);
+      setReload(true);
     } catch(error) {     
       ErrorEmmiter(error.response.data.message);
       console.error(error);
@@ -29,15 +41,19 @@ const Question = (props) => {
   };
   return (    
     <div className="model-section">
-      {model.mode === 'edit' ? 
+      {model?.mode === 'edit' ? 
         <>
           <div className='btn-container'>
-            <button className='btn success' onClick={() => send()}>Сохранить</button>
+            <button className='btn success' onClick={() => put()}>Сохранить</button>
             <button className='btn cancel' onClick={() => setSelected(null)}>Отменить</button>
           </div>
         </>
         :
         <>
+          <div className='btn-container'>
+            <button className='btn success' onClick={() => create()}>Сохранить</button>
+            <button className='btn cancel' onClick={() => setCreateMode(false)}>Отменить</button>
+          </div>
         </>
       }
       <form onSubmit={e => e.preventDefault()}>

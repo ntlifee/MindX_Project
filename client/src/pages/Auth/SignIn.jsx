@@ -19,6 +19,7 @@ const SignIn = observer( () => {
         user.setUser(data);
         user.setIsAuth(true);
         navigate(ROUTES.HOME_ROUTE);
+        window.location.reload();
       }
     } catch(e) {     
       ErrorEmmiter(e.response.data.message);
