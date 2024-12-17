@@ -9,6 +9,10 @@ const ThemeGame = sequelize.define('themeGame',
             defaultValue: DataTypes.literal(`gen_random_uuid()`),
             allowNull: false
         },
+        numberTheme: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
     },
     {
         timestamps: false

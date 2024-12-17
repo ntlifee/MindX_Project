@@ -15,18 +15,11 @@ class userAnswerController {
         }
     }
 
-    async getAll(req, res, next) {
-        const { gameId, userId } = req.query
+    async getAdmin(req, res, next) {
         try {
-            const queryOptions = {
-                where: {
-                    ...(gameId && { gameId }),
-                    ...(userId && { userId }),
-                },
-                attributes: { exclude: ['id', 'gameId', 'userId'] }
-            };
-            if (req.user.role === 'ADMIN') {
-                queryOptions.include = [{
+            const gamesData = await UserAnswer.findAll({
+                attributes: { exclude: ['id', 'gameId', 'userId'] },
+                include: [{
                     model: User,
                     attributes: { exclude: ['password'] },
                     required: false
@@ -36,8 +29,25 @@ class userAnswerController {
                     attributes: ['id', 'typeGame', 'name'],
                     required: false
                 }]
-            }
-            const gamesData = await UserAnswer.findAll(queryOptions)
+            })
+            res.json(gamesData)
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
+        }
+    }
+
+    async getUser(req, res, next) {
+        const gameId = req.params.id
+        try {
+            const gamesData = await UserAnswer.findAll({
+                where: {
+                    gameId,
+                    userId: req.user.id
+                },
+                attributes: {
+                    exclude: ['id', 'gameId', 'userId']
+                }
+            })
             res.json(gamesData)
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
