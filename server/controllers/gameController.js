@@ -16,14 +16,8 @@ class GameController {
     }
 
     async getAll(req, res, next) {
-        const { typeGame } = req.query
         try {
-            const queryOptions = {
-                where: {
-                    ...(typeGame && { typeGame })
-                },
-            };
-            const gamesData = await Game.findAll(queryOptions)
+            const gamesData = await Game.findAll()
             res.json(gamesData)
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
