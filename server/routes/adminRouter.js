@@ -1,7 +1,5 @@
 const Router = require('express')
 const router = new Router()
-const carouselController = require('../controllers/carouselController')
-const squareController = require('../controllers/squareController')
 const imageController = require('../controllers/imageController')
 const questionController = require('../controllers/questionController')
 const gameController = require('../controllers/gameController')
@@ -11,16 +9,8 @@ const userController = require('../controllers/userController')
 const roleController = require('../controllers/roleController')
 const accessGameController = require('../controllers/accessGameController')
 const questionGameController = require('../controllers/questionGameController')
-
-router.delete('/carousel/:id', carouselController.delete)
-router.put('/carousel/:id', carouselController.update)
-router.get('/carousel/:id', carouselController.getOne)
-router.post('/carousel', carouselController.create)
-
-router.delete('/square/:id', squareController.delete)
-router.put('/square/:id', squareController.update)
-router.get('/square/:id', squareController.getOne)
-router.post('/square', squareController.create)
+const themeGameController = require('../controllers/themeGameController')
+const carouselDataController = require('../controllers/carouselDataController')
 
 router.delete('/image/:id', imageController.delete)
 router.get('/image', imageController.getAll)
@@ -61,5 +51,13 @@ router.post('/accessGame', accessGameController.create)
 router.delete('/questionGame/:id', questionGameController.delete)
 router.get('/questionGame', questionGameController.getAll)
 router.post('/questionGame', questionGameController.create)
+
+router.delete('/themeGame/:id', themeGameController.delete)
+router.get('/themeGame', themeGameController.getAll)
+router.post('/themeGame', themeGameController.create)
+
+router.put('/carouselData/:id', carouselDataController.update)
+router.get('/carouselData', carouselDataController.getAll)
+router.post('/carouselData', carouselDataController.create)
 
 module.exports = router

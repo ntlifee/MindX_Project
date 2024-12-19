@@ -32,6 +32,19 @@ class questionGameController {
         }
     }
 
+    async getOne(req, res, next) {
+        try {
+            const questionGames = await QuestionGame.findAll({
+                where: {
+                    gameId: req.params.id,
+                }
+            })
+            res.json(questionGames)
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
+        }
+    }
+
     async delete(req, res, next) {
         try {
             const { id } = req.params

@@ -1,11 +1,12 @@
 const Router = require('express')
 const router = new Router()
-const carouselController = require('../controllers/carouselController')
 const userAnswerController = require('../controllers/userAnswerController')
-const checkRoleForGameMiddleware = require('../middleware/checkRoleForGameMiddleware')
+const carouselDataController = require('../controllers/carouselDataController')
+const questionGameController = require('../controllers/questionGameController')
 
-router.get('/:id', checkRoleForGameMiddleware(), carouselController.getOne)
-router.get('/:id/userAnswer', checkRoleForGameMiddleware(), userAnswerController.getUser)
-router.post('/:id', checkRoleForGameMiddleware(), userAnswerController.create)
+router.get('/carouselData', carouselDataController.getOne)
+router.get('/questionGame', questionGameController.getOne)
+router.get('/userAnswer', userAnswerController.getUser)
+router.post('/', userAnswerController.create)
 
 module.exports = router
