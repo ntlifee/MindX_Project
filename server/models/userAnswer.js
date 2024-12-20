@@ -9,10 +9,6 @@ const UserAnswer = sequelize.define('userAnswer',
             defaultValue: DataTypes.literal(`gen_random_uuid()`),
             allowNull: false
         },
-        questionNumber: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         points: {
             type: DataTypes.INTEGER,
             allowNull: false

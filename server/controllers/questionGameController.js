@@ -1,6 +1,6 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
-const { QuestionGame } = require('../models/index')
+const { QuestionGame, Question, UserAnswer } = require('../models/index')
 const { validateCheck, validateIsNull } = require('../validators/isNullValidator')
 
 class questionGameController {
@@ -35,9 +35,20 @@ class questionGameController {
     async getOne(req, res, next) {
         try {
             const questionGames = await QuestionGame.findAll({
+                attributes: { exclude: ['gameId', 'questionId'] },
                 where: {
-                    gameId: req.params.id,
-                }
+                    gameId: req.params.id
+                },
+                include: [{
+                    model: Question,
+                    required: false,
+                    attributes: { exclude: ['answer'] }
+                },
+                {
+                    model: UserAnswer,
+                    required: false,
+                    attributes: { exclude: ['userId', 'questionGameId'] }
+                }]
             })
             res.json(questionGames)
         } catch (error) {

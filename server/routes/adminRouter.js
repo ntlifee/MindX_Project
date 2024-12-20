@@ -32,7 +32,7 @@ router.put('/theme/:id', themeController.update)
 router.get('/theme', themeController.getAll)
 router.post('/theme', themeController.create)
 
-router.get('/userAnswer', userAnswerController.getAdmin)
+router.get('/userAnswer', userAnswerController.getAll)
 
 router.delete('/user/:id', userController.delete)
 router.put('/user/:id', userController.update)

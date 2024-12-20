@@ -1,4 +1,3 @@
-const verifyToken = require('../utils/verifyToken');
 const { Role, AccessGame } = require('../models/index')
 module.exports = function () {
     return async function (req, res, next) {
@@ -6,9 +5,8 @@ module.exports = function () {
             next()
         }
         try {
-            const decoded = verifyToken(req)
             const role = (await Role.findOne({
-                where: { name: decoded.role },
+                where: { name: req.user.role },
                 attributes: ['id']
             }))
             const roleGame = await AccessGame.findOne({
@@ -19,12 +17,11 @@ module.exports = function () {
                 attributes: ['id']
             })
             if (!roleGame) {
-                return res.status(403).json({ message: 'Нет доступа к данной игре' })
+                return res.status(403).json({ message: 'Нет доступа к данной игре!' })
             }
-            req.user = decoded
             next()
         } catch (error) {
-            return res.status(401).json({ message: 'Не авторизован' })
+            return res.status(400).json({ message: 'Ошибка доступа к игре!' })
         }
     }
 }
