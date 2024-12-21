@@ -5,9 +5,9 @@ const questionTemplate = {
 	label: 'Вопросы',
 	api: API.question,
 	fileds: [
-		{ type: 'question', label: 'Вопрос' },
-		{ type: 'answer', label: 'Ответ' },
-		{ type: 'imageId', label: 'Изображение' },
+		{ type: 'question', label: 'Вопрос', meta: 'string' },
+		{ type: 'answer', label: 'Ответ', meta: 'string' },
+		{ type: 'imageId', label: 'Изображение', meta: 'img' },
 	],
 };
 
@@ -16,11 +16,11 @@ const gameTemplate = {
 	label: 'Игры',
 	api: API.game,
 	fileds: [
-		{ type: 'typeGame', label: 'Тип' },
-		{ type: 'name', label: 'Название' },
-		{ type: 'startDate', label: 'Дата начала' },
-		{ type: 'endDate', label: 'Дата окончания' },
-		{ type: 'imageId', label: 'Изображение' },
+		{ type: 'typeGame', label: 'Тип', meta: 'string' },
+		{ type: 'name', label: 'Название', meta: 'string' },
+		{ type: 'startDate', label: 'Дата начала', meta: 'datetime' },
+		{ type: 'endDate', label: 'Дата окончания', meta: 'datetime' },
+		{ type: 'imageId', label: 'Изображение', meta: 'img' },
 	],
 };
 
@@ -29,7 +29,7 @@ const themeTemplate = {
 	label: 'Темы',
 	api: API.theme,
 	fileds: [
-		{ type: 'name', label: 'Название' },
+		{ type: 'name', label: 'Название', meta: 'string' },
 	],
 };
 
@@ -38,22 +38,31 @@ const userTemplate = {
 	label: 'Пользователи',
 	api: API.user,
 	fileds: [
-		{ type: 'username', label: 'Имя пользователя' },
-		{ type: 'role_name', label: 'Роль'}
+		{ type: 'username', label: 'Имя пользователя', meta: 'string' },
+		{ type: 'role_name', label: 'Роль', meta: 'string'}
 	],
-}
+};
 
 const userAnswerTemplate = {
 	type: 'userAnswer',
 	label: 'Ответы пользователей',
 	api: API.userAnswer,
 	fileds: [
-		{ type: 'questionNumber', label: 'Номер вопроса' },
-		{ type: 'userAnswer', label: 'Ответ' },
-		{ type: 'points', label: 'Очки' },
-		{ type: 'isCorrect', label: 'Правильно' },
+		{ type: 'questionNumber', label: 'Номер вопроса', meta: 'int' },
+		{ type: 'userAnswer', label: 'Ответ', meta: 'string' },
+		{ type: 'points', label: 'Очки', meta: 'int' },
+		{ type: 'isCorrect', label: 'Правильно', meta: 'bool' },
 	],
-}
+};
+
+const roleTemplate = {
+	type: 'role',
+  label: 'Роли',
+  api: API.role,
+  fileds: [
+    { type: 'name', label: 'Название', meta: 'string' },
+  ],
+};
 
 export const templates = {
 	question: questionTemplate,
@@ -61,4 +70,5 @@ export const templates = {
 	theme: themeTemplate,
 	user: userTemplate,
 	userAnswer: userAnswerTemplate,
+	role: roleTemplate,
 };

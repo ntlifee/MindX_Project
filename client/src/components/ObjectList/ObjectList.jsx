@@ -5,6 +5,7 @@ import ModelHandler from './../ModelHandlers/ModelHandler';
 import { useState, useEffect } from 'react';
 import { ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
 import { API } from './../../http/API'
+import moment from 'moment';
 
 const ObjectList = (props) => {
 	const { template, data, type, setReload, activeMenu, setActiveMenu } = props;
@@ -68,7 +69,7 @@ const ObjectList = (props) => {
 					<tr key={index}>
 						{template?.map((column, index) => (
 							<td key={index}>
-								{column.type === 'imageId' ? (
+								{column.meta === 'img' ? (
 									<Image
 										width={100}
 										height={100}
@@ -77,7 +78,9 @@ const ObjectList = (props) => {
 										}
 									/>
 								) : (
-									row[column.type]
+									column.meta === 'datetime'
+									? moment(new Date(row[column.type])).format('DD.MM.YYYY HH:mm')
+									: row[column.type]
 								)}
 							</td>
 						))}

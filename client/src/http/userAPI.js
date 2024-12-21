@@ -32,10 +32,22 @@ const check = async () => {
     return jwtDecode(data.token);
 };
 
+const update = async (model) => {
+    const { data } = await $authHost.put(`/api/admin/user/${model.id}`, model);
+    return data;
+}
+
+const addItem = async (item) => {
+    const { data } = await $authHost.post(`/api/admin/user`, item);
+    return data;
+}
+
 export const userAPI = {
   getList,
   getById,
   SignIn,
   SignUp,
-  check
+  check,
+  update,
+  addItem
 };
