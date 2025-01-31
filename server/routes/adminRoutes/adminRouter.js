@@ -1,0 +1,28 @@
+const Router = require('express')
+const router = new Router()
+const userAnswerController = require('../../controllers/userAnswerController')
+const imageRouter = require('./imageRouter')
+const questionRouter = require('./questionRouter')
+const gameRouter = require('./gameRouter')
+const themeRouter = require('./themeRouter')
+const userRouter = require('./userRouter')
+const roleRouter = require('./roleRouter')
+const accessGameRouter = require('./accessGameRouter')
+const questionGameRouter = require('./questionGameRouter')
+const themeGameRouter = require('./themeGameRouter')
+const carouselDataRouter = require('./carouselDataRouter')
+
+router.use('/image', imageRouter)
+router.use('/question', questionRouter)
+router.use('/game', gameRouter)
+router.use('/theme', themeRouter)
+router.use('/user', userRouter)
+router.use('/role', roleRouter)
+router.use('/accessGame', accessGameRouter)
+router.use('/questionGame', questionGameRouter)
+router.use('/themeGame', themeGameRouter)
+router.use('/carouselData', carouselDataRouter)
+
+router.get('/userAnswer', userAnswerController.getAll)
+
+module.exports = router

@@ -33,7 +33,7 @@ class carouselDataController {
 
     async getOne(req, res, next) {
         try {
-            const carouselData = await CarouselData.findAll({
+            const carouselData = await CarouselData.findOne({
                 where: {
                     gameId: req.params.id
                 },
