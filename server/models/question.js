@@ -18,6 +18,9 @@ const Question = sequelize.define('question',
             type: DataTypes.TEXT,
             allowNull: false
         },
+        timer: {
+            type: DataTypes.INTEGER
+        },
     },
     {
         timestamps: false

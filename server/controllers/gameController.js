@@ -6,6 +6,7 @@ const { validateIsNull, validateCheck } = require('../validators/isNullValidator
 class GameController {
     async create(req, res, next) {
         try {
+            //TODO множественная вставка для таблиц свезей с game
             const { typeGame, name, imageId, startDate, endDate } = req.body
             validateIsNull([typeGame, name, startDate, endDate])
             const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate })
