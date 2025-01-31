@@ -3,12 +3,12 @@ import { useState, useEffect } from 'react';
 import { API } from '../../../http/API';
 import { ErrorEmmiter, SuccessEmmiter } from './../../../components/Toastify/Notify.jsx';
 
-const Question = (props) => { 
+const Game = (props) => { 
   const { model, setSelected, setCreateMode, setReload} = props;
 
   const [question, setQuestion] = useState(model?.question ? model.question : '');
   const [answer, setAnswer] = useState(model?.answer ? model.answer : '');
-  const [imageFile, setImageFile] = useState(null)
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     model.question = question;
@@ -16,13 +16,10 @@ const Question = (props) => {
   useEffect(() => {
     model.answer = answer;
   }, [answer])
-  useEffect(() => {
-    console.log(imageFile)
-  }, [imageFile])
 
   const put = async () => {
     try {
-      const data = await API.question.update(model);
+      const data = await API.game.update(model);
       SuccessEmmiter(data.message);
       setSelected(null);
       setReload(true);
@@ -33,7 +30,7 @@ const Question = (props) => {
   };
   const create = async () => {
     try {
-      const data = await API.question.addItem(model);
+      const data = await API.game.addItem(model);
       SuccessEmmiter(data.message);
       setCreateMode(null);
       setReload(true);
@@ -64,11 +61,14 @@ const Question = (props) => {
           value={question} onChange={(e) => setQuestion(e.target.value)}/>      
         <input type="text" placeholder="Текст ответа..."
           value={answer} onChange={(e) => setAnswer(e.target.value)}/>
-        <input type="file" placeholder="Загрузить изображение"
-          onChange={(e) => setImageFile(e.target.files[0])}/>
+        {/* <input type="file" placeholder="Загрузить изображение"
+          onChange={(e) => setImageFile(e.target.files[0])}/> */}
+        <select>
+          <option value=""></option>
+        </select>
       </form>
     </div>
   );
 }
  
-export default Question;
+export default Game;

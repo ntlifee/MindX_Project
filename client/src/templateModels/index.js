@@ -43,7 +43,7 @@ const userTemplate = {
 	],
 };
 
-const userAnswerTemplate = {
+/* const userAnswerTemplate = {
 	type: 'userAnswer',
 	label: 'Ответы пользователей',
 	api: API.userAnswer,
@@ -53,7 +53,7 @@ const userAnswerTemplate = {
 		{ type: 'points', label: 'Очки', meta: 'int' },
 		{ type: 'isCorrect', label: 'Правильно', meta: 'bool' },
 	],
-};
+}; */
 
 const roleTemplate = {
 	type: 'role',
@@ -69,6 +69,6 @@ export const templates = {
 	game: gameTemplate,
 	theme: themeTemplate,
 	user: userTemplate,
-	userAnswer: userAnswerTemplate,
+	/* userAnswer: userAnswerTemplate, */
 	role: roleTemplate,
 };
