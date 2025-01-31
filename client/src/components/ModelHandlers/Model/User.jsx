@@ -10,14 +10,10 @@ const User = (props) => {
   const [roleId, setRoleId] = useState(model?.role ? model.role.id : null);
   const [roleList, setRoleList] = useState([]);
 
-  const getRoles = async () => {
-    await API.role.getList()
+  useEffect(() => {
+    API.role.getList()
       .then(response => setRoleList(response))
       .catch(error => console.error(error)); 
-  };
-
-  useEffect(() => {
-    getRoles();
   },[]);
 
   useEffect(() => {
