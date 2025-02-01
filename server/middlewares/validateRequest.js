@@ -7,7 +7,7 @@ const validateRequest = (schema) => {
         });
 
         if (error) {
-            const errors = error.details.map((detail) => detail.message);
+            const errors = error.details.map((detail, index) => detail.path.length === 1 ? detail.message : detail.message + (detail.path[0]));
             return res.status(400).json({ errors });
         }
         req.body = value; // Обновляем тело запроса (только валидные поля)

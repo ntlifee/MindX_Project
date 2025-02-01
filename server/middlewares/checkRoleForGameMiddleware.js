@@ -5,16 +5,17 @@ module.exports = function () {
             next()
         }
         try {
-            const role = (await Role.findOne({
-                where: { name: req.user.role },
-                attributes: ['id']
-            }))
             const roleGame = await AccessGame.findOne({
                 where: {
-                    roleId: role.id,
+                    '$role.name$': req.user.role,
                     gameId: req.params.id
                 },
-                attributes: ['id']
+                include: [{
+                    model: Role,
+                    attributes: [],
+                    required: true,
+                }],
+                attributes: ['id'],
             })
             if (!roleGame) {
                 return res.status(403).json({ message: 'Нет доступа к данной игре!' })

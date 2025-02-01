@@ -21,12 +21,12 @@ const baseSchema = Joi.object({
 });
 
 const usernameValidation = Joi.string()
-    .alphanum()
+    .pattern(/^[a-zA-Z0-9А-Яа-яЁё]+$/)
     .min(3)
     .max(30)
     .messages({
         "string.base": "Поле 'username' должно быть строкой.",
-        "string.alphanum": "Поле 'username' должно содержать только буквы и цифры.",
+        "string.pattern.base": "Поле 'username' должно содержать только буквы и цифры.",
         "string.min": "Поле 'username' должно содержать не менее 3 символов.",
         "string.max": "Поле 'username' должно содержать не более 30 символов.",
     });
