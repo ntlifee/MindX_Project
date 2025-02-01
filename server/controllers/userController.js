@@ -44,10 +44,9 @@ class UserController {
         try {
             const { username, password, confirmPassword } = req.body
             validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
-            const role = "USER"
             const hashPassword = bcrypt.hashSync(password, 5)
-            const user = await User.create({ username, password: hashPassword, roleId: "aff50f23-2fbc-41be-ba07-c1c69c5e388c" })
-            const token = generateJwt(user.id, user.username, role)
+            const user = await User.create({ username, password: hashPassword })
+            const token = generateJwt(user.id, user.username, "USER")
             return res.json({ token })
         } catch (error) {
             errorHandling(error)
