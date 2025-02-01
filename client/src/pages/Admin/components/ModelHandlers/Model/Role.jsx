@@ -1,25 +1,19 @@
 import './model.scss';
 import { useState, useEffect } from 'react';
-import { API } from '../../../http/API';
-import { ErrorEmmiter, SuccessEmmiter } from './../../../components/Toastify/Notify.jsx';
+import { API } from '@mindx/http/API';
+import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
 
-const Question = (props) => { 
+const Role = (props) => { 
   const { model, setSelected, setCreateMode, setReload} = props;
-
-  const [question, setQuestion] = useState(model?.question ? model.question : '');
-  const [answer, setAnswer] = useState(model?.answer ? model.answer : '');
-  const [image, setImage] = useState(null);
+  const [role, setRole] = useState(model?.name ? model.name : '');
 
   useEffect(() => {
-    model.question = question;
-  }, [question])
-  useEffect(() => {
-    model.answer = answer;
-  }, [answer])
+    model.name = role;
+  }, [role])
 
   const put = async () => {
     try {
-      const data = await API.question.update(model);
+      const data = await API.role.update(model);
       SuccessEmmiter(data.message);
       setSelected(null);
       setReload(true);
@@ -30,7 +24,7 @@ const Question = (props) => {
   };
   const create = async () => {
     try {
-      const data = await API.question.addItem(model);
+      const data = await API.role.addItem(model);
       SuccessEmmiter(data.message);
       setCreateMode(null);
       setReload(true);
@@ -57,15 +51,11 @@ const Question = (props) => {
         </>
       }
       <form onSubmit={e => e.preventDefault()}>
-        <input type="text" placeholder="Текст вопроса..."
-          value={question} onChange={(e) => setQuestion(e.target.value)}/>      
-        <input type="text" placeholder="Текст ответа..."
-          value={answer} onChange={(e) => setAnswer(e.target.value)}/>
-        {/* <input type="file" placeholder="Загрузить изображение"
-          value={image} onChange={(e) => setImage(e.target.value)}/> */}
+        <input type="text" placeholder="Название роли..."
+          value={role} onChange={(e) => setRole(e.target.value)}/>      
       </form>
     </div>
   );
 }
  
-export default Question;
+export default Role;

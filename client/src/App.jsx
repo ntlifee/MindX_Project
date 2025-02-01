@@ -1,16 +1,18 @@
-import './styles/main.css';
+import '@mindx/styles/main.css';
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { useEffect, useContext, useState } from 'react';
-import Navbar from './components/Navbar/Navbar';
-import Footer from './components/Footer/Footer';
-import BurgerMenu from './components/BurgerMenu/BurgerMenu';
-import AppRouter from './components/AppRouter';
-import Loading from './components/Loading/Loading';
 import { observer } from 'mobx-react-lite';
-import { Context } from './index.js';
-import { API } from './http/API';
-import { Notify } from './components/Toastify/Notify.jsx';
+
+import Navbar from '@mindx/components/Navbar/Navbar';
+import Footer from '@mindx/components/Footer/Footer';
+import BurgerMenu from '@mindx/components/BurgerMenu/BurgerMenu';
+import AppRouter from '@mindx/components/AppRouter';
+import Loading from '@mindx/components/UI/Loading/Loading';
+import { Notify } from '@mindx/components/UI/Toastify/Notify';
+
+import { Context } from '@mindx/index';
+import { API } from '@mindx/http/API';
 
 const App = observer(() => {
 	const [isActiveBurger, setIsActiveBurger] = useState(false);

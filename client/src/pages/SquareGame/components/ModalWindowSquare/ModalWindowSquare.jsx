@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 const ModalWindowSquare = (props) => {
     const { active, setActive, numberQuestion, isCloseQuestions, setisCloseQuestions, score, setScore, isQuestionTemporary } = props;
     const checkCloseQuestions = isCloseQuestions[numberQuestion - 1]
-    const [time, setTime] = useState(checkCloseQuestions === undefined && isQuestionTemporary ? 120 : 0);
+    const [time, setTime] = useState(checkCloseQuestions === null && isQuestionTemporary ? 120 : 0);
     const scoreQuestion = (((numberQuestion - 1) % 5 + 1) * 10)
     useEffect(() => {
         time > 0 ? setTimeout(() => setTime(time - 1), 1000) 
@@ -13,7 +13,7 @@ const ModalWindowSquare = (props) => {
 
 
     const handleAnswer = () => {
-        if (checkCloseQuestions === undefined) {
+        if (checkCloseQuestions === null) {
             //#region Обработки ответа
 
             //#endregion
@@ -46,10 +46,10 @@ const ModalWindowSquare = (props) => {
                     some content
                 </div>
                 <div className={classes.content_answer}>
-                    {checkCloseQuestions === undefined ?
+                    {checkCloseQuestions === null ?
                         <textarea defaultValue='' placeholder='Введите ответ:' className={classes.text_answer} /> :
                         <textarea defaultValue='your answer' readOnly className={classes.text_answer} />}
-                    {checkCloseQuestions === undefined ?
+                    {checkCloseQuestions === null ?
                         <>
                             {isQuestionTemporary ?
                             <span className={classes.time}>{time}</span> :
@@ -60,7 +60,7 @@ const ModalWindowSquare = (props) => {
                             <span className={classes.time}>&#10060;</span>
                     }
                     <div className={classes.content_buttons}>
-                        {checkCloseQuestions === undefined ?
+                        {checkCloseQuestions === null ?
                             <><button className={`${classes.button} ${classes.green}`} onClick={() => handleAnswer()}>Ответить</button>
                                 <button className={`${classes.button} ${classes.red}`} onClick={() => handleSurrender()}>Сдаться (-{scoreQuestion})</button></> :
                             <button className={`${classes.button} ${classes.red}`} onClick={() => setActive(false)}>Закрыть</button>}

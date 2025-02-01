@@ -1,7 +1,7 @@
 import './model.scss';
-import { useState, useEffect } from 'react';
-import { API } from '../../../http/API';
-import { ErrorEmmiter, SuccessEmmiter } from './../../../components/Toastify/Notify.jsx';
+import { useState, useEffect, useCallback } from 'react';
+import { API } from '@mindx/http/API';
+import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
 
 const User = (props) => { 
   const { model, setSelected, setCreateMode, setReload} = props;

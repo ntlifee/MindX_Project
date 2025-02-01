@@ -1,7 +1,6 @@
 import './navbar.scss';
-import AccountBtn from '../AccountBtn/AccountBtn';
 import { NavLink } from 'react-router-dom';
-import Logo from './../../components/Logo/Logo';
+import Logo from './../../components/UI/Logo/Logo';
 import { useState, useEffect, useContext } from "react";
 import BurgerButton from './../BurgerButton/BurgerButton';
 import { Context } from '../../index';

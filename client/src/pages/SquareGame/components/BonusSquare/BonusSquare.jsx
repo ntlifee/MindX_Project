@@ -3,7 +3,7 @@ import classes from './bonusSquare.module.css'
 const BonusSquare = (props) => {
     const { value, bonus } = props
     return (
-        (bonus === undefined ?
+        (bonus === null ?
             <td className={classes.bonus}>+{value}</td> :
             bonus ?
                 <td className={`${classes.bonus} ${classes.true}`}>+{value} &#9989;</td> :

@@ -1,5 +1,5 @@
 import classes from './carouselcreteorupdate.module.css'
-import SelectNumber from '../../../components/SelectNumber/SelectNumber';
+import SelectNumber from '../SelectNumber/SelectNumber';
 
 import { useState } from 'react'
 

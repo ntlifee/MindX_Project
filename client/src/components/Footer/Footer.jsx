@@ -1,5 +1,5 @@
 import classes from "./footer.module.css";
-import SocialLink from "../SocialLink/SocialLink";
+import SocialLink from "../UI/SocialLink/SocialLink";
 
 import vk from './vk.svg';
 import gitHub from './gitHub.svg';

@@ -1,5 +1,5 @@
 import './lobby.scss'
-import GameCard from '../../components/GameCard/GameCard';
+import GameCard from '@mindx/components/GameCard/GameCard';
 
 const Lobby = (props) => {
   //#region development

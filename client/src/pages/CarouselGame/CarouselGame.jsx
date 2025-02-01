@@ -1,7 +1,7 @@
 import classes from './carouselgame.module.css'
 
-import WindowQuestion from '../../components/WindowQuestion/Windowquestion'
-import GameInformationPanel from './../../components/GameInformationPanel/GameInformationPanel'
+import WindowQuestion from './components/WindowQuestion/Windowquestion'
+import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel'
 
 import Data from './Questions_Carousel.json'
 

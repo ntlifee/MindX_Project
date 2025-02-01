@@ -14,7 +14,7 @@ const ErrorEmmiter = (error) => toast.error(error, {
     closeOnClick: true,
     pauseOnHover: false,
     draggable: true,
-    progress: undefined,
+    progress: null,
     theme: "colored",
   });
 
@@ -25,7 +25,7 @@ const SuccessEmmiter = (message) => toast.success(message, {
   closeOnClick: true,
   pauseOnHover: false,
   draggable: true,
-  progress: undefined,
+  progress: null,
   theme: "colored",
   });
  

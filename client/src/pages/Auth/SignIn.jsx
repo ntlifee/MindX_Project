@@ -1,11 +1,11 @@
 import './auth.scss';
-import { ROUTES } from '../../utils/consts.js';
-import { API } from '../../http/API.js';
+import { ROUTES } from '@mindx/utils/consts.js';
+import { API } from '@mindx/http/API.js';
 import { useContext, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { Context } from '../../index.js';
-import { ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
+import { Context } from '@mindx/index.js';
+import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify.jsx';
 
 const SignIn = observer( () => {
   const { user } = useContext(Context);

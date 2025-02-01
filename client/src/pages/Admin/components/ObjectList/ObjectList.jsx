@@ -1,10 +1,10 @@
 import './objectList.scss';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 import { Image } from 'react-bootstrap';
-import ModelHandler from './../ModelHandlers/ModelHandler';
+import ModelHandler from '../ModelHandlers/ModelHandler.jsx';
 import { useState, useEffect } from 'react';
-import { ErrorEmmiter, SuccessEmmiter } from './../../components/Toastify/Notify.jsx';
-import { API } from './../../http/API'
+import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify.jsx';
+import { API } from '@mindx/http/API.js'
 import moment from 'moment';
 
 const ObjectList = (props) => {

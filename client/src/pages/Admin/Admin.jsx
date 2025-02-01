@@ -1,6 +1,6 @@
 import './admin.scss';
-import ObjectList from '../../components/ObjectList/ObjectList';
-import Tabs from '../../components/Tabs/Tabs';
+import ObjectList from './components/ObjectList/ObjectList';
+import Tabs from './components/Tabs/Tabs';
 import { useState } from 'react';
 
 const AdminPage = () => {

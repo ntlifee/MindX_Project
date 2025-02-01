@@ -8,7 +8,7 @@ const QuestionButton = (props) => {
     }
     return (
         <td className={classes.question_button_wrapper}>
-            {isCloseQuestions === undefined ?
+            {isCloseQuestions === null ?
                 <a href="#" className={classes.question_button} onClick={() => handleClick()}>{level ? level * 10 : '?'} {isQuestionTemporary && '\u231B'}</a>
                 :
                 isCloseQuestions ?

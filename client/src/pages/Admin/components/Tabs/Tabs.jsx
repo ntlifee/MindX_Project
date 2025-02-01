@@ -1,6 +1,6 @@
 import './tabs.scss';
 import { useState, useEffect } from 'react';
-import { templates } from '../../templateModels/index'
+import { templates } from '@mindx/templateModels/index'
 
 const Tabs = (props) => {
 	const { setTemplate, setData, reload, setReload } = props;

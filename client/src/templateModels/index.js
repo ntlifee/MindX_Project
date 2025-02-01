@@ -1,4 +1,4 @@
-import { API } from '../http/API';
+import { API } from '@mindx/http/API';
 
 const questionTemplate = {
 	type: 'question',

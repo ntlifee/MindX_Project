@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
-import GameInformationPanel from './../../components/GameInformationPanel/GameInformationPanel'
-import QuestionButton from '../../components/QuestionButton/QuestionButton'
-import ModalWindowSquare from '../../components/ModalWindowSquare/ModalWindowSquare'
+import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel'
+import QuestionButton from './components/QuestionButton/QuestionButton'
+import ModalWindowSquare from './components/ModalWindowSquare/ModalWindowSquare'
 import classes from './squaregame.module.css'
-import useDidMountEffect from './../../customHooks/useDidMountEffect'
-import BonusSquare from '../../components/BonusSquare/BonusSquare'
+import useDidMountEffect from '@mindx/customHooks/useDidMountEffect'
+import BonusSquare from './components/BonusSquare/BonusSquare'
 
 const SquareGame = (props) => {
     let { levels, themes } = props
     const [modalActive, setModalActive] = useState(false)
     const [numberQuestion, setNumberQuestion] = useState(0)
-    const [isCloseQuestions, setisCloseQuestions] = useState(new Array(25).fill(undefined))
+    const [isCloseQuestions, setisCloseQuestions] = useState(new Array(25).fill(null))
     const isQuestionTemporary = []
-    const [bonusRow, setBonusRow] = useState(new Array(5).fill(undefined))
-    const [bonusCol, setBonusCol] = useState(new Array(5).fill(undefined))
+    const [bonusRow, setBonusRow] = useState(new Array(5).fill(null))
+    const [bonusCol, setBonusCol] = useState(new Array(5).fill(null))
     const [score, setScore] = useState(0)
 
     //#region development
@@ -29,14 +29,14 @@ const SquareGame = (props) => {
     
 
     useDidMountEffect(() => {
-        if (isCloseQuestions[numberQuestion - 1] !== undefined) {
+        if (isCloseQuestions[numberQuestion - 1] !== null) {
             const indexRow = Math.floor((numberQuestion - 1) / 5)
             const indexCol = (numberQuestion - 1) % 5
 
             let newBonusRow = [...bonusRow]
             let newBonusCol = [...bonusCol]
 
-            if (newBonusRow[indexRow] === undefined) {
+            if (newBonusRow[indexRow] === null) {
                 let count = 0
                 for (let i = 0; i < 5; i++) {
                     if (isCloseQuestions[indexRow * 5 + i] === true) {
@@ -54,7 +54,7 @@ const SquareGame = (props) => {
             }
 
 
-            if (newBonusCol[indexCol] === undefined) {
+            if (newBonusCol[indexCol] === null) {
                 let count = 0
                 for (let i = 0; i < 5; i++) {
                     if (isCloseQuestions[i * 5 + indexCol] === true) {

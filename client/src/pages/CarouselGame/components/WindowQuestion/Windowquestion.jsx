@@ -1,6 +1,6 @@
 import classes from './windowquestion.module.css'
 
-import InputComponent from '../../components/Input/Input';
+import InputComponent from '@mindx/components/UI/Input/Input';
 
 const WindowQuestion = (props) => {
     const { question, point, inputValue, action, isCorrect, readOnly, idx, isCentre, visibility, animation } = props;
