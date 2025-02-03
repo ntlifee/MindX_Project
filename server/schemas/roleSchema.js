@@ -15,14 +15,12 @@ const roleSchema = Joi.object({
         })
 })
 
-const rolesSchema = Joi.array()
+const roleArraySchema = Joi.array()
     .items(roleSchema)
     .min(1)
-    .unique((a, b) => a.name === b.name)
     .messages({
         "array.base": "Ожидается массив ролей.",
         "array.min": "Массив ролей должен содержать хотя бы одно значение.",
-        "array.unique": "Роли не могут повторяться по полю 'name'."
     });
 
-module.exports = { rolesSchema, roleSchema };
+module.exports = { roleArraySchema, roleSchema };

@@ -5,7 +5,7 @@ const { validateCheck } = require('../validators/isNullValidator')
 
 function errorHandling(error, msg) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-        error.message = `Похожая роль '${error.fields.name}' уже существует! Отменена ${msg} записей!`
+        error.message = `Роль '${error.fields.name}' дублируется! Отменена ${msg} записей!`
     }
 }
 
