@@ -13,7 +13,7 @@ class roleController {
     async create(req, res, next) {
         try {
             const role = req.body
-            const roleData = await Role.bulkCreate([...role])
+            const roleData = await Role.bulkCreate(role)
             res.json({ message: 'Роли добавлены', roleData })
         } catch (error) {
             errorHandling(error, 'вставки')

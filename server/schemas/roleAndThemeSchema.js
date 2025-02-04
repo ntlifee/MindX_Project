@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const roleSchema = Joi.object({
+const schema = Joi.object({
     name: Joi.string()
         .empty()
         .pattern(/^[a-zA-Z0-9А-Яа-яЁё]+$/)
@@ -15,12 +15,12 @@ const roleSchema = Joi.object({
         })
 })
 
-const roleArraySchema = Joi.array()
-    .items(roleSchema)
+const arraySchema = Joi.array()
+    .items(schema)
     .min(1)
     .messages({
         "array.base": "Ожидается массив ролей.",
         "array.min": "Массив ролей должен содержать хотя бы одно значение.",
     });
 
-module.exports = { roleArraySchema, roleSchema };
+module.exports = { arraySchema, schema };
