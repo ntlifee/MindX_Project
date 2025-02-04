@@ -1,15 +1,24 @@
 @import '@mindx/Mixins/mixins.scss';
 
+.handler-dark {
+  position: absolute;
+  z-index: 900;
+  background: rgba(0, 0, 0, 0.5);
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
 .handler-section {
   position: absolute;
-  width: 500px;
+  width: 600px;
   height: 100%;
   background: url("../../../../img/background-site.jpg") no-repeat;
     background-size: cover;
     background-position: center;
     box-sizing: border-box;
-  border: 3px solid #ffa600;
-  border-radius: 20px 0 0 20px;
+  border: 2px solid #ffa600;
   display: flex;
   z-index: 999;
   right: 0;

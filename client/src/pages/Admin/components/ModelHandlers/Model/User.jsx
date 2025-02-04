@@ -4,7 +4,7 @@ import { API } from '@mindx/http/API';
 import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
 
 const User = (props) => { 
-  const { model, setSelected, setCreateMode, setReload} = props;
+  const { model } = props;
   const [username, setUsername] = useState(model?.username ? model.username : '');
   const [password, setPassword] = useState(model?.password ? model.password : '');
   const [roleId, setRoleId] = useState(model?.role ? model.role.id : null);
@@ -30,45 +30,8 @@ const User = (props) => {
     model.roleId = roleId;
   }, [roleId])
 
-  const put = async () => {
-    try {
-      const data = await API.user.update(model);
-      SuccessEmmiter(data.message);
-      setSelected(null);
-      setReload(true);
-    } catch(error) {     
-      ErrorEmmiter(error.response.data.message);
-      console.error(error);
-    }
-  };
-  const create = async () => {
-    try {
-      const data = await API.user.addItem(model);
-      SuccessEmmiter(data.message);
-      setCreateMode(null);
-      setReload(true);
-    } catch(error) {     
-      ErrorEmmiter(error.response.data.message);
-      console.error(error);
-    }
-  };
   return (    
     <div className="model-section">
-      {model?.mode === 'edit' ? 
-        <>
-          <div className='btn-container'>
-            <button className='btn success' onClick={() => put()}>Сохранить</button>
-            <button className='btn cancel' onClick={() => setSelected(null)}>Отменить</button>
-          </div>
-        </>
-        :
-        <>
-          <div className='btn-container'>
-            <button className='btn success' onClick={() => create()}>Сохранить</button>
-            <button className='btn cancel' onClick={() => setCreateMode(false)}>Отменить</button>
-          </div>
-        </>
-      }
       <form onSubmit={e => e.preventDefault()}>
         <input type="text" placeholder="Имя пользователя..."
           value={username} onChange={(e) => setUsername(e.target.value)}/>      

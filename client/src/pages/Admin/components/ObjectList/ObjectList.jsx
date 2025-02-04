@@ -1,32 +1,23 @@
 import './objectList.scss';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 import { Image } from 'react-bootstrap';
-import ModelHandler from '../ModelHandlers/ModelHandler.jsx';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify.jsx';
 import { API } from '@mindx/http/API.js'
 import moment from 'moment';
 
 const ObjectList = (props) => {
-	const { template, data, type, setReload, activeMenu, setActiveMenu } = props;
-	const [selected, setSelected] = useState(null);
-	const [createMode, setCreateMode] = useState(false);
+	const { template, data, type, setReload, state, setState } = props;
 	const [searchTerm, setSearchTerm] = useState('');
-	useEffect(() => {
-		if (selected) {
-			setCreateMode(false);
-		}
-	}, [selected]);
-	useEffect(() => {
-		if (createMode) {
-			setSelected(null);
-		}
-	}, [createMode]);
+
 	const editItem = (item) => {
-		setActiveMenu(true);
-    item.mode = 'edit';
-		setSelected(item);
+		setState({
+			mode: 'edit',
+			item: item,
+			type: type,
+		})
   };
+
 	const deleteItem = async (item) => {
     try {
 			const data = await API[type].deleteById(item.id);
@@ -38,14 +29,14 @@ const ObjectList = (props) => {
 		}
   };
 	const createItem = () => {
-		setActiveMenu(true);
-		setCreateMode(true);
+		setState({
+			mode: 'create',
+      item: {},
+      type: type,
+		})
 	};
 	return (
 		<>
-		{ activeMenu && (selected || createMode) ? <ModelHandler model={selected ? selected : {}} type={type} 
-								setSelected={setSelected} setCreateMode={setCreateMode}
-								setReload={setReload}/> : <></>}
 		<div className='table-header'>
 			<input 
 				type='text' 

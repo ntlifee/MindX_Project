@@ -1,14 +1,66 @@
 import './handler.scss'
 import Model from './Models';
+import { API } from '@mindx/http/API';
+import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
+import { useEffect } from 'react';
 
 const ModelHandler = (props) => {
-  const { model, type, setSelected, setCreateMode, setReload } = props;
-  const Component = Model[type];
+  const { state, setState } = props;
+  const Component = Model[state.type];
+
+  const put = async () => {
+    try {
+      const data = await API[state.type].update(state.item);
+      SuccessEmmiter(data.message);
+      cancel();
+    } catch(error) {     
+      const errorsArray = error.response.data.errors;
+      errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
+      console.error(error);
+    }
+  };
+  const create = async () => {
+    try {
+      const data = await API[state.type].addItem(state.item);
+      SuccessEmmiter(data.message);
+      cancel();
+    } catch(error) {
+      const errorsArray = error.response.data.errors;
+      errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
+      console.error(error);
+    }
+  };
+
+  const cancel = () => {
+    setState({});
+  };
+
   return ( 
-    <div className="handler-section">
-      {Component ? <Component model={model} setSelected={setSelected} setCreateMode={setCreateMode} setReload={setReload}/> : <></>}
-    </div>
-   );
+    <>
+      <div className='handler-dark' onClick={ () => cancel() }></div>
+      <div className="handler-section">
+        {state?.mode === 'edit' ? 
+          <>
+            <div className='btn-container'>
+              <button className='btn success' onClick={() => put() }>Сохранить</button>
+              <button className='btn cancel' onClick={() => cancel() }>Отменить</button>
+            </div>
+          </>
+          :
+          <>
+            <div className='btn-container'>
+              <button className='btn success' onClick={() => create() }>Сохранить</button>
+              <button className='btn cancel' onClick={() => cancel() }>Отменить</button>
+            </div>
+          </>
+        }
+        { Component 
+          ? <Component model={state.item}/> 
+          : <></> 
+        }
+      </div>
+    </>
+  );
 }
 
 export default ModelHandler;
