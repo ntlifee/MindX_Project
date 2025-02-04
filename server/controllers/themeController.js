@@ -1,21 +1,20 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { Theme } = require('../models/index')
-const { validateObjectIsNull, validateCheck, validateIsNull } = require('../validators/isNullValidator')
+const { validateCheck } = require('../validators/isNullValidator')
 
 function errorHandling(error, msg) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-        error.message = `Похожая тема '${error.fields.name}' уже существует! Отменена ${msg} записей!`
+        error.message = `Тема '${error.fields.name}' дублируется! Отменена ${msg} записей!`
     }
 }
 
 class themeController {
     async create(req, res, next) {
         try {
-            const themes = Array.isArray(req.body) ? req.body : [req.body]
-            validateObjectIsNull(themes)
-            const themesData = await Theme.bulkCreate([...themes])
-            res.json({ message: themes.length === 1 ? 'Тема добавлена' : 'Темы добавлены', themesData })
+            const themes = req.body
+            const themesData = await Theme.bulkCreate(themes)
+            res.json({ message: 'Темы добавлены', themesData })
         } catch (error) {
             errorHandling(error, 'вставки')
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
@@ -52,7 +51,6 @@ class themeController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id темы')
             const { name } = req.body;
-            validateIsNull([name]);
             const isUpdate = await Theme.update(
                 {
                     name: name,

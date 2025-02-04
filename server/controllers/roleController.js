@@ -1,21 +1,20 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { Role } = require('../models/index')
-const { validateObjectIsNull, validateCheck, validateIsNull } = require('../validators/isNullValidator')
+const { validateCheck } = require('../validators/isNullValidator')
 
 function errorHandling(error, msg) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-        error.message = `Похожая роль '${error.fields.name}' уже существует! Отменена ${msg} записей!`
+        error.message = `Роль '${error.fields.name}' дублируется! Отменена ${msg} записей!`
     }
 }
 
 class roleController {
     async create(req, res, next) {
         try {
-            const role = Array.isArray(req.body) ? req.body : [req.body]
-            validateObjectIsNull(role)
-            const roleData = await Role.bulkCreate([...role])
-            res.json({ message: roleData.length === 1 ? 'Роль добавлена' : 'Роли добавлены', roleData })
+            const role = req.body
+            const roleData = await Role.bulkCreate(role)
+            res.json({ message: 'Роли добавлены', roleData })
         } catch (error) {
             errorHandling(error, 'вставки')
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
@@ -52,7 +51,6 @@ class roleController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id роли')
             const { name } = req.body;
-            validateIsNull([name]);
             const isUpdate = await Role.update(
                 {
                     name: name,

@@ -2,7 +2,7 @@ const ApiError = require('../error/ApiError')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User, Role } = require('../models/index')
-const { validateIsNull, validateCheck } = require('../validators/isNullValidator')
+const { validateCheck } = require('../validators/isNullValidator')
 const { where } = require('sequelize')
 
 const generateJwt = (id, username, role) => {
@@ -27,20 +27,26 @@ function errorHandling(error) {
 }
 
 class UserController {
-    async signup(req, res, next) {
+    async createUser(req, res, next) {
         try {
-            const { username, password, roleId } = req.body
-            validateIsNull([username, password])
-            let role
-            if (roleId) {
-                role = await FindRole(roleId)
-            }
-            else {
-                role = 'USER'
-            }
+            const { username, password, confirmPassword, roleId } = req.body
+            validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
+            await FindRole(roleId)
             const hashPassword = bcrypt.hashSync(password, 5)
             const user = await User.create({ username, password: hashPassword, roleId })
-            const token = generateJwt(user.id, user.username, role)
+            return res.json({ "message": "Пользователь создан!" })
+        } catch (error) {
+            errorHandling(error)
+            return next(ApiError.badRequest(`Ошибка регистрации: ${error.message}`))
+        }
+    }
+    async signup(req, res, next) {
+        try {
+            const { username, password, confirmPassword } = req.body
+            validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
+            const hashPassword = bcrypt.hashSync(password, 5)
+            const user = await User.create({ username, password: hashPassword })
+            const token = generateJwt(user.id, user.username, "USER")
             return res.json({ token })
         } catch (error) {
             errorHandling(error)
@@ -105,13 +111,12 @@ class UserController {
         }
     }
 
-    async update(req, res, next) {
+    async updateUser(req, res, next) {
         try {
             const { id } = req.params
             validateCheck(!id, 'Не задан id пользователя')
-            const { username, password, roleId } = req.body;
-            validateIsNull([username, password, roleId]);
-            await FindRole(roleId)
+            const { username, password, confirmPassword, roleId } = req.body;
+            validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
             const isUpdate = await User.update(
                 {
                     username: username,
@@ -126,6 +131,33 @@ class UserController {
             );
             validateCheck(!isUpdate[0], 'Пользователь не найден')
             res.json({ message: 'Данные пользователя обновлены' });
+        } catch (error) {
+            errorHandling(error)
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))
+        }
+    }
+
+    async update(req, res, next) {
+        try {
+            const { id } = req.params
+            validateCheck(!id, 'Не задан id пользователя')
+            validateCheck(id !== req.user.id, 'Вы не можете поменять данные другому человеку!')
+            const { username, password, confirmPassword } = req.body;
+            validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
+            const isUpdate = await User.update(
+                {
+                    username: username,
+                    password: bcrypt.hashSync(password, 5)
+                },
+                {
+                    where: {
+                        id: id,
+                    }
+                }
+            );
+            validateCheck(!isUpdate[0], 'Пользователь не найден')
+            const token = generateJwt(req.user.id, username, req.user.role)
+            res.json({ message: 'Данные пользователя обновлены', token: token });
         } catch (error) {
             errorHandling(error)
             return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))

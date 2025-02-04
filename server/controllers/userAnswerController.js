@@ -8,10 +8,10 @@ class userAnswerController {
         try {
             const gameId = req.params.id
             const { questionGameId, questionId, points, userAnswer } = req.body
-            const isInsert = await UserAnswer.findOne({ attributes: ['id'], where: { questionGameId } })
+            const isInsert = await UserAnswer.findOne({ attributes: ['id'], where: { questionGameId, userId: req.user.id } })
             validateCheck(isInsert, 'Ответ был дан ранее!')
             let isCorrect
-            const { answer } = (await Question.findOne({ attributes: ['answer'], where: { id: questionId } })).dataValues
+            const { answer } = (await Question.findOne({ attributes: ['answer'], where: { id: questionId } }))?.dataValues
             isCorrect = answer === userAnswer ? true : false
             const userAnswerData = await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
             res.json({ message: 'Ответ добавлен', isCorrect })
