@@ -13,7 +13,7 @@ class questionController {
     async create(req, res, next) {
         try {
             const questions = req.body
-            const questionsData = await Question.bulkCreate([...questions])
+            const questionsData = await Question.bulkCreate(questions)
             res.json({ message: 'Вопросы добавлены', questionsData })
         } catch (error) {
             errorHandling(error, 'вставки')

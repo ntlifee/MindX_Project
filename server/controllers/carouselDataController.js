@@ -4,18 +4,9 @@ const { CarouselData } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
 
 class carouselDataController {
-    async create(req, res, next) {
+    async createForGame(carouselData) {
         try {
-            const { gameId, scoreFirst, scoreSuccess, scoreFailure } = req.body
-            const iscarouselData = await CarouselData.findOne({
-                where: {
-                    gameId: gameId
-                },
-                attributes: ['id']
-            })
-            validateCheck(iscarouselData, 'Данные уже добавлены к игре!')
-            const carouselData = await CarouselData.create({ gameId, scoreFirst, scoreSuccess, scoreFailure })
-            res.json({ message: 'Данные добавлены к игре', carouselData })
+            await CarouselData.create(carouselData)
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }

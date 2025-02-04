@@ -1,13 +1,19 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { AccessGame } = require('../models/index')
-const { validateCheck, validateIsNull } = require('../validators/isNullValidator')
+const { validateCheck } = require('../validators/isNullValidator')
 
 class accessGameController {
+    async createForGame(accessGame) {
+        try {
+            await AccessGame.create(accessGame)
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
+        }
+    }
     async create(req, res, next) {
         try {
             const { roleId, gameId } = req.body
-            validateIsNull([roleId, gameId])
             const isAccessGame = await AccessGame.findOne({
                 where: {
                     roleId: roleId,
