@@ -1,10 +1,12 @@
 const Router = require('express')
 const router = new Router()
 const carouselDataController = require('../../controllers/carouselDataController')
+const validateRequest = require("../../middlewares/validateRequest");
+const { carouselDataSchema } = require('../../schemas/carouselDataSchema')
 
-router.put('/:id', carouselDataController.update)
+router.put('/:id', validateRequest(carouselDataSchema), carouselDataController.update)
 router.get('/:id', carouselDataController.getOne)
 router.get('/', carouselDataController.getAll)
-router.post('/', carouselDataController.create)
+router.post('/', validateRequest(carouselDataSchema), carouselDataController.create)
 
 module.exports = router

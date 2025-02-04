@@ -1,13 +1,12 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { CarouselData } = require('../models/index')
-const { validateCheck, validateIsNull } = require('../validators/isNullValidator')
+const { validateCheck } = require('../validators/isNullValidator')
 
 class carouselDataController {
     async create(req, res, next) {
         try {
             const { gameId, scoreFirst, scoreSuccess, scoreFailure } = req.body
-            validateIsNull([gameId, scoreFirst, scoreSuccess, scoreFailure])
             const iscarouselData = await CarouselData.findOne({
                 where: {
                     gameId: gameId
@@ -47,7 +46,6 @@ class carouselDataController {
     async update(req, res, next) {
         try {
             const { gameId, scoreFirst, scoreSuccess, scoreFailure } = req.body
-            validateIsNull([gameId, scoreFirst, scoreSuccess, scoreFailure])
             const isUpdate = await CarouselData.update(
                 {
                     scoreFirst: scoreFirst,
