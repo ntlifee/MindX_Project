@@ -12,8 +12,8 @@ function errorHandling(error, msg) {
 class roleController {
     async create(req, res, next) {
         try {
-            const role = req.body
-            const roleData = await Role.bulkCreate(role)
+            const { name } = req.body
+            const roleData = await Role.create({ name })
             res.json({ message: 'Роли добавлены', roleData })
         } catch (error) {
             errorHandling(error, 'вставки')

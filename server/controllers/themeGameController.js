@@ -22,7 +22,27 @@ class themeGameController {
     }
 
     async update(req, res, next) {
-        //TODO реализовать
+        try {
+            const { id } = req.params
+            validateCheck(!id, 'Не заданы id вопроса игры')
+            const { themeId, gameId } = req.body
+            validateCheck(!themeId || !gameId, 'Не заданы id темы или игры')
+            const isUpdate = await ThemeGame.update(
+                {
+                    themeId: themeId,
+                    gameId: gameId
+                },
+                {
+                    where: {
+                        id: id
+                    }
+                }
+            )
+            validateCheck(!isUpdate[0], 'Вопрос игры не найден')
+            res.json({ message: 'Вопрос игры обновлен' });
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))
+        }
     }
 }
 

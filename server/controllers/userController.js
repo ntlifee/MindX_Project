@@ -34,7 +34,7 @@ class UserController {
             await FindRole(roleId)
             const hashPassword = bcrypt.hashSync(password, 5)
             const user = await User.create({ username, password: hashPassword, roleId })
-            return res.json({ "message": "Пользователь создан!" })
+            return res.json({ message: "Пользователь создан!" })
         } catch (error) {
             errorHandling(error)
             return next(ApiError.badRequest(`Ошибка регистрации: ${error.message}`))

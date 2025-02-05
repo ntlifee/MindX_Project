@@ -12,8 +12,8 @@ function errorHandling(error, msg) {
 class themeController {
     async create(req, res, next) {
         try {
-            const themes = req.body
-            const themesData = await Theme.bulkCreate(themes)
+            const { name } = req.body
+            const themesData = await Theme.create({ name })
             res.json({ message: 'Темы добавлены', themesData })
         } catch (error) {
             errorHandling(error, 'вставки')

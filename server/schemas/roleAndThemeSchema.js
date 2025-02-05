@@ -15,12 +15,4 @@ const schema = Joi.object({
         })
 })
 
-const arraySchema = Joi.array()
-    .items(schema)
-    .min(1)
-    .messages({
-        "array.base": "Ожидается массив ролей.",
-        "array.min": "Массив ролей должен содержать хотя бы одно значение.",
-    });
-
-module.exports = { arraySchema, schema };
+module.exports = { schema };
