@@ -1,10 +1,11 @@
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const CatalogRef = (props) => {
   const { size, defaultValue, onChange, url, path } = props;
   const [objectList, setObjectList] = useState([]);
+  const selectRef = useRef(null);
 
   useEffect(() => {
     API[url].getList()
@@ -15,12 +16,16 @@ const CatalogRef = (props) => {
       }); 
   }, [url]);
 
+  useEffect(() => {
+    selectRef.current.value = defaultValue;
+  }, [objectList]);
+
   return ( 
     <>
-      <select 
-        className="catalog-ref custom-select"
-        size={size} 
-        defaultValue={defaultValue} 
+      <select
+        ref={selectRef} 
+        className="catalog-ref"
+        size={size}  
         onChange={(e) => onChange(e.target.value)}
       >
         <option key={"nullOption"} value={null}></option>
