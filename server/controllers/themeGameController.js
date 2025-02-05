@@ -4,11 +4,9 @@ const { ThemeGame } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
 
 class themeGameController {
-    async createForGame(themeGame) {
-        try {
-            await ThemeGame.bulkCreate(themeGame)
-        } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
+    async createForGame(themeGame, transaction) {
+        if (themeGame) {
+            await ThemeGame.bulkCreate(themeGame, { transaction })
         }
     }
 

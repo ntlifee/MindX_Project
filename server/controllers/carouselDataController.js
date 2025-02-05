@@ -4,11 +4,9 @@ const { CarouselData } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
 
 class carouselDataController {
-    async createForGame(carouselData) {
-        try {
-            await CarouselData.create(carouselData)
-        } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
+    async createForGame(carouselData, transaction) {
+        if (carouselData) {
+            await CarouselData.create(carouselData, { transaction })
         }
     }
 

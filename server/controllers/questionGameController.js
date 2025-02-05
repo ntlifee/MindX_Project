@@ -4,12 +4,8 @@ const { QuestionGame, Question, UserAnswer } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
 
 class questionGameController {
-    async createForGame(questionGame) {
-        try {
-            await QuestionGame.create(accessGame)
-        } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
-        }
+    async createForGame(questionGame, transaction) {
+        await QuestionGame.bulkCreate(questionGame, { transaction })
     }
     async create(req, res, next) {
         try {

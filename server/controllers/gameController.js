@@ -1,17 +1,51 @@
 const { where } = require('sequelize')
+const sequelize = require('../database.js')
 const ApiError = require('../error/ApiError')
 const { Game } = require('../models/index')
-const { validateIsNull, validateCheck } = require('../validators/isNullValidator')
+const questionGameController = require('./questionGameController')
+const carouselDataController = require('./carouselDataController')
+const accessGameController = require('./accessGameController')
+const themeGameController = require('./themeGameController')
+const { validateCheck } = require('../validators/isNullValidator')
 
 class GameController {
     async create(req, res, next) {
+        // Начало транзакции
+        const transaction = await sequelize.transaction();
+        let id = null
         try {
-            //TODO множественная вставка для таблиц свезей с game
-            const { typeGame, name, imageId, startDate, endDate } = req.body
-            validateIsNull([typeGame, name, startDate, endDate])
-            const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate })
+            const { game, questionGame, themeGame, accessGame, carouselData } = req.body
+            const gameData = await Game.create(game, { transaction })
+            id = gameData.id
+
+            //добавление id игры в сущности
+            questionGame.forEach((item, index) => {
+                item.gameId = id;
+                item.numberQuestion = index + 1;
+            });
+
+            themeGame?.forEach((item, index) => {
+                item.gameId = id;
+                item.numberTheme = index + 1;
+            });
+            accessGame.forEach(item => { item.gameId = id });
+            if (carouselData) {
+                carouselData.gameId = id
+            }
+
+            //создание связей для игры
+            // Выполняем операции внутри транзакции
+            await Promise.all([
+                carouselDataController.createForGame(carouselData, transaction),
+                questionGameController.createForGame(questionGame, transaction),
+                themeGameController.createForGame(themeGame, transaction),
+                accessGameController.createForGame(accessGame, transaction)
+            ])
+
+            await transaction.commit();
             res.json({ message: 'Игра добавлена', gameData })
         } catch (error) {
+            await transaction.rollback();
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
     }
