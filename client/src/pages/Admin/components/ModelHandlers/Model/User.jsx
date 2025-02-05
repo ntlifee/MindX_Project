@@ -1,7 +1,7 @@
 import './model.scss';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { API } from '@mindx/http/API';
-import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
+import CatalogRef from '@mindx/components/UI/CatalogRef/CatalogRef';
 
 const User = (props) => { 
   const { model } = props;
@@ -11,7 +11,7 @@ const User = (props) => {
   const [roleList, setRoleList] = useState([]);
 
   const getRoles = async () => {
-    await API.role.getList()
+    API.role.getList()
       .then(response => setRoleList(response))
       .catch(error => console.error(error)); 
   };
@@ -37,11 +37,13 @@ const User = (props) => {
           value={username} onChange={(e) => setUsername(e.target.value)}/>      
         <input type="password" placeholder="Пароль..."
           value={password} onChange={(e) => setPassword(e.target.value)}/>
-        <select size={1} defaultValue={model?.role ? model.role.id : roleList[0]?.id} onChange={(e) => setRoleId(e.target.value)}>
-          {roleList.map(role => (
-            <option key={role.id} value={role.id}>{role.name}</option>
-          ))}
-        </select>
+        <CatalogRef 
+          size={1} 
+          defaultValue={ model?.role ? model.role.id : null } 
+          onChange={setRoleId}
+          url={"role"}
+          path={"name"}
+        />
       </form>
     </div>
   );

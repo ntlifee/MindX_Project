@@ -1,7 +1,5 @@
 import './model.scss';
 import { useState, useEffect } from 'react';
-import { API } from '@mindx/http/API';
-import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
 
 const Question = (props) => { 
   const { model } = props;
