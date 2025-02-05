@@ -5,45 +5,27 @@ const fs = require('fs')
 const ApiError = require('../error/ApiError')
 const { Image } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
-
-function deleteImage(paths) {
-    for (const path of paths) {
-        fs.unlinkSync(path)
-    }
-}
 class imageController {
     async create(req, res, next) {
-        const savedImagesPath = [];
         try {
-            const images = Array.isArray(req.files.images) ? req.files.images : [req.files.images];
+            const image = req.files.image;
 
-            if (!images) {
+            if (!image) {
                 return next(ApiError.badRequest('Файлы не загружены'));
             }
 
-            const savedImagesId = [];
-
-            for (const image of images) {
-                try {
-                    const fileId = uuid.v4();
-                    const fileName = `${fileId}.jpg`;
-                    const savePath = path.resolve(__dirname, '..', 'static', fileName);
-
-                    await image.mv(savePath);
-
-                    savedImagesId.push({ id: fileId });
-                    savedImagesPath.push(savePath);
-                } catch (err) {
-                    deleteImage(savedImagesPath)
-                    return next(ApiError.badRequest(`Ошибка сохранения файла ${image.name}: ${err.message}`));
-                }
+            const fileId = uuid.v4();
+            const fileName = `${fileId}.jpg`;
+            const savePath = path.resolve(__dirname, '..', 'static', fileName);
+            try {
+                await image.mv(savePath);
+            } catch (error) {
+                return next(ApiError.badRequest(`Ошибка сохранения файла ${image.name}: ${err.message}`));
             }
 
-            const imageData = await Image.bulkCreate(savedImagesId);
-
-            res.json({ message: 'Изображения добавлены', data: imageData });
+            const imageData = await Image.create({ id: fileId });
+            res.json({ message: 'Изображение добавлено', data: imageData });
         } catch (error) {
-            deleteImage(savedImagesPath)
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`));
         }
     }
