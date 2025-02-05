@@ -61,13 +61,13 @@ const ObjectList = (props) => {
 						{template?.map((column, index) => (
 							<td key={index}>
 								{column.meta === 'img' ? (
-									<Image
-										width={100}
-										height={100}
-										src={
-											'http://localhost:3001/fa3595e1-1a19-4b58-bec9-16f2863f539f.jpg'
-										}
-									/>
+									row[column.type] 
+									?	<Image
+											width={200}
+											height={200}
+											src={`http://localhost:3001/${row[column.type]}.jpg`}
+										/>
+									: <></>
 								) : (
 									column.meta === 'datetime'
 									? moment(new Date(row[column.type])).format('DD.MM.YYYY HH:mm')

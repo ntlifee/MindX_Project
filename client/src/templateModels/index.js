@@ -43,18 +43,6 @@ const userTemplate = {
 	],
 };
 
-const userAnswerTemplate = {
-	type: 'userAnswer',
-	label: 'Ответы пользователей',
-	api: API.userAnswer,
-	fileds: [
-		{ type: 'questionNumber', label: 'Номер вопроса', meta: 'int' },
-		{ type: 'userAnswer', label: 'Ответ', meta: 'string' },
-		{ type: 'points', label: 'Очки', meta: 'int' },
-		{ type: 'isCorrect', label: 'Правильно', meta: 'bool' },
-	],
-};
-
 const roleTemplate = {
 	type: 'role',
   label: 'Роли',
@@ -64,11 +52,20 @@ const roleTemplate = {
   ],
 };
 
+const imageTemplate = {
+	type: 'image',
+  label: 'Изображения',
+  api: API.image,
+  fileds: [
+    { type: 'id', label: 'Изображение', meta: 'img' },
+  ],
+};
+
 export const templates = {
 	question: questionTemplate,
 	game: gameTemplate,
 	theme: themeTemplate,
 	user: userTemplate,
-	userAnswer: userAnswerTemplate,
 	role: roleTemplate,
+	image: imageTemplate,
 };

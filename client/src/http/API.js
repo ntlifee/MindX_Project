@@ -4,6 +4,7 @@ import { themeAPI } from './themeAPI';
 import { userAPI } from './userAPI';
 import { userAnswerAPI } from './userAnswerAPI';
 import { roleAPI } from './roleAPI';
+import { imageAPI } from './imageAPI';
 
 export const API = {
 	question: questionAPI,
@@ -12,4 +13,5 @@ export const API = {
 	user: userAPI,
 	userAnswer: userAnswerAPI,
 	role: roleAPI,
+	image: imageAPI,
 };

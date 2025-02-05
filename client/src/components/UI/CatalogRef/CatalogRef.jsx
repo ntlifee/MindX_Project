@@ -1,44 +1,55 @@
+import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
-import { useState, useEffect, useRef } from 'react';
+import { Image } from 'react-bootstrap';
+import { useRef } from 'react';
 
 const CatalogRef = (props) => {
-  const { size, defaultValue, onChange, url, path } = props;
+  const { defaultValue, onChange, url, path, img } = props;
   const [objectList, setObjectList] = useState([]);
   const selectRef = useRef(null);
 
-  useEffect(() => {
+  const fetchData = () => {
     API[url].getList()
-      .then(response => setObjectList(response))
+      .then(response => {
+        const options = response.map(item => ({
+          value: item.id,
+          label: img 
+            ? <Image width={200} height={200} src={`http://localhost:3001/${item.id}.jpg`}/>
+            : item[path],
+          data: item
+        }));
+        setObjectList(options);
+      })
       .catch(error => {
         console.error(error);
         ErrorEmmiter(error.message);
-      }); 
-  }, [url]);
+      });
+  };
 
   useEffect(() => {
-    selectRef.current.value = defaultValue;
-  }, [objectList]);
+    if (defaultValue) {
+      selectRef.current.setValue({
+        value: img ? defaultValue : defaultValue.id,
+        label: img
+        ? <Image width={200} height={200} src={`http://localhost:3001/${defaultValue}.jpg`}/>
+        : defaultValue[path],
+        data: defaultValue
+      })
+    }
+  }, []);
 
-  return ( 
-    <>
-      <select
-        ref={selectRef} 
-        className="catalog-ref"
-        size={size}  
-        onChange={(e) => onChange(e.target.value)}
-      >
-        <option key={"nullOption"} value={null}></option>
-        {
-          objectList.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item[path]}
-            </option>
-          ))
-        }
-      </select>
-    </>
+  return (
+    <Select
+      ref={selectRef}
+      options={objectList}
+      defaultValue={defaultValue}
+      onChange={(selectedOption) => onChange(selectedOption.value)}
+      formatOptionLabel={option => option.label}
+      onMenuOpen={fetchData}
+    />
   );
-}
+};
 
 export default CatalogRef;

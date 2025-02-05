@@ -13,7 +13,7 @@ const AdminPage = () => {
     <>
       {
         state.mode && state.item && state.type 
-          ? <ModelHandler state={state} setState={setState}/>
+          ? <ModelHandler state={state} setState={setState} setReload={setReload}/>
           : <></>
       }
       <main className="admin-section">

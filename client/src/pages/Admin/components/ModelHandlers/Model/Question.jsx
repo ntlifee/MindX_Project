@@ -1,12 +1,13 @@
 import './model.scss';
 import { useState, useEffect } from 'react';
+import CatalogRef from '@mindx/components/UI/CatalogRef/CatalogRef';
 
 const Question = (props) => { 
   const { model } = props;
 
   const [question, setQuestion] = useState(model?.question ? model.question : '');
   const [answer, setAnswer] = useState(model?.answer ? model.answer : '');
-  const [image, setImage] = useState(null);
+  const [imageId, setImageId] = useState(null);
 
   useEffect(() => {
     model.question = question;
@@ -14,6 +15,9 @@ const Question = (props) => {
   useEffect(() => {
     model.answer = answer;
   }, [answer])
+  useEffect(() => {
+    model.imageId = imageId;
+  }, [imageId])
   
   return (    
     <div className="model-section">
@@ -22,11 +26,14 @@ const Question = (props) => {
           value={question} onChange={(e) => setQuestion(e.target.value)}/>      
         <input type="text" placeholder="Текст ответа..."
           value={answer} onChange={(e) => setAnswer(e.target.value)}/>
-        {/* <input type="file" placeholder="Загрузить изображение"
-          value={image} onChange={(e) => setImage(e.target.value)}/> */}
+        <CatalogRef 
+          defaultValue={ model.imageId ? model.imageId : null } 
+          onChange={setImageId}
+          url={"image"}
+          img={true}/>
       </form>
     </div>
   );
 }
- 
+
 export default Question;
