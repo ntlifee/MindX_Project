@@ -1,13 +1,19 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { QuestionGame, Question, UserAnswer } = require('../models/index')
-const { validateCheck, validateIsNull } = require('../validators/isNullValidator')
+const { validateCheck } = require('../validators/isNullValidator')
 
 class questionGameController {
+    async createForGame(questionGame) {
+        try {
+            await QuestionGame.create(accessGame)
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
+        }
+    }
     async create(req, res, next) {
         try {
-            const { questionId, gameId, numberQuestion } = req.body
-            validateIsNull([questionId, gameId, numberQuestion])
+            const { questionId, gameId, timer } = req.body
             const isQuestionGame = await QuestionGame.findOne({
                 where: {
                     questionId: questionId,
@@ -16,7 +22,12 @@ class questionGameController {
                 attributes: ['id']
             })
             validateCheck(isQuestionGame, 'Вопрос уже добавлен к игре!')
-            const questionGameData = await QuestionGame.create({ questionId, gameId, numberQuestion })
+            const countQuestion = await QuestionGame.count({
+                where: {
+                    gameId: gameId,
+                },
+            });
+            const questionGameData = await QuestionGame.create({ questionId, gameId, numberQuestion: countQuestion + 1, timer })
             res.json({ message: 'Вопрос добавлен к игре', questionGameData })
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
@@ -56,10 +67,39 @@ class questionGameController {
         }
     }
 
+    async update(req, res, next) {
+        try {
+            const { id } = req.params
+            validateCheck(!id, 'Не задан id вопроса игры!')
+            const { questionId, timer } = req.body
+            const isUpdate = await QuestionGame.update(
+                {
+                    questionId: questionId,
+                    timer: timer,
+                },
+                {
+                    where: {
+                        id: id,
+                    }
+                }
+            )
+            validateCheck(!isUpdate[0], 'Вопрос игры не найдены')
+            res.json({ message: 'Вопрос игры обновлен' })
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))
+        }
+    }
+
     async delete(req, res, next) {
         try {
             const { id } = req.params
             validateCheck(!id, 'Не задан id вопроса игры!')
+            const lastQuestionId = (await QuestionGame.findAll({
+                attributes: ['id'],
+                order: [['numberQuestion', 'DESC']],
+                limit: 1
+            }))[0].dataValues.id
+            validateCheck(lastQuestionId !== id, 'Можно удалить только последний вопрос!')
             const isDelete = await QuestionGame.destroy({
                 where: {
                     id: id,

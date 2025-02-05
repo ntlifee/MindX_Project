@@ -14,7 +14,7 @@ class themeController {
         try {
             const { name } = req.body
             const themesData = await Theme.create({ name })
-            res.json({ message: 'Темы добавлены', themesData })
+            res.json({ message: 'Тема добавлена', themesData })
         } catch (error) {
             errorHandling(error, 'вставки')
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))

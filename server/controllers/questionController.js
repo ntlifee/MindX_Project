@@ -13,8 +13,8 @@ class questionController {
     async create(req, res, next) {
         try {
             const questions = req.body
-            const questionsData = await Question.bulkCreate(questions)
-            res.json({ message: 'Вопросы добавлены', questionsData })
+            const questionsData = await Question.create({ ...questions })
+            res.json({ message: 'Вопрос добавлен', questionsData })
         } catch (error) {
             errorHandling(error, 'вставки')
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))

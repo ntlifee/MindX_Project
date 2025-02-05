@@ -14,7 +14,7 @@ class roleController {
         try {
             const { name } = req.body
             const roleData = await Role.create({ name })
-            res.json({ message: 'Роли добавлены', roleData })
+            res.json({ message: 'Роль добавлена', roleData })
         } catch (error) {
             errorHandling(error, 'вставки')
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
