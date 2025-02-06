@@ -1,7 +1,7 @@
 const { where } = require('sequelize')
 const sequelize = require('../database.js')
 const ApiError = require('../error/ApiError')
-const { Game } = require('../models/index')
+const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData } = require('../models/index')
 const questionGameController = require('./questionGameController')
 const carouselDataController = require('./carouselDataController')
 const accessGameController = require('./accessGameController')
@@ -53,7 +53,26 @@ class GameController {
 
     async getAll(req, res, next) {
         try {
-            const gamesData = await Game.findAll()
+            const gamesData = await Game.findAll({
+                include: [{
+                    model: AccessGame,
+                    attributes: ["roleId"],
+                    required: false
+                }, {
+                    model: QuestionGame,
+                    attributes: ["id", "timer"],
+                    required: false
+                }, {
+                    model: CarouselData,
+                    attributes: { exclude: ['gameId'] },
+                    required: false
+                }, {
+                    model: ThemeGame,
+                    attributes: ["id"],
+                    required: false
+                }]
+            })
+
             res.json(gamesData)
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
