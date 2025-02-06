@@ -7,9 +7,12 @@ const validateRequest = (schema) => {
         });
 
         if (error) {
-            const errors = error.details.map((detail) => detail.path.length === 2
-                ? `${detail.message} в строке #${detail.path[0] + 1}`
-                : detail.message);
+            const errors = error.details.map((detail) => {
+                const lineNumber = detail.path.find((item) => typeof item === 'number');
+                return lineNumber !== undefined
+                    ? `${detail.message} в строке #${lineNumber + 1}`
+                    : detail.message;
+            });
             return res.status(400).json({ errors });
         }
         req.body = value; // Обновляем тело запроса (только валидные поля)

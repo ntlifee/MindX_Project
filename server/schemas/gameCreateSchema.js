@@ -1,19 +1,19 @@
 const Joi = require('joi');
 
+const commonStringRules = Joi.string().messages({
+    'string.empty': 'Поле {#key} не может быть пустым',
+    'string.base': 'Поле {#key} должно быть строкой',
+    'string.guid': 'Поле {#key} должно быть в формате UUID',
+    'string.isoDate': 'Поле {#key} должно быть в формате ISO даты',
+    'any.required': 'Поле {#key} обязательно для заполнения',
+})
+
 const gameCreateSchema = Joi.object({
-    game: Joi.object({
-        typeGame: Joi.string().required(),
-        name: Joi.string().required(),
-        imageId: Joi.string().guid().allow(null).default(null),
-        startDate: Joi.string().isoDate().required(),
-        endDate: Joi.string().isoDate().required(),
-    }).required().messages({
-        'string.empty': 'Поле {#key} не может быть пустым',
-        'string.base': 'Поле {#key} должно быть строкой',
-        'string.guid': 'Поле {#key} должно быть в формате UUID',
-        'string.isoDate': 'Поле {#key} должно быть в формате ISO даты',
-        'any.required': 'Поле {#key} обязательно для заполнения',
-    }),
+    typeGame: commonStringRules.required(),
+    name: commonStringRules.required(),
+    imageId: commonStringRules.guid().allow(null).default(null),
+    startDate: commonStringRules.isoDate().required(),
+    endDate: commonStringRules.isoDate().required(),
 
     questionGame: Joi.array().items(
         Joi.object({
@@ -32,7 +32,7 @@ const gameCreateSchema = Joi.object({
         Joi.object({
             themeId: Joi.string().guid().required()
         })
-    ).required().messages({
+    ).messages({
         'string.empty': 'Поле {#key} не может быть пустым',
         'string.base': 'Поле {#key} должно быть строкой',
         'string.guid': 'Поле {#key} должно быть в формате UUID',
@@ -50,9 +50,9 @@ const gameCreateSchema = Joi.object({
 
     carouselData: Joi.object({
         scoreFirst: Joi.number().integer().required(),
-        scoreSuccces: Joi.number().integer().required(),
+        scoreSuccess: Joi.number().integer().required(),
         scoreFailure: Joi.number().integer().required(),
-    }).required().messages({
+    }).messages({
         'number.base': 'Поле {#key} должно быть числом',
         'any.required': 'Поле {#key} обязательно для заполнения',
     })
@@ -62,4 +62,4 @@ const gameCreateSchema = Joi.object({
     'object.base': 'Поле {#key} должно быть объектом'
 });
 
-module.exports = gameCreateSchema;
+module.exports = { gameCreateSchema };

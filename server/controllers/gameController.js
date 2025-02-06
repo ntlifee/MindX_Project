@@ -14,8 +14,8 @@ class GameController {
         const transaction = await sequelize.transaction();
         let id = null
         try {
-            const { game, questionGame, themeGame, accessGame, carouselData } = req.body
-            const gameData = await Game.create(game, { transaction })
+            const { typeGame, name, imageId, startDate, endDate, questionGame, themeGame, accessGame, carouselData } = req.body
+            const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate }, { transaction })
             id = gameData.id
 
             //добавление id игры в сущности
