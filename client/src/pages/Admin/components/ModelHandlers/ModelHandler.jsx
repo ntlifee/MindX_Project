@@ -2,6 +2,7 @@ import './handler.scss'
 import Model from './Models';
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
+import { useEffect } from 'react';
 
 const ModelHandler = (props) => {
   const { state, setState, setReload } = props;
@@ -26,8 +27,7 @@ const ModelHandler = (props) => {
       setReload(true);
       cancel();
     } catch(error) {
-      const errorsArray = error.response.data.errors;
-      errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
+      ErrorEmmiter(error.response.data.message)
       console.error(error);
     }
   };

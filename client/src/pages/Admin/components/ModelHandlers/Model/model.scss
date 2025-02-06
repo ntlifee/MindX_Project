@@ -19,5 +19,13 @@
       font-size: clamp(10px, 2vw, 20px);
       background-color: white;
     }
+
+    .group-label {
+      label {
+        font-weight: 500;
+        font-size: 16px;
+        color: rgb(139, 99, 58);
+      }
+    }
   }
 }

@@ -22,15 +22,26 @@ const Question = (props) => {
   return (    
     <div className="model-section">
       <form onSubmit={e => e.preventDefault()}>
-        <input type="text" placeholder="Текст вопроса..."
-          value={question} onChange={(e) => setQuestion(e.target.value)}/>      
-        <input type="text" placeholder="Текст ответа..."
-          value={answer} onChange={(e) => setAnswer(e.target.value)}/>
-        <CatalogRef 
-          defaultValue={ model.imageId ? model.imageId : null } 
-          onChange={setImageId}
-          url={"image"}
-          img={true}/>
+        <div className='group-label'>
+          <label>Текст вопроса</label>
+          <input type="text" placeholder="Текст вопроса..."
+            value={question} onChange={(e) => setQuestion(e.target.value)}/> 
+        </div>     
+        <div className='group-label'>
+          <label>Текст ответа</label>
+          <input type="text" placeholder="Текст ответа..."
+            value={answer} onChange={(e) => setAnswer(e.target.value)}/>
+        </div>
+        <div className='group-label'>
+        <label>Изображение</label>
+          <CatalogRef 
+            defaultValue={ model.imageId ? model.imageId : null } 
+            onChange={setImageId}
+            url={"image"}
+            img={true}
+            placeholder="Выберите изображение..."
+          />
+        </div>
       </form>
     </div>
   );

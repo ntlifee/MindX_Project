@@ -28,6 +28,7 @@ class GameController {
                 item.gameId = id;
                 item.numberTheme = index + 1;
             });
+
             accessGame.forEach(item => { item.gameId = id });
             if (carouselData) {
                 carouselData.gameId = id

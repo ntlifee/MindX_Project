@@ -23,6 +23,7 @@
   z-index: 999;
   right: 0;
   flex-direction: column;
+  overflow: auto;
 
   .btn-container {
     display: flex;

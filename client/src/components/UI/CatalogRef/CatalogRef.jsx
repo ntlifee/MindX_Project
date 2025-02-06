@@ -6,11 +6,21 @@ import { Image } from 'react-bootstrap';
 import { useRef } from 'react';
 
 const CatalogRef = (props) => {
-  const { defaultValue, onChange, url, path, img } = props;
+  const { 
+    defaultValue, 
+    onChange, 
+    url, 
+    path, 
+    img, 
+    isMulti = false,
+    placeholder } = props;
   const [objectList, setObjectList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const selectRef = useRef(null);
 
+
   const fetchData = () => {
+    setIsLoading(true);
     API[url].getList()
       .then(response => {
         const options = response.map(item => ({
@@ -26,6 +36,7 @@ const CatalogRef = (props) => {
         console.error(error);
         ErrorEmmiter(error.message);
       });
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -40,14 +51,28 @@ const CatalogRef = (props) => {
     }
   }, []);
 
+  const handleChange = (selectedOption) => {
+    if (onChange) {
+      onChange(
+        isMulti 
+        ? selectedOption.map(item => item.value) 
+        : selectedOption.value
+      );
+    }
+  };
+
   return (
     <Select
       ref={selectRef}
       options={objectList}
       defaultValue={defaultValue}
-      onChange={(selectedOption) => onChange(selectedOption.value)}
+      onChange={handleChange}
       formatOptionLabel={option => option.label}
       onMenuOpen={fetchData}
+      isClearable={true}
+      isMulti={isMulti}
+      isLoading={isLoading}
+      placeholder={placeholder}
     />
   );
 };

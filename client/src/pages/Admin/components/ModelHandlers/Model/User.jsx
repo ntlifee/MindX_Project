@@ -37,22 +37,35 @@ const User = (props) => {
   return (    
     <div className="model-section">
       <form onSubmit={e => e.preventDefault()}>
+      <div className='group-label'>
+        <label>Имя пользователя</label>
         <input type="text" placeholder="Имя пользователя..."
-          value={username} onChange={(e) => setUsername(e.target.value)}/>      
+          value={username} onChange={(e) => setUsername(e.target.value)}/>  
+      </div>
+      <div className='group-label'>
+        <label>Пароль</label>
         <input type="password" placeholder="Пароль..."
           value={password} onChange={(e) => setPassword(e.target.value)}/>
+      </div>
+      <div className='group-label'>
+        <label>Повторите пароль</label>
         <input type="password" placeholder="Повторите пароль..."
           value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
+      </div>
+      <div className='group-label'>
+        <label>Роль</label>
         <CatalogRef 
           size={1} 
           defaultValue={ model.role ? model.role : null } 
           onChange={setRoleId}
           url={"role"}
           path={"name"}
+          placeholder="Выберите роль..."
         />
+      </div>
       </form>
     </div>
   );
 }
- 
+
 export default User;

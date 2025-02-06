@@ -14,8 +14,11 @@ const Theme = (props) => {
   return (    
     <div className="model-section">
       <form onSubmit={e => e.preventDefault()}>
+      <div className='group-label'>
+        <label>Название</label>
         <input type="text" placeholder="Название темы..."
-          value={theme} onChange={(e) => setTheme(e.target.value)}/>      
+          value={theme} onChange={(e) => setTheme(e.target.value)}/>  
+      </div>    
       </form>
     </div>
   );

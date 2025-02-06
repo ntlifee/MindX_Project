@@ -20,11 +20,14 @@ const Image = (props) => {
   return (    
     <div className="model-section">
       <form onSubmit={e => e.preventDefault()}>
-        <input 
-          type="file" 
-          placeholder="Загрузить изображение"
-          onChange={(e) => setImageFile(e.target.files[0])}
-        />
+        <div className='group-label'>
+          <label>Файл изображения</label>
+          <input 
+            type="file" 
+            placeholder="Загрузить изображение"
+            onChange={(e) => setImageFile(e.target.files[0])}
+          />
+        </div>
         {imagePreview && (
           <div className="image-preview">
             <img src={imagePreview} alt="Предпросмотр" />
