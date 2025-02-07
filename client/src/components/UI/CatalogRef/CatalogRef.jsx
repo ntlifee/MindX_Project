@@ -41,13 +41,27 @@ const CatalogRef = (props) => {
 
   useEffect(() => {
     if (defaultValue) {
-      selectRef.current.setValue({
-        value: img ? defaultValue : defaultValue.id,
-        label: img
-        ? <Image width={200} height={200} src={`http://localhost:3001/${defaultValue}.jpg`}/>
-        : defaultValue[path],
-        data: defaultValue
-      })
+      if (isMulti) {
+        selectRef.current.setValue(
+          defaultValue.map(item => (
+            {
+              value: item.id,
+              label: img 
+              ? <Image width={200} height={200} src={`http://localhost:3001/${item.id}.jpg`}/>
+              : item[path],
+              data: item
+            }
+          ))
+        )
+      } else {
+        selectRef.current.setValue({
+          value: img ? defaultValue : defaultValue.id,
+          label: img
+          ? <Image width={200} height={200} src={`http://localhost:3001/${defaultValue}.jpg`}/>
+          : defaultValue[path],
+          data: defaultValue
+        })
+      }
     }
   }, []);
 
@@ -55,8 +69,8 @@ const CatalogRef = (props) => {
     if (onChange) {
       onChange(
         isMulti 
-        ? selectedOption.map(item => item.value) 
-        : selectedOption.value
+          ? selectedOption.map(item => item?.value) 
+          : selectedOption?.value
       );
     }
   };
@@ -65,7 +79,6 @@ const CatalogRef = (props) => {
     <Select
       ref={selectRef}
       options={objectList}
-      defaultValue={defaultValue}
       onChange={handleChange}
       formatOptionLabel={option => option.label}
       onMenuOpen={fetchData}

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Select from 'react-select';
 
 const MXSelect = (props) => {
   const {
     options,
-    value,
+    defaultValue,
     onChange,
     isSearchable = true,
     isDisabled = false,
@@ -13,6 +13,7 @@ const MXSelect = (props) => {
   } = props;
 
   const [optionsComponent, setOptionsComponent] = useState([]);
+  const ref_select = useRef(null);
 
   useEffect(() => {
     setOptionsComponent(
@@ -26,17 +27,28 @@ const MXSelect = (props) => {
     );
   }, []);
 
+  useEffect(() => {
+    if (defaultValue) {
+      const object = options.find(option => option.value === defaultValue);
+      ref_select.current.setValue({
+        value: object.value, 
+        label: object.label, 
+        data: object 
+      });
+    }
+  }, []);
+
   const handleChange = (selectedOption) => {
     if (onChange) {
-      onChange(selectedOption);
+      onChange(selectedOption?.value);
     }
   };
 
   return (
     <>
       <Select
+        ref={ref_select}
         options={optionsComponent}
-        value={value}
         onChange={handleChange}
         isClearable={true}
         isSearchable={isSearchable}

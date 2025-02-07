@@ -3,6 +3,32 @@
   flex-direction: column;
   width: 100%;
 
+  .button-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin: 5px;
+    justify-content: space-between;
+    height: 40px;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    align-items: center;
+
+    button {
+      color: white;
+      padding: 10px;
+			border-radius: 10px;
+      background-color: orange;
+
+      &:hover {
+				border-radius: 50px;
+				transition: all 0.5s ease 0s;
+				color: wheat;
+			}
+    }
+  }
+
   form {
     display: flex;
     flex-direction: column;
@@ -11,7 +37,7 @@
     width: 100%;
 
     select, input {
-      padding: 10px;
+      padding: 5px;
       border: 1px solid black;
       width: 100%;
       border-radius: 10px;
@@ -26,6 +52,16 @@
         font-size: 16px;
         color: rgb(139, 99, 58);
       }
+    }
+    .group-timer {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      justify-content:space-between;
+    }
+
+    .timer {
+      width: 100px;
     }
   }
 }

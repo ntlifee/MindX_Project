@@ -2,6 +2,10 @@ import { $host, $authHost } from './index';
 
 const getList = async () => {
 	const { data } = await $authHost.get('/api/admin/game');
+	for (const game of data) {
+		game.accessGames = game.accessGames.map((item) => item.role);
+		game.themeGames = game.themeGames.map((item) => item.theme);
+	};
 	return data;
 };
 
@@ -21,8 +25,8 @@ const deleteById = async (id) => {
 }
 
 const addItem = async (item) => {
-	item.themeGame = item.themeGame.map((id) => { return {themeId: id} });
-	item.accessGame = item.accessGame.map((id) => { return {roleId: id} });
+	item.themeGame = item.themeGame.map((id) => { return { themeId: id } });
+	item.accessGame = item.accessGame.map((id) => { return { roleId: id } });
 	const { data } = await $authHost.post(`/api/admin/game`, item);
   return data;
 }
