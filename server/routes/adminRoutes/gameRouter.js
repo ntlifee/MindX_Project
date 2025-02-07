@@ -6,8 +6,7 @@ const { gameCreateSchema, gamePutSchema } = require("../../schemas/gameCreateSch
 
 router.delete('/:id', gameController.delete)
 router.put('/:id', validateRequest(gamePutSchema), gameController.update)
-router.get('/:id', gameController.getOne)
-router.get('/', gameController.getAll)
+router.get('/', gameController.getAllAdmin)
 router.post('/', validateRequest(gameCreateSchema), gameController.create)
 
 module.exports = router

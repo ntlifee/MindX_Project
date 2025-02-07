@@ -1,7 +1,7 @@
 const { where } = require('sequelize')
 const sequelize = require('../database.js')
 const ApiError = require('../error/ApiError')
-const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData } = require('../models/index')
+const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData, Question, Theme, Role } = require('../models/index')
 const questionGameController = require('./questionGameController')
 const carouselDataController = require('./carouselDataController')
 const accessGameController = require('./accessGameController')
@@ -51,13 +51,37 @@ class GameController {
         }
     }
 
-    async getAll(req, res, next) {
+    async getAllUser(req, res, next) {
         try {
-            let gamesData = await Game.findAll({
+            const { typeGame } = req.query
+            const roleId = (await Role.findOne({
+                where: { name: req.user.role }
+            }))?.dataValues?.id
+            validateCheck(!roleId, "Роль не найдена!")
+            const gamesData = await Game.findAll({
                 include: [{
                     model: AccessGame,
                     attributes: ["roleId"],
-                    required: false
+                    required: true,
+                    where: { roleId }
+                }],
+                ...(typeGame && { where: { typeGame } })
+            })
+
+            res.json(gamesData)
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
+        }
+    }
+
+    async getAllAdmin(req, res, next) {
+        try {
+            const { typeGame } = req.query
+            const gamesData = await Game.findAll({
+                include: [{
+                    model: AccessGame,
+                    attributes: ["roleId"],
+                    required: false,
                 }, {
                     model: QuestionGame,
                     attributes: ["id", "timer", "numberQuestion"],
@@ -70,7 +94,8 @@ class GameController {
                     model: ThemeGame,
                     attributes: ["id", "numberTheme"],
                     required: false
-                }]
+                }],
+                ...(typeGame && { where: { typeGame } })
             })
 
             res.json(gamesData)
@@ -84,6 +109,28 @@ class GameController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id игры')
             const gameData = await Game.findOne({
+                include: [{
+                    model: QuestionGame,
+                    attributes: ["id", "timer", "numberQuestion"],
+                    required: true,
+                    include: [{
+                        model: Question,
+                        attributes: { exclude: ["answer"] },
+                        required: false
+                    }]
+                }, {
+                    model: CarouselData,
+                    attributes: { exclude: ['gameId'] },
+                    required: false
+                }, {
+                    model: ThemeGame,
+                    attributes: ["id", "numberTheme"],
+                    required: false,
+                    include: [{
+                        model: Theme,
+                        required: false
+                    }]
+                }],
                 where: {
                     id: id,
                 }
