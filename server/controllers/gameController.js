@@ -80,12 +80,21 @@ class GameController {
             const gamesData = await Game.findAll({
                 include: [{
                     model: AccessGame,
-                    attributes: ["roleId"],
+                    attributes: ["id"],
                     required: false,
+                    include: [{
+                        model: Role,
+                        required: false,
+                    }]
                 }, {
                     model: QuestionGame,
                     attributes: ["id", "timer", "numberQuestion"],
-                    required: false
+                    required: false,
+                    include: [{
+                        model: Question,
+                        attributes: { exclude: ["answer"] },
+                        required: false
+                    }]
                 }, {
                     model: CarouselData,
                     attributes: { exclude: ['gameId'] },
@@ -93,7 +102,11 @@ class GameController {
                 }, {
                     model: ThemeGame,
                     attributes: ["id", "numberTheme"],
-                    required: false
+                    required: false,
+                    include: [{
+                        model: Theme,
+                        required: false
+                    }]
                 }],
                 ...(typeGame && { where: { typeGame } })
             })
