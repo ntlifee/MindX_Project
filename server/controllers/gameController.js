@@ -53,14 +53,14 @@ class GameController {
 
     async getAll(req, res, next) {
         try {
-            const gamesData = await Game.findAll({
+            let gamesData = await Game.findAll({
                 include: [{
                     model: AccessGame,
                     attributes: ["roleId"],
                     required: false
                 }, {
                     model: QuestionGame,
-                    attributes: ["id", "timer"],
+                    attributes: ["id", "timer", "numberQuestion"],
                     required: false
                 }, {
                     model: CarouselData,
@@ -68,7 +68,7 @@ class GameController {
                     required: false
                 }, {
                     model: ThemeGame,
-                    attributes: ["id"],
+                    attributes: ["id", "numberTheme"],
                     required: false
                 }]
             })
