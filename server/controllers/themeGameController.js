@@ -23,12 +23,10 @@ class themeGameController {
         try {
             const { id } = req.params
             validateCheck(!id, 'Не заданы id вопроса игры')
-            const { themeId, gameId } = req.body
-            validateCheck(!themeId || !gameId, 'Не заданы id темы или игры')
+            const { themeId } = req.body
             const isUpdate = await ThemeGame.update(
                 {
-                    themeId: themeId,
-                    gameId: gameId
+                    themeId: themeId
                 },
                 {
                     where: {

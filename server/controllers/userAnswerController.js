@@ -6,7 +6,6 @@ const { validateCheck } = require('../validators/isNullValidator')
 class userAnswerController {
     async create(req, res, next) {
         try {
-            const gameId = req.params.id
             const { questionGameId, questionId, points, userAnswer } = req.body
             const isInsert = await UserAnswer.findOne({ attributes: ['id'], where: { questionGameId, userId: req.user.id } })
             validateCheck(isInsert, 'Ответ был дан ранее!')
