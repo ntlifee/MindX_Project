@@ -1,4 +1,4 @@
-const { where } = require('sequelize')
+const { where, Op } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { Role } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
@@ -37,6 +37,9 @@ class roleController {
             const isDelete = await Role.destroy({
                 where: {
                     id: id,
+                    name: {
+                        [Op.notIn]: ['USER', 'ADMIN'],
+                    }
                 },
             })
             validateCheck(!isDelete, 'Роль не найдена')
@@ -58,6 +61,9 @@ class roleController {
                 {
                     where: {
                         id: id,
+                        name: {
+                            [Op.notIn]: ['USER', 'ADMIN'],
+                        }
                     }
                 }
             );

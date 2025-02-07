@@ -62,4 +62,17 @@ const gameCreateSchema = Joi.object({
     'object.base': 'Поле {#key} должно быть объектом'
 });
 
-module.exports = { gameCreateSchema };
+const gamePutSchema = Joi.object({
+    name: Joi.string().required(),
+    imageId: Joi.string().allow(null).default(null),
+    startDate: Joi.date().iso().required(),
+    endDate: Joi.date().iso().greater(Joi.ref('startDate')).required()
+}).messages({
+    'string.empty': 'Поле {#key} не может быть пустым',
+    'string.base': 'Поле {#key} должно быть строкой',
+    'date.format': 'Поле {#key} должно быть в формате ISO даты',
+    'any.required': 'Поле {#key} обязательно для заполнения',
+    'date.greater': 'Поле {#key} должно быть больше, чем startDate'
+});
+
+module.exports = { gameCreateSchema, gamePutSchema };
