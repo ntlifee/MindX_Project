@@ -92,12 +92,17 @@ const ObjectList = (props) => {
 								</td>
 							))}
 							<td className='command-icons'>
-								<button onClick={() => editItem(row)}>
-									<FaEdit />
-								</button>
-								<button>
-									<FaTrashAlt onClick={() => deleteItem(row)}/>
-								</button>
+								{
+									row.name !== 'ADMIN' && row.name !== 'USER' &&
+									<>
+										<button onClick={() => editItem(row)}>
+											<FaEdit />
+										</button>
+										<button>
+											<FaTrashAlt onClick={() => deleteItem(row)}/>
+										</button>
+									</>
+								}
 							</td>
 						</tr>
 					))}

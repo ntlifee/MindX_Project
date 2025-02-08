@@ -26,6 +26,14 @@ const getById = async (id) => {
 };
 
 const update = async (item) => {
+	item.questionGames.forEach((row, i) => {
+    if (item.timers[i]) {
+			row.forEach((question, j) => {
+				question.timer = item.timers[i][j] || null;
+			});
+		}
+	});
+	item.questionGames = item.questionGames.flat();
 	const { data } = await $authHost.put(`/api/admin/game/${item.id}`, item);
 	return data;
 }
@@ -36,7 +44,6 @@ const deleteById = async (id) => {
 }
 
 const addItem = async (item) => {
-	console.log(item)
 	item.questionGames.forEach((row, i) => {
     if (item.timers[i]) {
 			row.forEach((question, j) => {
