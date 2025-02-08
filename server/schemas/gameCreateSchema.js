@@ -15,7 +15,7 @@ const gameCreateSchema = Joi.object({
     startDate: commonStringRules.isoDate().required(),
     endDate: commonStringRules.isoDate().required(),
 
-    questionGame: Joi.array().items(
+    questionGames: Joi.array().items(
         Joi.object({
             questionId: Joi.string().guid().required(),
             timer: Joi.number().integer().allow(null).default(null)
@@ -28,7 +28,7 @@ const gameCreateSchema = Joi.object({
         'any.required': 'Поле {#key} обязательно для заполнения',
     }),
 
-    themeGame: Joi.array().items(
+    themeGames: Joi.array().items(
         Joi.object({
             themeId: Joi.string().guid().required()
         })
@@ -38,7 +38,7 @@ const gameCreateSchema = Joi.object({
         'string.guid': 'Поле {#key} должно быть в формате UUID',
     }),
 
-    accessGame: Joi.array().items(
+    accessGames: Joi.array().items(
         Joi.object({
             id: Joi.string().guid().required()
         })

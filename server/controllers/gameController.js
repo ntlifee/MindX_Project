@@ -14,22 +14,22 @@ class GameController {
         const transaction = await sequelize.transaction();
         let id = null
         try {
-            const { typeGame, name, imageId, startDate, endDate, questionGame, themeGame, accessGame, carouselData } = req.body
+            const { typeGame, name, imageId, startDate, endDate, questionGames, themeGames, accessGames, carouselData } = req.body
             const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate }, { transaction })
             id = gameData.id
 
             //добавление id игры в сущности
-            questionGame.forEach((item, index) => {
+            questionGames.forEach((item, index) => {
                 item.gameId = id;
                 item.numberQuestion = index + 1;
             });
 
-            themeGame?.forEach((item, index) => {
+            themeGames?.forEach((item, index) => {
                 item.gameId = id;
                 item.numberTheme = index + 1;
             });
 
-            accessGame.forEach(item => { item.gameId = id, item.roleId = item.id });
+            accessGames.forEach(item => { item.gameId = id, item.roleId = item.id });
 
             if (carouselData) {
                 carouselData.gameId = id
@@ -39,9 +39,9 @@ class GameController {
             // Выполняем операции внутри транзакции
             await Promise.all([
                 carouselDataController.createForGame(carouselData, transaction),
-                questionGameController.createForGame(questionGame, transaction),
-                themeGameController.createForGame(themeGame, transaction),
-                accessGameController.createForGame(accessGame, transaction)
+                questionGameController.createForGame(questionGames, transaction),
+                themeGameController.createForGame(themeGames, transaction),
+                accessGameController.createForGame(accessGames, transaction)
             ])
 
             await transaction.commit();
