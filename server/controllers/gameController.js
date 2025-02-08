@@ -12,45 +12,8 @@ class GameController {
     async create(req, res, next) {
         // Начало транзакции
         const transaction = await sequelize.transaction();
-        let id = null
         try {
-            const { typeGame, name, imageId, startDate, endDate, questionGames, themeGames, accessGames, carouselData } = req.body
-            const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate }, { transaction })
-            id = gameData.id
-
-            //добавление id игры в сущности
-            questionGames.forEach((item, index) => {
-                item.gameId = id;
-                item.questionId = item.id
-                delete item.id
-                item.numberQuestion = index + 1;
-            });
-
-            themeGames?.forEach((item, index) => {
-                item.gameId = id;
-                item.themeId = item.id
-                delete item.id
-                item.numberTheme = index + 1;
-            });
-
-            accessGames.forEach(item => {
-                item.gameId = id
-                item.roleId = item.id
-                delete item.id
-            });
-
-            if (carouselData) {
-                carouselData.gameId = id
-            }
-
-            //создание связей для игры
-            // Выполняем операции внутри транзакции
-            await Promise.all([
-                carouselDataController.createForGame(carouselData, transaction),
-                questionGameController.createForGame(questionGames, transaction),
-                themeGameController.createForGame(themeGames, transaction),
-                accessGameController.createForGame(accessGames, transaction)
-            ])
+            const gameData = await this.createPrivate(req, transaction)
 
             await transaction.commit();
             res.json({ message: 'Игра добавлена', gameData })
@@ -58,6 +21,48 @@ class GameController {
             await transaction.rollback();
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
         }
+    }
+
+    async createPrivate(req, transaction) {
+        let id = null
+        const { typeGame, name, imageId, startDate, endDate, questionGames, themeGames, accessGames, carouselData } = req.body
+        const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate }, { transaction })
+        id = gameData.id
+
+        //добавление id игры в сущности
+        questionGames.forEach((item, index) => {
+            item.gameId = id
+            item.questionId = item.id
+            delete item.id
+            item.numberQuestion = index + 1
+        })
+
+        themeGames?.forEach((item, index) => {
+            item.gameId = id
+            item.themeId = item.id
+            delete item.id
+            item.numberTheme = index + 1
+        })
+
+        accessGames.forEach(item => {
+            item.gameId = id
+            item.roleId = item.id
+            delete item.id
+        })
+
+        if (carouselData) {
+            carouselData.gameId = id
+        }
+
+        //создание связей для игры
+        // Выполняем операции внутри транзакции
+        await Promise.all([
+            carouselDataController.createForGame(carouselData, transaction),
+            questionGameController.createForGame(questionGames, transaction),
+            themeGameController.createForGame(themeGames, transaction),
+            accessGameController.createForGame(accessGames, transaction)
+        ])
+        return gameData
     }
 
     async getAllUser(req, res, next) {
@@ -174,42 +179,34 @@ class GameController {
 
     async delete(req, res, next) {
         try {
-            const { id } = req.params
-            validateCheck(!id, 'Не задан id игры')
-            const count = await Game.destroy({
-                where: {
-                    id: id,
-                },
-            })
-            validateCheck(!count, 'Игра не найдена')
+            await this.deletePrivate(req)
             res.json({ message: 'Игра удалена' })
         } catch (error) {
-            console.log(error.message)
             return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`))
         }
     }
 
+    async deletePrivate(req, transaction) {
+        const { id } = req.params
+        validateCheck(!id, 'Не задан id игры')
+        const count = await Game.destroy({
+            where: {
+                id: id,
+            },
+            transaction
+        })
+        validateCheck(!count, 'Игра не найдена')
+    }
+
     async update(req, res, next) {
+        const transaction = await sequelize.transaction();
         try {
-            const { id } = req.params
-            validateCheck(!id, 'Не задан id игры')
-            const { name, imageId, startDate, endDate } = req.body
-            const isUpdate = await Game.update(
-                {
-                    name: name,
-                    imageId: imageId,
-                    startDate: startDate,
-                    endDate: endDate
-                },
-                {
-                    where: {
-                        id: id,
-                    }
-                }
-            )
-            validateCheck(!isUpdate[0], 'Игра не найдена')
+            await this.deletePrivate(req, transaction);
+            await this.createPrivate(req, transaction);
+            await transaction.commit();
             res.json({ message: 'Игра обновлена' })
         } catch (error) {
+            await transaction.rollback();
             return next(ApiError.badRequest(`Ошибка обновления: ${error.message}`))
         }
     }
