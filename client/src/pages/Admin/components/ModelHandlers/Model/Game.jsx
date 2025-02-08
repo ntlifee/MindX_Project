@@ -13,11 +13,11 @@ const Game = (props) => {
   const [startDate, setStartDate] = useState(model?.startDate ? moment(model.startDate) : null);
   const [endDate, setEndDate] = useState(model?.endDate ? moment(model.endDate) : null);
   const [imageId, setImageId] = useState(null);
-  const [accessRole, setAccessRole] = useState([]);
+  const [accessGames, setAccessGames] = useState([]);
   const [page, setPage] = useState(1);
-  const [themes, setThemes] = useState({});
-  const [questions, setQuestions] = useState({});
-  const [timers, setTimers] = useState({});
+  const [themeGames, setThemes] = useState(model?.themeGames ? model.themeGames : []);
+  const [questionGames, setQuestions] = useState(model?.questionGames ? model.questionGames : []);
+  const [timers, setTimers] = useState(model?.timers ? model.timers : []);
 
   const TYPE_LIST = [
     {
@@ -30,57 +30,68 @@ const Game = (props) => {
     }
   ];
 
-  const handleThemeChange = (themeId, selectedTheme) => {
-    setThemes((prevThemes) => ({
-      ...prevThemes,
-      [themeId]: selectedTheme,
-    }));
+  const handleThemeChange = (themeIndex, selectedTheme) => {
+    setThemes((prevThemes) => {
+      const newThemes = [...prevThemes];
+      newThemes[themeIndex] = selectedTheme;
+      return newThemes;
+    });
   };
 
-  const handleQuestionChange = (themeId, questionId, selectedQuestion) => {
-    setQuestions((prevQuestions) => ({
-      ...prevQuestions,
-      [themeId]: {
-        ...prevQuestions[themeId],
-        [questionId]: selectedQuestion,
-      },
-    }));
+  const handleQuestionChange = (themeIndex, questionIndex, selectedQuestion) => {
+    setQuestions((prevQuestions) => {
+      const newQuestions = [...prevQuestions];
+      if (!newQuestions[themeIndex]) {
+        newQuestions[themeIndex] = [];
+      }
+      newQuestions[themeIndex][questionIndex] = selectedQuestion;
+      return newQuestions;
+    });
   };
 
-  const handleTimerChange = (themeId, questionId, timerValue) => {
-    setTimers((prevTimers) => ({
-      ...prevTimers,
-      [themeId]: {
-        ...prevTimers[themeId],
-        [questionId]: timerValue,
-      },
-    }));
+  const handleTimerChange = (themeIndex, questionIndex, timerValue) => {
+    setTimers((prevTimers) => {
+      const newTimers = [...prevTimers];
+      if (!newTimers[themeIndex]) {
+        newTimers[themeIndex] = [];
+      }
+      newTimers[themeIndex][questionIndex] = timerValue;
+      return newTimers;
+    });
   };
 
   useEffect(() => {
     model.typeGame = typeGame;
   }, [typeGame]);
+
   useEffect(() => {
     model.name = name;
   }, [name]);
+
   useEffect(() => {
     model.startDate = startDate;
   }, [startDate]);
+
   useEffect(() => {
     model.endDate = endDate;
   }, [endDate]);
+
   useEffect(() => {
     model.imageId = imageId;
   }, [imageId]);
+
   useEffect(() => {
-    model.accessRole = accessRole;
-  }, [accessRole]);
+    model.accessGames = accessGames;
+  }, [accessGames]);
+
   useEffect(() => {
-    model.themes = themes;
-  }, [themes]);
+    model.themeGames = themeGames;
+  }, [themeGames]);
+
   useEffect(() => {
-    model.questions = questions;
-  }, [questions]);
+    model.questionGames = questionGames;
+  }, [questionGames]);
+
   useEffect(() => {
     model.timers = timers;
   }, [timers]);
@@ -88,7 +99,7 @@ const Game = (props) => {
   const nextPage = () => {
     if (typeGame === 'square' && page < 6) {
       setPage(page + 1);
-    } else if (typeGame === 'carousel' && page < 3){
+    } else if (typeGame === 'carousel' && page < 3) {
       setPage(page + 1);
     }
   };
@@ -150,7 +161,7 @@ const Game = (props) => {
               <label>Доступно для ролей</label>
               <CatalogRef
                 defaultValue={model.accessGames ? model.accessGames : null}
-                onChange={setAccessRole}
+                onChange={setAccessGames}
                 isMulti
                 url={"role"}
                 path={"name"}
@@ -161,29 +172,29 @@ const Game = (props) => {
         )}
         {typeGame === 'square' && (
           <>
-            {[2, 3, 4, 5, 6].map((item) => (
-              <React.Fragment key={item}>
-                {page === item && (
+            {[1, 2, 3, 4, 5].map((item, themeIndex) => (
+              <React.Fragment key={item + 311}>
+                {page === item + 1 && (
                   <div className="group-label">
-                    <label>{`Тема №${item - 1}`}</label>
+                    <label>{`Тема №${item}`}</label>
                     <CatalogRef
-                      defaultValue={themes[item] || null}
-                      onChange={(selectedTheme) => handleThemeChange(item - 1, selectedTheme)}
+                      defaultValue={themeGames[themeIndex] || null}
+                      onChange={(selectedTheme) => handleThemeChange(themeIndex, selectedTheme)}
                       url={"theme"}
                       path={"name"}
-                      placeholder={`Выберите тему №${item - 1}...`}
+                      placeholder={`Выберите тему №${item}...`}
                     />
                   </div>
                 )}
-                {page === item &&
-                  [1, 2, 3, 4, 5].map((question) => (
+                {page === item + 1 &&
+                  [1, 2, 3, 4, 5].map((question, questionIndex) => (
                     <div className='group-timer' key={`${item}-${question}`}>
                       <div className="group-label">
                         <label>{`Вопрос LVL ${question}`}</label>
                         <CatalogRef
-                          defaultValue={questions[item - 1]?.[question] || null}
+                          defaultValue={questionGames[themeIndex]?.[questionIndex] || null}
                           onChange={(selectedQuestion) =>
-                            handleQuestionChange(item - 1, question, selectedQuestion)
+                            handleQuestionChange(themeIndex, questionIndex, selectedQuestion)
                           }
                           url={"question"}
                           path={"question"}
@@ -195,9 +206,9 @@ const Game = (props) => {
                         <input
                           type="number"
                           min={0}
-                          value={timers[item - 1]?.[question] || ''} 
+                          value={timers[themeIndex]?.[questionIndex] || ''}
                           onChange={(e) =>
-                            handleTimerChange(item - 1, question, parseInt(e.target.value))
+                            handleTimerChange(themeIndex, questionIndex, parseInt(e.target.value))
                           }
                         />
                       </div>

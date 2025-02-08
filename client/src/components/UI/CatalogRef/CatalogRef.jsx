@@ -69,8 +69,8 @@ const CatalogRef = (props) => {
     if (onChange) {
       onChange(
         isMulti 
-          ? selectedOption.map(item => item?.value) 
-          : selectedOption?.value
+          ? selectedOption.map(item => img ? item?.value : item?.data) 
+          : img ? selectedOption?.value : selectedOption?.data
       );
     }
   };
