@@ -17,7 +17,7 @@ const gameCreateSchema = Joi.object({
 
     questionGames: Joi.array().items(
         Joi.object({
-            questionId: Joi.string().guid().required(),
+            id: Joi.string().guid().required(),
             timer: Joi.number().integer().allow(null).default(null)
         })
     ).required().messages({
@@ -30,7 +30,7 @@ const gameCreateSchema = Joi.object({
 
     themeGames: Joi.array().items(
         Joi.object({
-            themeId: Joi.string().guid().required()
+            id: Joi.string().guid().required()
         })
     ).messages({
         'string.empty': 'Поле {#key} не может быть пустым',

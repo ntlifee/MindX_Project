@@ -21,15 +21,23 @@ class GameController {
             //добавление id игры в сущности
             questionGames.forEach((item, index) => {
                 item.gameId = id;
+                item.questionId = item.id
+                delete item.id
                 item.numberQuestion = index + 1;
             });
 
             themeGames?.forEach((item, index) => {
                 item.gameId = id;
+                item.themeId = item.id
+                delete item.id
                 item.numberTheme = index + 1;
             });
 
-            accessGames.forEach(item => { item.gameId = id, item.roleId = item.id });
+            accessGames.forEach(item => {
+                item.gameId = id
+                item.roleId = item.id
+                delete item.id
+            });
 
             if (carouselData) {
                 carouselData.gameId = id
