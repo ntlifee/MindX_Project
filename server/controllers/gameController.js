@@ -117,7 +117,10 @@ class GameController {
                         required: false
                     }]
                 }],
-                order: [[QuestionGame, 'numberQuestion', 'ASC']],
+                order: [
+                    [QuestionGame, 'numberQuestion', 'ASC'],
+                    [ThemeGame, 'numberTheme', 'ASC']
+                ],
                 ...(typeGame && { where: { typeGame } })
             })
 
@@ -154,7 +157,10 @@ class GameController {
                         required: false
                     }]
                 }],
-                order: [[QuestionGame, 'numberQuestion', 'ASC']],
+                order: [
+                    [QuestionGame, 'numberQuestion', 'ASC'],
+                    [ThemeGame, 'numberTheme', 'ASC']
+                ],
                 where: {
                     id: id,
                 }
