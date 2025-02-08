@@ -93,7 +93,7 @@ const ObjectList = (props) => {
 							))}
 							<td className='command-icons'>
 								{
-									row.name !== 'ADMIN' && row.name !== 'USER' &&
+									(type !== 'role' || (row.name !== 'ADMIN' && row.name !== 'USER')) &&
 									<>
 										<button onClick={() => editItem(row)}>
 											<FaEdit />

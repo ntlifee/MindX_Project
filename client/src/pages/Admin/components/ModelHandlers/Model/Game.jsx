@@ -1,5 +1,5 @@
 import './model.scss';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import CatalogRef from '@mindx/components/UI/CatalogRef/CatalogRef';
 import MXSelect from '@mindx/components/UI/MXSelect/MXSelect';
 import MXDatetime from '@mindx/components/UI/MXDatetime/MXDatetime';
@@ -7,6 +7,21 @@ import moment from 'moment';
 
 const Game = (props) => {
   const { model } = props;
+  
+  const TYPE_LIST = [
+    {
+      value: 'square',
+      label: 'Квадрат'
+    },
+    {
+      value: 'carousel',
+      label: 'Карусель'
+    }
+  ];
+  const pages = {
+    square: 6,
+    carousel: 3
+  };
 
   const [typeGame, setTypeGame] = useState(model?.typeGame ? model.typeGame : '');
   const [name, setName] = useState(model?.name ? model.name : '');
@@ -18,17 +33,11 @@ const Game = (props) => {
   const [themeGames, setThemes] = useState(model?.themeGames ? model.themeGames : []);
   const [questionGames, setQuestions] = useState(model?.questionGames ? model.questionGames : []);
   const [timers, setTimers] = useState(model?.timers ? model.timers : []);
+  
+  const totalPages = useMemo(() => {
+    return pages[typeGame] || 1;
+  }, [typeGame])
 
-  const TYPE_LIST = [
-    {
-      value: 'square',
-      label: 'Квадрат'
-    },
-    {
-      value: 'carousel',
-      label: 'Карусель'
-    }
-  ];
 
   const handleThemeChange = (themeIndex, selectedTheme) => {
     setThemes((prevThemes) => {
@@ -97,9 +106,7 @@ const Game = (props) => {
   }, [timers]);
 
   const nextPage = () => {
-    if (typeGame === 'square' && page < 6) {
-      setPage(page + 1);
-    } else if (typeGame === 'carousel' && page < 3) {
+    if (page < totalPages) {
       setPage(page + 1);
     }
   };
@@ -219,11 +226,11 @@ const Game = (props) => {
           </>
         )}
         <div className="button-group">
-          <button type="button" onClick={() => prevPage()}>
+          <button className={page === 1 ? 'visible_false' : ''} hidden type="button" onClick={() => prevPage()}>
             Назад
           </button>
-          <label>{page}</label>
-          <button type="button" onClick={() => nextPage()}>
+          <label>{page}/{totalPages}</label>
+          <button className={page === totalPages ? 'visible_false' : ''} type="button" onClick={() => nextPage()}>
             Далее
           </button>
         </div>
