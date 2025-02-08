@@ -56,6 +56,16 @@ const gameCreateSchema = Joi.object({
         'number.base': 'Поле {#key} должно быть числом',
         'any.required': 'Поле {#key} обязательно для заполнения',
     })
+}).custom((value, helpers) => {
+    if (value.typeGame === 'square') {
+        if (value.themeGames.length !== 5) {
+            return helpers.message('Массив themeGames должен содержать ровно 5 элементов');
+        }
+        if (value.questionGames.length !== 25) {
+            return helpers.message('Массив questionGames должен содержать ровно 25 элементов');
+        }
+    }
+    return value;
 }).messages({
     'any.required': 'Поле {#key} обязательно для заполнения',
     'array.base': 'Поле {#key} должно быть массивом',
