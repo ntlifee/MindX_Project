@@ -88,7 +88,7 @@ class GameController {
                     }]
                 }, {
                     model: QuestionGame,
-                    attributes: ["id", "timer", "numberQuestion"],
+                    attributes: ["id", "timer"],
                     required: false,
                     include: [{
                         model: Question,
@@ -108,6 +108,7 @@ class GameController {
                         required: false
                     }]
                 }],
+                order: [[QuestionGame, 'numberQuestion', 'ASC']],
                 ...(typeGame && { where: { typeGame } })
             })
 
