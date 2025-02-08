@@ -29,7 +29,8 @@ class GameController {
                 item.numberTheme = index + 1;
             });
 
-            accessGame.forEach(item => { item.gameId = id });
+            accessGame.forEach(item => { item.gameId = id, item.roleId = item.id });
+
             if (carouselData) {
                 carouselData.gameId = id
             }
@@ -145,6 +146,7 @@ class GameController {
                         required: false
                     }]
                 }],
+                order: [[QuestionGame, 'numberQuestion', 'ASC']],
                 where: {
                     id: id,
                 }

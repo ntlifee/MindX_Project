@@ -40,7 +40,7 @@ const gameCreateSchema = Joi.object({
 
     accessGame: Joi.array().items(
         Joi.object({
-            roleId: Joi.string().guid().required()
+            id: Joi.string().guid().required()
         })
     ).required().messages({
         'string.empty': 'Поле {#key} не может быть пустым',
