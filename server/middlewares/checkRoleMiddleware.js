@@ -5,11 +5,11 @@ module.exports = function (role) {
         }
         try {
             if (req.user.role !== role) {
-                return res.status(403).json({ message: 'Недостаточно прав' })
+                return res.status(403).json({ errors: ['Недостаточно прав'] })
             }
             next()
         } catch (error) {
-            return res.status(401).json({ message: 'Не авторизован' })
+            return res.status(401).json({ errors: ['Не авторизован'] })
         }
     }
 }

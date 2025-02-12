@@ -18,11 +18,11 @@ module.exports = function () {
                 attributes: ['id'],
             })
             if (!roleGame) {
-                return res.status(403).json({ message: 'Нет доступа к данной игре!' })
+                return res.status(403).json({ errors: ['Нет доступа к данной игре!'] })
             }
             next()
         } catch (error) {
-            return res.status(400).json({ message: 'Ошибка доступа к игре!' })
+            return res.status(400).json({ errors: ['Ошибка доступа к игре!'] })
         }
     }
 }

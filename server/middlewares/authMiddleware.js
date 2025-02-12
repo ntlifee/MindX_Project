@@ -8,7 +8,7 @@ module.exports = function () {
             req.user = verifyToken(req)
             next()
         } catch (error) {
-            return res.status(401).json({ message: 'Не авторизован' })
+            return res.status(401).json({ errors: ['Не авторизован'] })
         }
     }
 }
