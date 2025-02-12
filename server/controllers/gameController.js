@@ -75,7 +75,7 @@ class GameController {
             const gamesData = await Game.findAll({
                 include: [{
                     model: AccessGame,
-                    attributes: ["roleId"],
+                    attributes: [],
                     required: true,
                     where: { roleId }
                 }],
