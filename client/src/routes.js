@@ -13,24 +13,6 @@ export const PUBLIC_ROUTES = [
 		Component: Home,
 	},
 	{
-		path: ROUTES.CAROUSEL_ROUTE,
-		Component: Lobby,
-		type: 'carousel',
-	},
-	{
-		path: ROUTES.SQUARE_ROUTE,
-		Component: Lobby,
-		type: 'square',
-	},
-	{
-		path: `${ROUTES.CAROUSEL_ROUTE}/:id`,
-		Component: CarouselGame,
-	},
-	{
-		path: `${ROUTES.SQUARE_ROUTE}/:id`,
-		Component: SquareGame,
-	},
-	{
 		path: ROUTES.SIGNUP_ROUTE,
 		Component: SignUp,
 	},
@@ -40,16 +22,27 @@ export const PUBLIC_ROUTES = [
 	},
 ];
 
-/* export const NOT_AUTH_ROUTES = [
-	{
-		path: ROUTES.SignUp_ROUTE,
-		Component: SignUp,
-	},
-]; */
-
 export const AUTH_ROUTES = [
 	{
 		path: ROUTES.ADMIN_ROUTE,
 		Component: AdminPage,
+	},
+	{
+		path: `${ROUTES.SQUARE_ROUTE}/:id`,
+		Component: SquareGame,
+	},
+	{
+		path: `${ROUTES.CAROUSEL_ROUTE}/:id`,
+		Component: CarouselGame,
+	},
+	{
+		path: ROUTES.CAROUSEL_ROUTE,
+		Component: Lobby,
+		type: 'carousel',
+	},
+	{
+		path: ROUTES.SQUARE_ROUTE,
+		Component: Lobby,
+		type: 'square',
 	},
 ];

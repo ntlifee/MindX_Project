@@ -5,6 +5,7 @@ import { userAPI } from './userAPI';
 import { userAnswerAPI } from './userAnswerAPI';
 import { roleAPI } from './roleAPI';
 import { imageAPI } from './imageAPI';
+import { lobbyAPI } from './lobbyAPI';
 
 export const API = {
 	question: questionAPI,
@@ -14,4 +15,5 @@ export const API = {
 	userAnswer: userAnswerAPI,
 	role: roleAPI,
 	image: imageAPI,
+	lobby: lobbyAPI,
 };

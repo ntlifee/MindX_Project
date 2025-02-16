@@ -1,20 +1,24 @@
-import { useEffect, useState } from 'react'
-import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel'
-import QuestionButton from './components/QuestionButton/QuestionButton'
-import ModalWindowSquare from './components/ModalWindowSquare/ModalWindowSquare'
-import classes from './squaregame.module.css'
-import useDidMountEffect from '@mindx/customHooks/useDidMountEffect'
-import BonusSquare from './components/BonusSquare/BonusSquare'
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel';
+import QuestionButton from './components/QuestionButton/QuestionButton';
+import ModalWindowSquare from './components/ModalWindowSquare/ModalWindowSquare';
+import classes from './squaregame.module.css';
+import useDidMountEffect from '@mindx/customHooks/useDidMountEffect';
+import BonusSquare from './components/BonusSquare/BonusSquare';
+import { API } from '@mindx/http/API';
+import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
 
 const SquareGame = (props) => {
     let { levels, themes } = props
-    const [modalActive, setModalActive] = useState(false)
-    const [numberQuestion, setNumberQuestion] = useState(0)
-    const [isCloseQuestions, setisCloseQuestions] = useState(new Array(25).fill(null))
-    const isQuestionTemporary = []
-    const [bonusRow, setBonusRow] = useState(new Array(5).fill(null))
-    const [bonusCol, setBonusCol] = useState(new Array(5).fill(null))
-    const [score, setScore] = useState(0)
+    const { id } = useParams();
+    const [modalActive, setModalActive] = useState(false);
+    const [numberQuestion, setNumberQuestion] = useState(0);
+    const [isCloseQuestions, setisCloseQuestions] = useState(new Array(25).fill(null));
+    const isQuestionTemporary = [];
+    const [bonusRow, setBonusRow] = useState(new Array(5).fill(null));
+    const [bonusCol, setBonusCol] = useState(new Array(5).fill(null));
+    const [score, setScore] = useState(0);
 
     //#region development
     for(let i = 0; i < 25; i++) {
@@ -26,6 +30,16 @@ const SquareGame = (props) => {
         }
     }
     //#endregion
+    
+    useDidMountEffect(() => {
+        API.game.getList(id)
+            .then(response => console.log(response))
+            .catch((error) => {
+                const errorsArray = error.response.data.errors;
+                errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
+                console.error(error);
+            });
+    }, [id]);
     
 
     useDidMountEffect(() => {

@@ -11,8 +11,8 @@ const AppRouter = () => {
       {PUBLIC_ROUTES.map(({ path, Component, type }) => 
         <Route key={path} path={path} element={type ? <Component type={type}/> : <Component />} />
       )}
-      {/* user.isAuth */ true && AUTH_ROUTES.map(({ path, Component }) => 
-        <Route key={path} path={path} element={<Component />} />
+      {user.isAuth && AUTH_ROUTES.map(({ path, Component, type }) => 
+        <Route key={path} path={path} element={type ? <Component type={type}/> : <Component />} />
       )}
       <Route path="*" element={<Navigate to={ROUTES.HOME_ROUTE} />} />
     </Routes>

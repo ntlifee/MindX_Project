@@ -25,6 +25,11 @@ const getById = async (id) => {
 	return data;
 };
 
+const getByIdUser = async (id) => {
+	const { data } = await $authHost.get(`/api/square/${id}`);
+	return data;
+};
+
 const update = async (item) => {
 	item.questionGames.forEach((row, i) => {
     if (item.timers[i]) {
@@ -59,6 +64,7 @@ const addItem = async (item) => {
 export const gameAPI = {
 	getList,
 	getById,
+	getByIdUser,
 	update,
 	deleteById,
 	addItem,
