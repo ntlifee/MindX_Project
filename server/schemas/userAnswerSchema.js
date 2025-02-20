@@ -4,9 +4,6 @@ const userAnswerSchema = Joi.object({
     questionGameId: Joi.string()
         .guid()
         .required(),
-    questionId: Joi.string()
-        .guid()
-        .required(),
     points: Joi.number()
         .integer()
         .min(0)

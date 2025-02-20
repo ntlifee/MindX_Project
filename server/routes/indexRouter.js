@@ -10,6 +10,6 @@ const authMiddleware = require('../middlewares/authMiddleware')
 router.use('/user', userRouter)
 router.use('/lobby', authMiddleware(), lobbyRouter)
 router.use('/admin', authMiddleware(), checkRoleMiddleware('ADMIN'), adminRouter)
-router.use('/:typeGame', authMiddleware(), gameUserRouter)
+router.use('/game', authMiddleware(), gameUserRouter)
 
 module.exports = router

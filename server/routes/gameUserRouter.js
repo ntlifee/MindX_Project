@@ -6,7 +6,7 @@ const checkRoleForGameMiddleware = require('../middlewares/checkRoleForGameMiddl
 const validateRequest = require("../middlewares/validateRequest");
 const { userAnswerSchema } = require("../schemas/userAnswerSchema");
 
-router.get('/:id', gameController.getOne)
+router.get('/:id', checkRoleForGameMiddleware(), gameController.getOne)
 router.post('/:id', checkRoleForGameMiddleware(), validateRequest(userAnswerSchema), userAnswerController.create)
 
 module.exports = router

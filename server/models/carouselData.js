@@ -1,7 +1,7 @@
 const sequelize = require('./../database')
 const DataTypes = require('sequelize')
 
-const CarouselData = sequelize.define('carouselData',
+const CarouselData = sequelize.define('carouselDatas',
     {
         id: {
             type: DataTypes.UUID,

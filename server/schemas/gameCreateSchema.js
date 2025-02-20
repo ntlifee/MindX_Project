@@ -65,6 +65,14 @@ const gameCreateSchema = Joi.object({
             return helpers.message('Массив questionGames должен содержать ровно 25 элементов');
         }
     }
+    else if (value.typeGame === 'carousel') {
+        if (!value.carouselData) {
+            return helpers.message('Поле carouselData обязательно для заполнения');
+        }
+        if (value.questionGames.length === 0) {
+            return helpers.message('Массив questionGames должен содержать хотя бы один элемент');
+        }
+    }
     return value;
 }).messages({
     'any.required': 'Поле {#key} обязательно для заполнения',

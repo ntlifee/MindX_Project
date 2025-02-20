@@ -6,11 +6,27 @@ const { validateCheck } = require('../validators/isNullValidator')
 class userAnswerController {
     async create(req, res, next) {
         try {
-            const { questionGameId, questionId, points, userAnswer } = req.body
-            const isInsert = await UserAnswer.findOne({ attributes: ['id'], where: { questionGameId, userId: req.user.id } })
-            validateCheck(isInsert, 'Ответ был дан ранее!')
+            const { questionGameId, points, userAnswer } = req.body
+            const questionData = (await QuestionGame.findOne({
+                attributes: [],
+                include: [{
+                    model: Question,
+                    attributes: ['id', 'answer'],
+                    required: true
+                }, {
+                    model: UserAnswer,
+                    attributes: ['id'],
+                    required: false,
+                    where: {
+                        questionGameId,
+                        userId: req.user.id
+                    }
+                }],
+                where: { id: questionGameId }
+            })).toJSON()
+            validateCheck(questionData.userAnswers.length, 'Ответ был дан ранее!')
             let isCorrect
-            const { answer } = (await Question.findOne({ attributes: ['answer'], where: { id: questionId } }))?.dataValues
+            const { answer } = questionData.question
             isCorrect = answer === userAnswer ? true : false
             const userAnswerData = await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
             res.json({ message: 'Ответ добавлен', isCorrect })

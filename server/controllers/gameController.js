@@ -1,7 +1,7 @@
 const { where } = require('sequelize')
 const sequelize = require('../database.js')
 const ApiError = require('../error/ApiError')
-const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData, Question, Theme, Role } = require('../models/index')
+const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData, Question, Theme, Role, UserAnswer } = require('../models/index')
 const questionGameController = require('./questionGameController')
 const carouselDataController = require('./carouselDataController')
 const accessGameController = require('./accessGameController')
@@ -139,7 +139,7 @@ class GameController {
         try {
             const { id } = req.params
             validateCheck(!id, 'Не задан id игры')
-            const gameData = await Game.findOne({
+            let gameData = (await Game.findOne({
                 include: [{
                     model: QuestionGame,
                     attributes: ["id", "timer", "numberQuestion"],
@@ -148,6 +148,13 @@ class GameController {
                         model: Question,
                         attributes: { exclude: ["answer"] },
                         required: false
+                    }, {
+                        model: UserAnswer,
+                        attributes: ["points", "isCorrect", "userAnswer"],
+                        required: false,
+                        where: {
+                            userId: req.user.id
+                        },
                     }]
                 }, {
                     model: CarouselData,
@@ -169,7 +176,11 @@ class GameController {
                 where: {
                     id: id,
                 }
-            })
+            })).toJSON()
+            gameData.questionGames.forEach(questionGame => {
+                questionGame.userAnswer = questionGame.userAnswers[0] || null
+                delete questionGame.userAnswers
+            });
             validateCheck(!gameData, 'Игра не найдена')
             res.json(gameData)
         } catch (error) {
