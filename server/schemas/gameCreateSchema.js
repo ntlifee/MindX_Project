@@ -32,7 +32,7 @@ const gameCreateSchema = Joi.object({
         Joi.object({
             id: Joi.string().guid().required()
         })
-    ).messages({
+    ).allow(null).messages({
         'string.empty': 'Поле {#key} не может быть пустым',
         'string.base': 'Поле {#key} должно быть строкой',
         'string.guid': 'Поле {#key} должно быть в формате UUID',
@@ -52,7 +52,7 @@ const gameCreateSchema = Joi.object({
         scoreFirst: Joi.number().integer().required(),
         scoreSuccess: Joi.number().integer().required(),
         scoreFailure: Joi.number().integer().required(),
-    }).messages({
+    }).allow(null).messages({
         'number.base': 'Поле {#key} должно быть числом',
         'any.required': 'Поле {#key} обязательно для заполнения',
     })
