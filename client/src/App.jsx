@@ -1,7 +1,7 @@
 import '@mindx/styles/main.css';
 
-import { BrowserRouter } from 'react-router-dom';
 import { useEffect, useContext, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import Navbar from '@mindx/components/Navbar/Navbar';
@@ -15,37 +15,56 @@ import { Context } from '@mindx/index';
 import { API } from '@mindx/http/API';
 
 const App = observer(() => {
-	const [isActiveBurger, setIsActiveBurger] = useState(false);
-	const { user } = useContext(Context);
-	const [loading, setLoading] = useState(true);
-	useEffect(() => {
-    API.user.check().then(data => {
-			user.setUser(data);
-			user.setIsAuth(true);
-		}).catch((error) => {
-			
-		}).finally(() => {
-			setLoading(false);
-		});
+  const [isActiveBurger, setIsActiveBurger] = useState(false);
+  const { user } = useContext(Context);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation(); 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    API.user.check()
+      .then(data => {
+        user.setUser(data);
+        user.setIsAuth(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
-	return (
-		<div className='App'>
-			<Notify/>
-			<BrowserRouter>
-				{loading ? <Loading /> : <></>}
-				<BurgerMenu
-					isActiveBurger={isActiveBurger}
-					setIsActiveBurger={setIsActiveBurger}
-				/>
-				<Navbar
-					isActiveBurger={isActiveBurger}
-					setIsActiveBurger={setIsActiveBurger}
-				/>
-				<AppRouter />
-				<Footer />
-			</BrowserRouter>
-		</div>
-	);
+
+  useEffect(() => {
+    sessionStorage.setItem('lastPath', location.pathname);
+  }, [location]);
+
+  useEffect(() => {
+    const savedPath = sessionStorage.getItem('lastPath');
+    if (savedPath && savedPath !== location.pathname) {
+      navigate(savedPath, { replace: true });
+    }
+  }, [navigate, location.pathname]);
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  return (
+    <div className='App'>
+      <Notify />
+      <BurgerMenu
+        isActiveBurger={isActiveBurger}
+        setIsActiveBurger={setIsActiveBurger}
+      />
+      <Navbar
+        isActiveBurger={isActiveBurger}
+        setIsActiveBurger={setIsActiveBurger}
+      />
+      <AppRouter />
+      <Footer />
+    </div>
+  );
 });
 
 export default App;
