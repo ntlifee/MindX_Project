@@ -72,6 +72,7 @@ class GameController {
                 where: { name: req.user.role }
             }))?.dataValues?.id
             validateCheck(!roleId, "Роль не найдена!")
+            const currentDate = new Date();
             const gamesData = await Game.findAll({
                 include: [{
                     model: AccessGame,
@@ -79,6 +80,11 @@ class GameController {
                     required: true,
                     where: { roleId }
                 }],
+                order: [
+                    [sequelize.literal(`CASE WHEN "endDate" > '${currentDate.toISOString()}' THEN 1 ELSE 0 END`), 'DESC'],
+                    ["startDate", 'ASC'],
+                    ['name', 'ASC']
+                ],
                 ...(typeGame && { where: { typeGame } })
             })
 
