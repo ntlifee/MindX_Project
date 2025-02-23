@@ -7,41 +7,45 @@ import classes from './squaregame.module.css';
 import useDidMountEffect from '@mindx/customHooks/useDidMountEffect';
 import BonusSquare from './components/BonusSquare/BonusSquare';
 import { API } from '@mindx/http/API';
-import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
+import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
 
 const SquareGame = (props) => {
-    let { levels, themes } = props
-    const { id } = useParams();
-    const [modalActive, setModalActive] = useState(false);
-    const [numberQuestion, setNumberQuestion] = useState(0);
-    const [isCloseQuestions, setisCloseQuestions] = useState(new Array(25).fill(null));
-    const isQuestionTemporary = [];
-    const [bonusRow, setBonusRow] = useState(new Array(5).fill(null));
-    const [bonusCol, setBonusCol] = useState(new Array(5).fill(null));
-    const [score, setScore] = useState(0);
+	const { id } = useParams();
+	const [currentQuestion, setCurrentQuestion] = useState(null);
+	const [currentTheme, setCurrentTheme] = useState(null);
+	const [bonusRow, setBonusRow] = useState(new Array(5).fill(null));
+	const [bonusCol, setBonusCol] = useState(new Array(5).fill(null));
+	const [score, setScore] = useState(0);
+	const [questions, setQuestions] = useState([]);
+	const [themes, setThemes] = useState([]);
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const levels = [1, 2, 3, 4, 5];
 
-    //#region development
-    for(let i = 0; i < 25; i++) {
-        if(i % 2 === 0) {
-            isQuestionTemporary[i] = true;
-        }
-        else{
-            isQuestionTemporary[i] = false;
-        }
-    }
-    //#endregion
-    
-    useDidMountEffect(() => {
-        API.game.getList(id)
-            .then(response => console.log(response))
-            .catch((error) => {
-                const errorsArray = error.response.data.errors;
-                errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
-                console.error(error);
-            });
-    }, [id]);
-    
+	useDidMountEffect(() => {
+		API.game
+			.getByIdUser(id)
+			.then((response) => {
+				setThemes(response.themeGames);
+				setQuestions(response.questionGames);
+				setStartDate(response.startDate);
+				setEndDate(response.endDate);
+				const currentPoints = response.questionGames.flat().reduce((accumulator, currentValue) => {
+					if (currentValue.userAnswer) {
+						accumulator += currentValue.userAnswer.points;
+					}
+          return accumulator;
+				}, 0)
+				setScore(currentPoints);
+			})
+			.catch((error) => {
+				const errorsArray = error.response.data.errors;
+				errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
+				console.error(error);
+			});
+	}, [id]);
 
+	/* 
     useDidMountEffect(() => {
         if (isCloseQuestions[numberQuestion - 1] !== null) {
             const indexRow = Math.floor((numberQuestion - 1) / 5)
@@ -87,64 +91,86 @@ const SquareGame = (props) => {
             setBonusRow(newBonusRow)
             setBonusCol(newBonusCol)
         }
-    }, [isCloseQuestions[numberQuestion - 1]])
-
-
-    //#region development
-    levels = [];
-    for (let i = 1; i <= 5; i++) {
-        levels.push(i);
-    }
-    themes = [];
-    for (let i = 1; i <= 5; i++) {
-        themes.push(i);
-    }
-    //#endregion
-    return (
-        <main className={classes.section}>
-            <div className="container">
-                <div className={classes.wrapper}>
-                    <GameInformationPanel score={score} />
-                    <ModalWindowSquare key={numberQuestion}
-                        active={modalActive} setActive={setModalActive}
-                        numberQuestion={numberQuestion}
-                        isCloseQuestions={isCloseQuestions} setisCloseQuestions={setisCloseQuestions}
-                        score={score} setScore={setScore}
-                        isQuestionTemporary={isQuestionTemporary[numberQuestion-1]} 
-                        />
-                    <table className={classes.table_square}>
-                        <thead>
-                            <tr className={classes.tr_square}>
-                                <th className={classes.th_square}>Тема</th>
-                                {levels.map(level => (<td className={classes.td_square} key={level}>Уровень {level}</td>))}
-                                <th className={classes.th_square}>Бонус</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {themes.map((theme, themeNumber) => (
-                                <tr key={themeNumber} className={classes.tr_square}>
-                                    <td className={`${classes.theme} ${classes.td_square}`}><span className={classes.theme_text}>Тема {theme} orghsofhe8fhsog8ufsgohysepofyes98fywsfsiwdwadwadufg</span></td>
-                                    {levels.map(level => (
-                                        <QuestionButton key={themeNumber * 5 + level}
-                                            setModalActive={setModalActive}
-                                            level={level}
-                                            numberQuestion={themeNumber * 5 + level} setNumberQuestion={setNumberQuestion} 
-                                            isCloseQuestions={isCloseQuestions[themeNumber * 5 + level - 1]} 
-                                            isQuestionTemporary={isQuestionTemporary[themeNumber * 5 + level - 1]}/>
-                                    ))}
-                                    <BonusSquare key={themeNumber + 1} value={(themeNumber + 1) * 10} bonus={bonusRow[themeNumber]} />
-                                </tr>
-                            ))}
-                            <tr className={classes.tr_square}>
-                                <th className={classes.th_square}>Бонус</th>
-                                {levels.map(level => (<BonusSquare key={level} value={level * 10} bonus={bonusCol[level - 1]} />))}
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    );
-}
+    }, [isCloseQuestions[numberQuestion - 1]]) */
+	return (
+		<main className={classes.section}>
+			<div className='container'>
+				<div className={classes.wrapper}>
+					<GameInformationPanel score={score} endDate={endDate}/>
+					{currentQuestion && (
+						<ModalWindowSquare
+							key={currentQuestion.question.id}
+							gameId={id}
+							currentTheme={currentTheme}
+							currentQuestion={currentQuestion}
+							setCurrentQuestion={setCurrentQuestion}
+							score={score}
+							setScore={setScore}
+							questions={questions}
+							setQuestions={setQuestions}
+						/>
+					)}
+					<table className={classes.table_square}>
+						<thead>
+							<tr className={classes.tr_square}>
+								<th className={classes.th_square}>Тема</th>
+								{levels.map((level) => (
+									<td
+										className={classes.td_square}
+										key={level}
+									>
+										Уровень {level}
+									</td>
+								))}
+								<th className={classes.th_square}>Бонус</th>
+							</tr>
+						</thead>
+						<tbody>
+							{themes.map(({ id, numberTheme, theme }) => (
+								<tr
+									key={id}
+									className={classes.tr_square}
+								>
+									<td className={`${classes.theme} ${classes.td_square}`}>
+										<span className={classes.theme_text}>{theme.name}</span>
+									</td>
+									{questions[numberTheme - 1].map((item) => (
+										<QuestionButton
+											key={item.id}
+											model={item}
+											setCurrentQuestion={setCurrentQuestion}
+											level={
+												item.numberQuestion % 5 === 0
+													? 5
+													: item.numberQuestion % 5
+											}
+											setCurrentTheme={setCurrentTheme}
+											numberTheme={numberTheme}
+										/>
+									))}
+									<BonusSquare
+										key={numberTheme + 1}
+										value={numberTheme * 10}
+										bonus={bonusRow[numberTheme - 1]}
+									/>
+								</tr>
+							))}
+							<tr className={classes.tr_square}>
+								<th className={classes.th_square}>Бонус</th>
+								{levels.map((level) => (
+									<BonusSquare
+										key={level}
+										value={level * 10}
+										bonus={bonusCol[level - 1]}
+									/>
+								))}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</main>
+	);
+};
 
 export default SquareGame;

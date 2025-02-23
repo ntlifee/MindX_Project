@@ -26,9 +26,23 @@ const getById = async (id) => {
 };
 
 const getByIdUser = async (id) => {
-	const { data } = await $authHost.get(`/api/square/${id}`);
+	const { data } = await $authHost.get(`/api/game/${id}`);
+
+	const questionArray = [];
+	const chunkSize = 5;
+	for (let i = 0; i < data.questionGames.length; i += chunkSize) {
+		const chunk = data.questionGames.slice(i, i + chunkSize);
+		questionArray.push(chunk);
+	}
+	data.questionGames = questionArray;
+
 	return data;
 };
+
+const postAnswer = async ({gameId, body}) => {
+	const { data } = await $authHost.post(`/api/game/${gameId}`, body);
+  return data;
+}
 
 const update = async (item) => {
 	item.questionGames.forEach((row, i) => {
@@ -68,4 +82,5 @@ export const gameAPI = {
 	update,
 	deleteById,
 	addItem,
+	postAnswer
 };
