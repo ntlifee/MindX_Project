@@ -61,6 +61,7 @@ const User = (props) => {
           url={"role"}
           path={"name"}
           placeholder="Выберите роль..."
+          returnValue="value"
         />
       </div>
       </form>

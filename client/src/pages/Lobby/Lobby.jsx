@@ -100,8 +100,6 @@ const Lobby = (props) => {
       ]) */
   }, [type]);
 
-  useEffect(() => {/* console.log(gameList) */}, [gameList]);
-
   return (
     <main className="lobby-section">
       <div className="container">

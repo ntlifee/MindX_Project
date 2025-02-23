@@ -44,7 +44,6 @@ const CarouselGame = () => {
             newProgress[idx + 1].points = points
             return newProgress
         })
-        console.log(progress)
         setScore(score + (isCorrect ? progress[idx].points : 0))
         setValue('')
         setIdx(idx + 1)

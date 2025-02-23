@@ -6,7 +6,8 @@ import { Image } from 'react-bootstrap';
 import { useRef } from 'react';
 
 const CatalogRef = (props) => {
-  const { 
+  const {
+    returnValue = 'data', 
     defaultValue, 
     onChange, 
     url, 
@@ -69,8 +70,8 @@ const CatalogRef = (props) => {
     if (onChange) {
       onChange(
         isMulti 
-          ? selectedOption.map(item => img ? item?.value : item?.data) 
-          : img ? selectedOption?.value : selectedOption?.data
+          ? selectedOption.map(item => img ? item?.value : item[returnValue]) 
+          : img ? selectedOption?.value : selectedOption[returnValue]
       );
     }
   };

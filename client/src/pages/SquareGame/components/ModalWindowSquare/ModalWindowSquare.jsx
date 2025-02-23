@@ -66,7 +66,6 @@ const ModalWindowSquare = (props) => {
 		setCurrentQuestion(null);
 	};
 	const ChangeScore = (koef) => {
-		console.log(score)
 		setScore(score + scoreQuestion * koef);
 	};
 
