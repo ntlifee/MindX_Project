@@ -60,6 +60,22 @@ class userAnswerController {
             return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
         }
     }
+
+    async delete(req, res, next) {
+        try {
+            const { id } = req.params
+            validateCheck(!id, 'Не задан id ответа пользователя!')
+            const isDelete = await UserAnswer.destroy({
+                where: {
+                    id: id,
+                },
+            })
+            validateCheck(!isDelete, 'Ответ пользователя найден!')
+            res.json({ message: 'Ответ пользователя удален' })
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`))
+        }
+    }
 }
 
 module.exports = new userAnswerController()
