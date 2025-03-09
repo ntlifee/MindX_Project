@@ -15,7 +15,6 @@ const QuestionButton = (props) => {
 					onClick={() => handleClick()}
 				>
 					{level ? level * 10 : '?'}{' '}
-					{model.timer && model.timer > 0 && '\u231B'}
 				</a>
 			) : model.userAnswer.isCorrect ? (
 				<a

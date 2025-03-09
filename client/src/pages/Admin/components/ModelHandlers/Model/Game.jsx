@@ -32,7 +32,6 @@ const Game = (props) => {
   const [page, setPage] = useState(1);
   const [themeGames, setThemes] = useState(model?.themeGames ? model.themeGames : []);
   const [questionGames, setQuestions] = useState(model?.questionGames ? model.questionGames : []);
-  const [timers, setTimers] = useState(model?.timers ? model.timers : []);
   
   const totalPages = useMemo(() => {
     return pages[typeGame] || 1;
@@ -55,17 +54,6 @@ const Game = (props) => {
       }
       newQuestions[themeIndex][questionIndex] = selectedQuestion;
       return newQuestions;
-    });
-  };
-
-  const handleTimerChange = (themeIndex, questionIndex, timerValue) => {
-    setTimers((prevTimers) => {
-      const newTimers = [...prevTimers];
-      if (!newTimers[themeIndex]) {
-        newTimers[themeIndex] = [];
-      }
-      newTimers[themeIndex][questionIndex] = timerValue;
-      return newTimers;
     });
   };
 
@@ -100,10 +88,6 @@ const Game = (props) => {
   useEffect(() => {
     model.questionGames = questionGames;
   }, [questionGames]);
-
-  useEffect(() => {
-    model.timers = timers;
-  }, [timers]);
 
   const nextPage = () => {
     if (page < totalPages) {
@@ -195,8 +179,7 @@ const Game = (props) => {
                 )}
                 {page === item + 1 &&
                   [1, 2, 3, 4, 5].map((question, questionIndex) => (
-                    <div className='group-timer' key={`${item}-${question}`}>
-                      <div className="group-label">
+                    <div className="group-label">
                         <label>{`Вопрос LVL ${question}`}</label>
                         <CatalogRef
                           defaultValue={questionGames[themeIndex]?.[questionIndex] || null}
@@ -208,18 +191,6 @@ const Game = (props) => {
                           placeholder={`Выберите вопрос LVL ${question}`}
                         />
                       </div>
-                      <div className='group-label timer'>
-                        <label>{'Таймер (сек)'}</label>
-                        <input
-                          type="number"
-                          min={0}
-                          value={timers[themeIndex]?.[questionIndex] || ''}
-                          onChange={(e) =>
-                            handleTimerChange(themeIndex, questionIndex, parseInt(e.target.value))
-                          }
-                        />
-                      </div>
-                    </div>
                   ))}
               </React.Fragment>
             ))}

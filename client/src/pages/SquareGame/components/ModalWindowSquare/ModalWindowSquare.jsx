@@ -15,24 +15,16 @@ const ModalWindowSquare = (props) => {
 		questions, 
 		setQuestions
 	} = props;
-	const [time, setTime] = useState(
-		!currentQuestion.userAnswer && currentQuestion.timer ? currentQuestion.timer : 0
-	);
 	const scoreQuestion = (((currentQuestion.numberQuestion - 1) % 5) + 1) * 10;
 	const [answer, setAnswer] = useState(''); 
 	const level = currentQuestion.numberQuestion % 5 === 0 ? 5 : currentQuestion.numberQuestion % 5;
-
-	useEffect(() => {
-		time > 0
-			? setTimeout(() => setTime(time - 1), 1000)
-			: currentQuestion?.timer > 0 && handleAnswer();
-	}, [time]);
 
 	const postAnswer = (body) => {
 		API.game.postAnswer({ gameId, body })
 			.then(({ isCorrect }) => {
 				questions[currentTheme - 1][level - 1].userAnswer = {
-					isCorrect
+					isCorrect,
+					userAnswer: body.userAnswer
 				};
 				setQuestions([...questions]);
 			})
@@ -44,7 +36,7 @@ const ModalWindowSquare = (props) => {
 	};
 
 	const handleAnswer = () => {
-		if (!currentQuestion.userAnswer) {
+		if (!currentQuestion.userAnswer && answer) {
 			const body = {
 				questionGameId: currentQuestion.id,
 				userAnswer: answer,
@@ -53,6 +45,8 @@ const ModalWindowSquare = (props) => {
 			postAnswer(body);
 			ChangeScore(1);
 			setCurrentQuestion(null);
+		} else {
+			ErrorEmmiter('Поле ответа не может быть пустым!');
 		}
 	};
 	const handleSurrender = () => {
@@ -94,19 +88,6 @@ const ModalWindowSquare = (props) => {
 						>
 							{currentQuestion.userAnswer.userAnswer || '(Вы ничего не ответили.)'}
 						</textarea>
-					)}
-					{!currentQuestion.userAnswer ? (
-						<>
-							{currentQuestion?.timer > 0 ? (
-								<span className={classes.time}>{time}</span>
-							) : (
-								<span className={classes.time}> &#8734;</span>
-							)}
-						</>
-					) : currentQuestion.userAnswer.isCorrect ? (
-						<span className={classes.time}>&#9989;</span>
-					) : (
-						<span className={classes.time}>&#10060;</span>
 					)}
 					<div className={classes.content_buttons}>
 						{!currentQuestion.userAnswer ? (
