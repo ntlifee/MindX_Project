@@ -9,7 +9,7 @@ class questionGameController {
     }
     async create(req, res, next) {
         try {
-            const { questionId, gameId, timer } = req.body
+            const { questionId, gameId } = req.body
             const isQuestionGame = await QuestionGame.findOne({
                 where: {
                     questionId: questionId,
@@ -23,7 +23,7 @@ class questionGameController {
                     gameId: gameId,
                 },
             });
-            const questionGameData = await QuestionGame.create({ questionId, gameId, numberQuestion: countQuestion + 1, timer })
+            const questionGameData = await QuestionGame.create({ questionId, gameId, numberQuestion: countQuestion + 1 })
             res.json({ message: 'Вопрос добавлен к игре', questionGameData })
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
@@ -67,11 +67,10 @@ class questionGameController {
         try {
             const { id } = req.params
             validateCheck(!id, 'Не задан id вопроса игры!')
-            const { questionId, timer } = req.body
+            const { questionId } = req.body
             const isUpdate = await QuestionGame.update(
                 {
                     questionId: questionId,
-                    timer: timer,
                 },
                 {
                     where: {

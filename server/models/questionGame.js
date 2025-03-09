@@ -13,9 +13,6 @@ const QuestionGame = sequelize.define('questionGame',
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        timer: {
-            type: DataTypes.INTEGER
-        },
     },
     {
         timestamps: false

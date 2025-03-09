@@ -10,17 +10,6 @@ const questionGamePutSchema = Joi.object({
             'string.guid': 'Поле {#key} должен быть валидным UUID.',
             'any.required': 'Поле {#key} обязателен.',
         }),
-    timer: Joi.number()
-        .integer()
-        .min(0)
-        .allow(null)
-        .default(null)
-        .messages({
-            'number.base': 'Поле {#key} должен быть числом.',
-            'number.integer': 'Поле {#key} должен быть целым числом.',
-            'number.min': 'Поле {#key} не может быть отрицательным.',
-            'any.required': 'Поле {#key} обязателен.',
-        }),
 });
 
 const questionGamePostSchema = questionGamePutSchema.append({

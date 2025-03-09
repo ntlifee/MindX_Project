@@ -18,13 +18,11 @@ const gameCreateSchema = Joi.object({
     questionGames: Joi.array().items(
         Joi.object({
             id: Joi.string().guid().required(),
-            timer: Joi.number().integer().allow(null).default(null)
         })
     ).required().messages({
         'string.empty': 'Поле {#key} не может быть пустым',
         'string.base': 'Поле {#key} должно быть строкой',
         'string.guid': 'Поле {#key} должно быть в формате UUID',
-        'number.base': 'Поле {#key} должно быть числом',
         'any.required': 'Поле {#key} обязательно для заполнения',
     }),
 

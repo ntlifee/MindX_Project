@@ -108,7 +108,7 @@ class GameController {
                     }]
                 }, {
                     model: QuestionGame,
-                    attributes: ["id", "timer"],
+                    attributes: ["id"],
                     required: false,
                     include: [{
                         model: Question,
@@ -148,7 +148,7 @@ class GameController {
             let gameData = (await Game.findOne({
                 include: [{
                     model: QuestionGame,
-                    attributes: ["id", "timer", "numberQuestion"],
+                    attributes: ["id", "numberQuestion"],
                     required: true,
                     include: [{
                         model: Question,
