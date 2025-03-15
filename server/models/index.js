@@ -16,15 +16,13 @@ Game.hasOne(CarouselData, { onDelete: 'CASCADE', foreignKey: { allowNull: false 
 CarouselData.belongsTo(Game)
 Game.hasMany(AccessGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 AccessGame.belongsTo(Game)
-Game.hasMany(QuestionGame)
+Game.hasMany(QuestionGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 QuestionGame.belongsTo(Game)
 Game.hasMany(ThemeGame, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 ThemeGame.belongsTo(Game)
-Game.hasMany(Bonus)
+Game.hasMany(Bonus, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 Bonus.belongsTo(Game)
 
-User.hasMany(UserAnswer, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
-UserAnswer.belongsTo(User)
 User.hasMany(UserAnswer, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 UserAnswer.belongsTo(User)
 User.hasMany(Bonus, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
@@ -46,7 +44,7 @@ ThemeGame.belongsTo(Theme)
 Question.hasMany(QuestionGame, { onDelete: 'RESTRICT', foreignKey: { allowNull: false } })
 QuestionGame.belongsTo(Question)
 
-QuestionGame.hasMany(UserAnswer, { onDelete: 'RESTRICT', foreignKey: { allowNull: false } })
+QuestionGame.hasMany(UserAnswer, { onDelete: 'CASCADE', foreignKey: { allowNull: false } })
 UserAnswer.belongsTo(QuestionGame)
 
 module.exports = {
