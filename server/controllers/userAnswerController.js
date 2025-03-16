@@ -2,6 +2,7 @@ const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { UserAnswer, User, QuestionGame, Question, Game } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
+const ratingController = require('./ratingController')
 
 class userAnswerController {
     async create(req, res, next) {
@@ -74,6 +75,62 @@ class userAnswerController {
             res.json({ message: 'Ответ пользователя удален' })
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка удаления: ${error.message}`))
+        }
+    }
+
+    async download(req, res, next) {
+        try {
+            const { countQuestion, rating } = await ratingController.getRatingPrivate(req.params.id, req.query.userId)
+            let { typeGame, name, startDate, endDate } = await Game.findByPk(req.params.id, { attributes: ["typeGame", "name", "startDate", "endDate"] })
+
+            startDate.setHours(startDate.getHours() + 3)
+            endDate.setHours(endDate.getHours() + 3)
+            startDate = startDate.toISOString().slice(0, 19).replace(/:/g, '-')
+            endDate = endDate.toISOString().slice(0, 19).replace(/:/g, '-')
+
+            // Имя файла
+            const fileName = `${startDate}_${endDate}_${name}_${typeGame}.xlsx`
+
+            // Создание массива данных для Excel
+            let excelData = []
+
+            // Строка с номерами вопросов
+            let questionNumbers = ['Номер']
+            for (let i = 1; i <= countQuestion; i++) {
+                questionNumbers.push(i) // Номера вопросов
+            }
+
+            // Формирование данных ответов пользователя
+            rating.forEach(item => {
+                excelData.push(["Пользователь", item.username])
+                excelData.push(questionNumbers)
+
+                let answerPoints = ["Баллы"]
+                // Перебираем все вопросы
+                for (let i = 1; i <= countQuestion; i++) {
+                    // Ищем ответ пользователя на данный вопрос
+                    let userAnswer = item.userAnswers.find(answer => answer.numberQuestion === i)
+                    if (userAnswer?.isCorrect) {
+                        // Lобавляем баллы за верный ответ
+                        answerPoints.push(userAnswer.points)
+                    } else {
+                        // Если ответа нет или неверный, ставим 0
+                        answerPoints.push(0)
+                    }
+                }
+                //TODO: заменить 0 на баллы
+                excelData.push(answerPoints)
+                if (typeGame === "square") {
+                    excelData.push(["Сумма баллов за вопросы", 0])
+                    excelData.push(["Бонусы", 0])
+                }
+                excelData.push(["Всего баллов", item.totalPoints])
+                excelData.push([])
+            });
+
+            res.json({ fileName: fileName, excelData: excelData })
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка скачивания: ${error.message}`))
         }
     }
 }

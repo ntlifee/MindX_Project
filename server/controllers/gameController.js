@@ -24,10 +24,9 @@ class GameController {
     }
 
     async createPrivate(req, transaction) {
-        let id = null
         const { typeGame, name, imageId, startDate, endDate, questionGames, themeGames, accessGames, carouselData } = req.body
         const gameData = await Game.create({ typeGame, name, imageId, startDate, endDate }, { transaction })
-        id = gameData.id
+        const id = gameData.id
 
         //добавление id игры в сущности
         questionGames.forEach((item, index) => {
