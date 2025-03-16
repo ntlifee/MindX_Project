@@ -50,5 +50,5 @@ UserAnswer.belongsTo(QuestionGame)
 module.exports = {
     User, Role, Game, AccessGame,
     UserAnswer, CarouselData,
-    Question, Theme, ThemeGame, QuestionGame, Image,
+    Question, Theme, ThemeGame, QuestionGame, Image, Bonus
 }

@@ -8,6 +8,7 @@ const validateRequest = require("../middlewares/validateRequest");
 const { userAnswerSchema } = require("../schemas/userAnswerSchema");
 
 router.get('/:id', checkRoleForGameMiddleware(), checkStartEndGameMiddleware(), gameController.getOne)
-router.post('/:id', checkRoleForGameMiddleware(), checkStartEndGameMiddleware(), validateRequest(userAnswerSchema), userAnswerController.create)
+router.post('/:id', checkRoleForGameMiddleware(), checkStartEndGameMiddleware(), validateRequest(userAnswerSchema),
+    userAnswerController.create.bind(userAnswerController))
 
 module.exports = router
