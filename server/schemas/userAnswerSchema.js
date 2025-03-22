@@ -9,7 +9,7 @@ const userAnswerSchema = Joi.object({
         .min(0)
         .required(),
     userAnswer: Joi.string().allow(null).default(null),
-    bonus: Joi.object().allow(null)
+    typeGame: Joi.string().required()
 }).messages({
     'string.guid': 'Поле {#key} должен быть валидным UUID.',
     'string.empty': 'Поле {#key} не может быть пустым.',

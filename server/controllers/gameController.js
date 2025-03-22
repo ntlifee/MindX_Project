@@ -1,7 +1,7 @@
 const { where } = require('sequelize')
 const sequelize = require('../database.js')
 const ApiError = require('../error/ApiError')
-const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData, Question, Theme, Role, UserAnswer } = require('../models/index')
+const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData, Question, Theme, Role, UserAnswer, Bonus } = require('../models/index')
 const questionGameController = require('./questionGameController')
 const carouselDataController = require('./carouselDataController')
 const accessGameController = require('./accessGameController')
@@ -173,6 +173,10 @@ class GameController {
                         model: Theme,
                         required: false
                     }]
+                }, {
+                    model: Bonus,
+                    attributes: { exclude: ["userId", "gameId"] },
+                    required: false,
                 }],
                 order: [
                     [QuestionGame, 'numberQuestion', 'ASC'],

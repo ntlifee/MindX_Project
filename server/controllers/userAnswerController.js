@@ -4,10 +4,29 @@ const { UserAnswer, User, QuestionGame, Question, Game, Bonus } = require('../mo
 const { validateCheck } = require('../validators/isNullValidator')
 const ratingController = require('./ratingController')
 
+
+const BONUS = {
+    'row': {
+        '1': 50,
+        '2': 50,
+        '3': 50,
+        '4': 50,
+        '5': 50
+    },
+    'column': {
+        '1': 10,
+        '2': 20,
+        '3': 30,
+        '4': 40,
+        '5': 50
+    }
+}
+
+
 class userAnswerController {
     async create(req, res, next) {
         try {
-            const { questionGameId, points, userAnswer, bonus } = req.body
+            let { questionGameId, points, userAnswer, typeGame } = req.body
             const questionData = (await QuestionGame.findOne({
                 attributes: ["numberQuestion"],
                 include: [{
@@ -26,12 +45,20 @@ class userAnswerController {
                 where: { id: questionGameId }
             })).toJSON()
             validateCheck(questionData.userAnswers.length, 'Ответ был дан ранее!')
-            //TODO: проверить это проверку для карусели
-            if (!bonus) {
+
+            //Проверяет, что пользователь отвечает на следующий вопрос
+            if (typeGame === 'carousel') {
                 const isCreateAnswer = await UserAnswer.count({
+                    includes: [{
+                        model: QuestionGame,
+                        attributes: [],
+                        required: false,
+                        where: {
+                            gameId: req.params.id
+                        }
+                    }],
                     where: {
                         userId: req.user.id,
-                        questionGameId
                     }
                 })
                 if (isCreateAnswer !== questionData.numberQuestion - 1) {
@@ -43,34 +70,36 @@ class userAnswerController {
             const { answer } = questionData.question
             isCorrect = answer === userAnswer ? true : false
             const userAnswerData = await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
-            //TODO: проверить можно ли добавить бонус, посмотреть checkRows и checkColumns
-            if (bonus) {
+
+            //Начисление бонуса, если выполнены условия
+            if (isCorrect && typeGame === 'square') {
+                const row = Math.ceil(questionData.numberQuestion / 5)
+                const column = (questionData.numberQuestion - 1) % 5 + 1
                 const bonusData = await Bonus.findOne({
                     where: {
                         userId: req.user.id,
                         gameId: req.params.id,
-                        lvl: bonus.lvl,
-                        type: bonus.type,
+                        lvl: [row, column],
+                        type: ['row', 'column'],
                     }
                 })
-                if (!bonusData) {
-                    const rowColumnAnswer = UserAnswer.findAll({
-                        attributes: ['questionGameId'],
-                        where: {
-                            userId: req.user.id,
-                            questionGameId,
-                            isCorrect: true
-                        }
-                    })
-                    const temp = await this.checkRows()
-                    const temp2 = await this.checkColumns()
-                    await Bonus.create({ ...bonus, userId: req.user.id, gameId: req.params.id })
+                if (!bonusData || !bonusData[0] || !bonusData[1]) {
+                    const checks = await Promise.all([
+                        this.check(req, '("questionGame"."numberQuestion" - 1) / 5 + 1'),
+                        this.check(req, '("questionGame"."numberQuestion" - 1) % 5 + 1')
+                    ])
+                    if (checks[0].includes(row)) {
+                        await Bonus.create({ points: BONUS['column'][`${row}`], type: 'row', lvl: row, userId: req.user.id, gameId: req.params.id })
+                    }
+                    if (checks[1].includes(column)) {
+                        await Bonus.create({ points: BONUS['column'][`${column}`], type: 'column', lvl: column, userId: req.user.id, gameId: req.params.id })
+                    }
                 }
             }
 
             res.json({ message: 'Ответ добавлен', isCorrect })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка создания: ${error.message}`))
+            return next(ApiError.badRequest(`${error.message}`))
         }
     }
 
@@ -171,46 +200,54 @@ class userAnswerController {
             return next(ApiError.badRequest(`Ошибка скачивания: ${error.message}`))
         }
     }
-    async checkRows() {
+
+    async check(req, query) {
         const rows = await UserAnswer.findAll({
             attributes: [
-                [Sequelize.literal('CEIL("questionGame"."numberQuestion" / 5)'), 'row_number'],
+                [Sequelize.literal(query), 'number'],
                 [Sequelize.fn('COUNT', Sequelize.col('userAnswer.isCorrect')), 'correct_count']
             ],
             include: [{
                 model: QuestionGame,
-                attributes: []
+                attributes: [],
+                where: {
+                    gameId: req.params.id
+                }
             }],
             where: {
+                userId: req.user.id,
                 isCorrect: true
             },
-            group: [Sequelize.literal('row_number')],
+            group: [Sequelize.literal('number')],
             having: Sequelize.literal('COUNT("userAnswer"."isCorrect") = 5')
         });
 
-        return rows.map(row => row.dataValues.row_number);
+        return rows.map(row => row.dataValues.number);
     }
 
-    async checkColumns() {
-        const columns = await UserAnswer.findAll({
-            attributes: [
-                [Sequelize.literal('("questionGame"."numberQuestion" - 1) % 5 + 1'), 'column_number'],
-                [Sequelize.fn('COUNT', Sequelize.col('userAnswer.isCorrect')), 'correct_count']
-            ],
-            include: [{
-                model: QuestionGame,
-                attributes: []
-            }],
-            where: {
-                isCorrect: true
-            },
-            group: [Sequelize.literal('column_number')],
-            having: Sequelize.literal('COUNT("userAnswer"."isCorrect") = 5')
-        });
-
-        return columns.map(column => column.dataValues.column_number);
-    }
-
+    /*     async checkColumns(req) {
+            const columns = await UserAnswer.findAll({
+                attributes: [
+                    [Sequelize.literal(), 'column_number'],
+                    [Sequelize.fn('COUNT', Sequelize.col('userAnswer.isCorrect')), 'correct_count']
+                ],
+                include: [{
+                    model: QuestionGame,
+                    attributes: [],
+                    where: {
+                        gameId: req.params.id
+                    }
+                }],
+                where: {
+                    userId: req.user.id,
+                    isCorrect: true
+                },
+                group: [Sequelize.literal('column_number')],
+                having: Sequelize.literal('COUNT("userAnswer"."isCorrect") = 5')
+            });
+    
+            return columns.map(column => column.dataValues.column_number);
+        } */
 }
 
 module.exports = new userAnswerController()
