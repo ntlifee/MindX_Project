@@ -2,17 +2,21 @@ const Joi = require("joi");
 
 const baseSchema = Joi.object({
     password: Joi.string()
-        .min(6)
+        .min(8)
+        .pattern(/(?=.*[a-zа-яё])/, 'строчную букву')
+        .pattern(/(?=.*[A-ZА-ЯЁ])/, 'заглавную букву')
+        .pattern(/(?=.*\d)/, 'число')
+        .pattern(/(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, 'специальный символ')
         .required(),
 
-    confirmPassword: Joi.string()
-        .min(6)
-        .required(),
+    confirmPassword: Joi.required().valid(Joi.ref('password')),
 }).messages({
     "string.base": "Поле {#key} должно быть строкой.",
-    "string.min": "Поле {#key} должно содержать не менее 6 символов.",
+    "string.min": "Поле {#key} должно содержать не менее 8 символов.",
+    "string.pattern.name": "Поле {#key} должно содержать {#name}.",
+    "any.only": "Поле {#key} должно совпадать с паролем.",
     "any.required": "Поле {#key} обязательно.",
-})
+});
 
 const usernameValidation = Joi.string()
     .pattern(/^[a-zA-Z0-9А-Яа-яЁё]+$/)

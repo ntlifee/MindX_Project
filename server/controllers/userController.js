@@ -1,5 +1,5 @@
 const ApiError = require('../error/ApiError')
-const bcrypt = require('bcrypt')
+const argon2 = require('argon2');
 const jwt = require('jsonwebtoken')
 const { User, Role } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
@@ -13,9 +13,19 @@ const generateJwt = (id, username, role) => {
     )
 }
 
+const generateHashPassword = (password) => {
+    return argon2.hash(password, {
+        type: argon2.argon2id, // Рекомендуемый режим Argon2id
+        hashLength: 32,       // Длина хэша
+        memoryCost: 2 ** 16, // Память (1024 MB)
+        timeCost: 3,         // Количество итераций
+        parallelism: 4       // Количество параллельных потоков
+    });
+}
+
 const FindRole = async (roleId) => {
     const role = (await Role.findByPk(roleId, { attributes: ['name'] }))?.dataValues.name
-    validateCheck(!role, 'Не удалось найти роль!')
+    validateCheck(!role)
     return role
 }
 
@@ -29,10 +39,9 @@ function errorHandling(error) {
 class UserController {
     async createUser(req, res, next) {
         try {
-            const { username, password, confirmPassword, roleId } = req.body
-            validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
+            const { username, password, roleId } = req.body
             await FindRole(roleId)
-            const hashPassword = bcrypt.hashSync(password, 5)
+            const hashPassword = await generateHashPassword(password)
             const user = await User.create({ username, password: hashPassword, roleId })
             return res.json({ message: "Пользователь создан!" })
         } catch (error) {
@@ -42,9 +51,8 @@ class UserController {
     }
     async signup(req, res, next) {
         try {
-            const { username, password, confirmPassword } = req.body
-            validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
-            const hashPassword = bcrypt.hashSync(password, 5)
+            const { username, password } = req.body
+            const hashPassword = await generateHashPassword(password)
             const user = await User.create({ username, password: hashPassword })
             const token = generateJwt(user.id, user.username, "USER")
             return res.json({ token })
@@ -59,13 +67,13 @@ class UserController {
             const { username, password } = req.body
             const user = await User.findOne({ where: { username } })
             validateCheck(!user, 'Пользователь с таким именем не найден!')
-            let comparePassword = bcrypt.compareSync(password, user.password)
+            let comparePassword = await argon2.verify(user.password, password)
             validateCheck(!comparePassword, 'Указан неверный пароль!')
             const role = (await Role.findByPk(user.roleId, { attributes: { exclude: ['id'] } }))?.dataValues.name
             const token = generateJwt(user.id, user.username, role)
             return res.json({ token })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка входа: ${error.message}`))
+            return next(ApiError.unauthorized(`Ошибка входа: ${error.message}`))
         }
     }
 
@@ -76,7 +84,7 @@ class UserController {
             const token = generateJwt(req.user.id, req.user.username, role)
             res.json({ token })
         } catch (error) {
-            return next(ApiError.badRequest(`Ошибка проверки: ${error.message}`))
+            return next(ApiError.unauthorized('Токен устарел'))
         }
     }
 
@@ -115,12 +123,12 @@ class UserController {
         try {
             const { id } = req.params
             validateCheck(!id, 'Не задан id пользователя')
-            const { username, password, confirmPassword, roleId } = req.body;
-            validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
+            const { username, password, roleId } = req.body;
+            const hashPassword = await generateHashPassword(password)
             const isUpdate = await User.update(
                 {
                     username: username,
-                    password: bcrypt.hashSync(password, 5),
+                    password: hashPassword,
                     roleId: roleId
                 },
                 {
@@ -139,15 +147,13 @@ class UserController {
 
     async update(req, res, next) {
         try {
-            const { id } = req.params
-            validateCheck(!id, 'Не задан id пользователя')
-            validateCheck(id !== req.user.id, 'Вы не можете поменять данные другому человеку!')
-            const { username, password, confirmPassword } = req.body;
-            validateCheck(password !== confirmPassword, 'Пароли не совпадают!')
+            const id = req.user.id
+            const { username, password } = req.body;
+            const hashPassword = await generateHashPassword(password)
             const isUpdate = await User.update(
                 {
                     username: username,
-                    password: bcrypt.hashSync(password, 5)
+                    password: hashPassword
                 },
                 {
                     where: {
