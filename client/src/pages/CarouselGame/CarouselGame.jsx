@@ -46,6 +46,19 @@ const CarouselGame = () => {
     setCurrentQuestion(questions[currentQuestionIndex]);
   }, [currentQuestionIndex]);
 
+  useEffect(() => {
+    if (questionsListRef.current && currentQuestionIndex !== null) {
+      const questionElement = questionsListRef.current.children[currentQuestionIndex];
+      if (questionElement) {
+        questionElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center'
+        });
+      }
+    }
+  }, [currentQuestionIndex]);
+
   const handleSphereClick = (index) => {
     setCurrentQuestionIndex(index);
     setUserAnswer('');
@@ -64,10 +77,21 @@ const CarouselGame = () => {
 
   const postAnswer = mindxDebounce(() => {
     if (userAnswer) {
+      let possibleScore = null;
+      const prevAnswer = questions[currentQuestionIndex - 1]?.userAnswer;
+      if (lastQuestion.numberQuestion === 1 ) {
+        possibleScore = carouselData.scoreFirst;
+      } else if (prevAnswer.isCorrect) {
+        possibleScore = prevAnswer?.points + carouselData.scoreSuccess;
+      } else {
+        possibleScore = prevAnswer?.points - carouselData.scoreFailure < carouselData.scoreFirst
+          ? carouselData.scoreFirst
+          : prevAnswer?.points - carouselData.scoreFailure
+      }
       const body = {
         questionGameId: lastQuestion.id,
         userAnswer: userAnswer,
-        points: 10,
+        points: possibleScore,
       };
       const gameId = id;
       API.game
@@ -76,6 +100,7 @@ const CarouselGame = () => {
           questions[currentQuestionIndex].userAnswer = {
             isCorrect,
             userAnswer: body.userAnswer,
+            points: possibleScore,
           };
           setQuestions([...questions]);
         })
@@ -90,6 +115,7 @@ const CarouselGame = () => {
   return (
     <main className="carousel-section">
       <div className="carousel-wrapper">
+      <GameInformationPanel endDate={endDate}/>
         <div className="carousel">
           <div className="questions__container">
             <button className="scroll-button left" onClick={() => scrollQuestions('left')}>
@@ -110,7 +136,7 @@ const CarouselGame = () => {
                   </button>
                   {item?.userAnswer && (
                     <div className="points">
-                      {item.userAnswer.isCorrect ? '+10' : '+0'}
+                      {item?.userAnswer?.isCorrect ? `+${item.userAnswer.points}` : '+0'}
                     </div>
                   )}
                 </div>
@@ -126,23 +152,32 @@ const CarouselGame = () => {
               {questions[currentQuestionIndex]?.question.question}
             </div>
             <div className="answer-section">
-              <input
-                type="text"
-                readOnly={currentQuestion?.id !== lastQuestion?.id}
-                value={
-                  currentQuestion?.id !== lastQuestion?.id
-                    ? currentQuestion?.userAnswer?.userAnswer
-                    : userAnswer
-                }
-                onChange={(e) => setUserAnswer(e.target.value)}
-                placeholder="Введите ваш ответ"
-                className="answer-input"
-              />
-              <button className="submit-button" onClick={() => postAnswer()}>
+            <input
+              type="text"
+              readOnly={currentQuestion?.id !== lastQuestion?.id}
+              value={
+                currentQuestion?.id !== lastQuestion?.id
+                  ? currentQuestion?.userAnswer?.userAnswer || ''
+                  : userAnswer
+              }
+              onChange={(e) => setUserAnswer(e.target.value)}
+              placeholder="Введите ваш ответ"
+              className="answer-input"
+            />
+            {
+              currentQuestion?.id !== lastQuestion?.id
+              ?
+              <button className="red-button" onClick={() => {}}>
+                Вернуться к текущему вопросу
+              </button>
+                :
+                <button className="submit-button" onClick={() => postAnswer()}>
                 Ответить
               </button>
-            </div>
+            }
           </div>
+          </div>
+
         </div>
       </div>
     </main>

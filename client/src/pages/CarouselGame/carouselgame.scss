@@ -48,6 +48,7 @@
           flex-direction: column;
           justify-content: center;
           align-items: center;
+          overflow: auto;
         }
 
         .answer-section {
@@ -79,7 +80,26 @@
             transition: background-color 0.3s;
 
             &:hover {
-              background-color: #cc6200;
+              transform: translateY(-3px);
+              box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+              opacity: 1;
+            }
+          }
+
+          .red-button {
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+
+            &:hover {
+              transform: translateY(-3px);
+              box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+              opacity: 1;
             }
           }
         }
