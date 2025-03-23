@@ -6,13 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Context } from '@mindx/index.js';
 import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify.jsx';
+import { mindxDebounce } from '@mindx/utils/tools';
 
 const SignIn = observer( () => {
   const { user } = useContext(Context);
   const navigate = useNavigate()
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const click = async () => {
+  const click = mindxDebounce(async () => {
     try {
       const data = await API.user.SignIn(username, password);
       if (data) {
@@ -26,7 +27,7 @@ const SignIn = observer( () => {
       errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
       console.error(error);
     }
-  };
+  });
   return ( 
     <main className='auth-section'>
       <div className="signin-section">

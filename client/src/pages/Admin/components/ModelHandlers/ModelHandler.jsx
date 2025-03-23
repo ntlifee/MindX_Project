@@ -2,13 +2,13 @@ import './handler.scss'
 import Model from './Models';
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
-import { useEffect } from 'react';
+import { mindxDebounce } from '@mindx/utils/tools';
 
 const ModelHandler = (props) => {
   const { state, setState, setReload } = props;
   const Component = Model[state.type];
 
-  const put = async () => {
+  const put = mindxDebounce(async () => {
     try {
       const data = await API[state.type].update(state.item);
       SuccessEmmiter(data.message);
@@ -19,8 +19,8 @@ const ModelHandler = (props) => {
       errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
       console.error(error);
     }
-  };
-  const create = async () => {
+  });
+  const create = mindxDebounce(async () => {
     try {
       const data = await API[state.type].addItem(state.item);
       SuccessEmmiter(data.message);
@@ -31,7 +31,7 @@ const ModelHandler = (props) => {
       errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
       console.error(error);
     }
-  };
+  });
 
   const cancel = () => {
     setState({});
