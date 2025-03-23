@@ -4,6 +4,6 @@ const userAnswerController = require('../../controllers/userAnswerController')
 
 router.delete('/:id', userAnswerController.delete)
 router.get('/', userAnswerController.getAll)
-router.get('/:id', userAnswerController.download)
+router.get('/download/:id', userAnswerController.download)
 
 module.exports = router

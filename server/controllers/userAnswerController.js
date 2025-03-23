@@ -26,24 +26,27 @@ const BONUS = {
 class userAnswerController {
     async create(req, res, next) {
         try {
-            let { questionGameId, points, userAnswer, typeGame } = req.body
-            const questionData = (await QuestionGame.findOne({
-                attributes: ["numberQuestion"],
-                include: [{
-                    model: Question,
-                    attributes: ['id', 'answer'],
-                    required: true
-                }, {
-                    model: UserAnswer,
-                    attributes: ['id'],
-                    required: false,
-                    where: {
-                        questionGameId,
-                        userId: req.user.id
-                    }
-                }],
-                where: { id: questionGameId }
-            })).toJSON()
+            let { questionGameId, points, userAnswer } = req.body
+            const { typeGame, questionData } = await Promise.all([
+                Game.findByPk(req.params.id, { attributes: ["typeGame"] }),
+                QuestionGame.findOne({
+                    attributes: ["numberQuestion"],
+                    include: [{
+                        model: Question,
+                        attributes: ['id', 'answer'],
+                        required: true
+                    }, {
+                        model: UserAnswer,
+                        attributes: ['id'],
+                        required: false,
+                        where: {
+                            questionGameId,
+                            userId: req.user.id
+                        }
+                    }],
+                    where: { id: questionGameId }
+                })
+            ])
             validateCheck(questionData.userAnswers.length, 'Ответ был дан ранее!')
 
             //Проверяет, что пользователь отвечает на следующий вопрос
@@ -147,8 +150,8 @@ class userAnswerController {
 
     async download(req, res, next) {
         try {
-            const { countQuestion, rating } = await ratingController.getRatingPrivate(req.params.id, req.query.userId)
             let { typeGame, name, startDate, endDate } = await Game.findByPk(req.params.id, { attributes: ["typeGame", "name", "startDate", "endDate"] })
+            const { countQuestion, rating } = await ratingController.getRatingPrivate(req.params.id, typeGame, req.query.userId)
 
             startDate.setHours(startDate.getHours() + 3)
             endDate.setHours(endDate.getHours() + 3)
@@ -156,7 +159,7 @@ class userAnswerController {
             endDate = endDate.toISOString().slice(0, 19).replace(/:/g, '-')
 
             // Имя файла
-            const fileName = `${startDate}_${endDate}_${name}_${typeGame}.xlsx`
+            const fileName = `${typeGame}_${startDate}_${endDate}_${name}.xlsx`
 
             // Создание массива данных для Excel
             let excelData = []
@@ -185,11 +188,11 @@ class userAnswerController {
                         answerPoints.push(0)
                     }
                 }
-                //TODO: заменить 0 на баллы
+
                 excelData.push(answerPoints)
                 if (typeGame === "square") {
-                    excelData.push(["Сумма баллов за вопросы", 0])
-                    excelData.push(["Бонусы", 0])
+                    excelData.push(["Сумма баллов за вопросы", item.pointsAnswer])
+                    excelData.push(["Бонусы", item.pointsBonuses])
                 }
                 excelData.push(["Всего баллов", item.totalPoints])
                 excelData.push([])
@@ -224,30 +227,6 @@ class userAnswerController {
 
         return rows.map(row => row.dataValues.number);
     }
-
-    /*     async checkColumns(req) {
-            const columns = await UserAnswer.findAll({
-                attributes: [
-                    [Sequelize.literal(), 'column_number'],
-                    [Sequelize.fn('COUNT', Sequelize.col('userAnswer.isCorrect')), 'correct_count']
-                ],
-                include: [{
-                    model: QuestionGame,
-                    attributes: [],
-                    where: {
-                        gameId: req.params.id
-                    }
-                }],
-                where: {
-                    userId: req.user.id,
-                    isCorrect: true
-                },
-                group: [Sequelize.literal('column_number')],
-                having: Sequelize.literal('COUNT("userAnswer"."isCorrect") = 5')
-            });
-    
-            return columns.map(column => column.dataValues.column_number);
-        } */
 }
 
 module.exports = new userAnswerController()

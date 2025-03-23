@@ -1,13 +1,15 @@
 const { Sequelize, where, Op } = require('sequelize')
 const ApiError = require('../error/ApiError')
-const { UserAnswer, QuestionGame, User, AccessGame, Role } = require('../models/index')
+const { UserAnswer, QuestionGame, User, AccessGame, Role, Bonus, Game } = require('../models/index')
 const { validateCheck } = require('../validators/isNullValidator')
 
 
 class ratingController {
     async getOne(req, res, next) {
         try {
-            const { countQuestion, rating } = await this.getRatingPrivate(req.params.id)
+            validateCheck(!req.params.id, 'Не задан id игры')
+            const { typeGame } = await Game.findByPk(req.params.id, { attributes: ["typeGame"] })
+            const { countQuestion, rating } = await this.getRatingPrivate(req.params.id, typeGame)
 
             res.json({ countQuestion, rating })
         } catch (error) {
@@ -15,8 +17,7 @@ class ratingController {
         }
     }
 
-    async getRatingPrivate(gameId, userId = null) {
-        validateCheck(!gameId, 'Не задан id игры')
+    async getRatingPrivate(gameId, typeGame, userId = null) {
         let rating = await User.findAll({
             attributes: ['id', 'username'],
             include: [{
@@ -47,6 +48,10 @@ class ratingController {
                         gameId: gameId
                     }
                 }]
+            }, {
+                model: Bonus,
+                attributes: { exclude: ["userId", "gameId"] },
+                required: false,
             }],
             ...(userId && { where: { id: userId } }),
             order: [
@@ -54,14 +59,25 @@ class ratingController {
             ]
         })
         rating = rating.map(user => {
-            let totalPoints = 0
+            user = user.toJSON()
+            let points = 0
             user.userAnswers.forEach(answer => {
                 if (answer.isCorrect) {
-                    totalPoints += answer.points
+                    points += answer.points
                 }
             })
-            user = user.toJSON()
-            user.totalPoints = totalPoints
+            if (typeGame === 'square') {
+                user.pointsAnswer = points,
+                    points = 0
+                user.bonuses.forEach(bonus => {
+                    points += bonus.points
+                })
+                user.pointsBonuses = points
+                user.totalPoints = user.pointsBonuses + user.pointsAnswer
+            }
+            else {
+                user.totalPoints = points
+            }
             return user
         }).sort((a, b) => b.totalPoints - a.totalPoints)
 
