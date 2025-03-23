@@ -51,11 +51,11 @@ class userAnswerController {
 
             //Проверяет, что пользователь отвечает на следующий вопрос
             if (typeGame === 'carousel') {
-                const isCreateAnswer = await UserAnswer.count({
-                    includes: [{
+                const countAnswer = await UserAnswer.count({
+                    include: [{
                         model: QuestionGame,
                         attributes: [],
-                        required: false,
+                        required: true,
                         where: {
                             gameId: req.params.id
                         }
@@ -64,8 +64,8 @@ class userAnswerController {
                         userId: req.user.id,
                     }
                 })
-                if (isCreateAnswer !== questionData.numberQuestion - 1) {
-                    throw new Error('Нельзя ответить на вопрос не после предыдущего!')
+                if (countAnswer !== questionData.numberQuestion - 1) {
+                    throw new Error('Ошибка отправки ответа. Сперва ответьте на предыдущий вопрос.')
                 }
             }
 
