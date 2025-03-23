@@ -25,13 +25,15 @@ const getById = async (id) => {
 const getByIdUser = async (id) => {
 	const { data } = await $authHost.get(`/api/game/${id}`);
 
-	const questionArray = [];
-	const chunkSize = 5;
-	for (let i = 0; i < data.questionGames.length; i += chunkSize) {
-		const chunk = data.questionGames.slice(i, i + chunkSize);
-		questionArray.push(chunk);
+	if (data.typeGame === 'square') {
+		const questionArray = [];
+		const chunkSize = 5;
+		for (let i = 0; i < data.questionGames.length; i += chunkSize) {
+			const chunk = data.questionGames.slice(i, i + chunkSize);
+			questionArray.push(chunk);
+		}
+		data.questionGames = questionArray;
 	}
-	data.questionGames = questionArray;
 
 	return data;
 };

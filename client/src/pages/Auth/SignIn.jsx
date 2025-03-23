@@ -21,9 +21,10 @@ const SignIn = observer( () => {
         navigate(ROUTES.HOME_ROUTE);
         window.location.reload();
       }
-    } catch(e) {     
-      ErrorEmmiter(e.response.data.message);
-      console.error(e);
+    } catch(error) {     
+      const errorsArray = error.response.data.errors;
+      errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
+      console.error(error);
     }
   };
   return ( 

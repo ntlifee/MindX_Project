@@ -5,17 +5,17 @@ import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Context } from '../../index.js';
-import { ErrorEmmiter, SuccessEmmiter } from './../../components/UI/Toastify/Notify.jsx';
+import { ErrorEmmiter, SuccessEmmiter } from '../../components/UI/Toastify/Notify.jsx';
 
 const SignUp = observer(() => {
   const { user } = useContext(Context);
   const navigate = useNavigate()
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const click = async () => {
     try {
-      const data = await API.user.SignUp(username, password, repeatPassword);
+      const data = await API.user.SignUp(username, password, confirmPassword);
       if (data) {
         user.setUser(data);
         user.setIsAuth(true);
@@ -45,7 +45,7 @@ const SignUp = observer(() => {
           <div>
             <label htmlFor='repeat_password'>Повторите пароль</label>
             <input type='password' id='repeat_password' className='auth-input'
-                  value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)}/>
+                  value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}/>
           </div>
           <div className='btn-section'>
             <a className='btn sign' href={ROUTES.SIGNIN_ROUTE}>Уже есть аккаунт?</a>

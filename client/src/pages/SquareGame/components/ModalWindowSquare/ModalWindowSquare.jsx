@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
 import { Image } from 'react-bootstrap';
+import { mindxDebounce } from '@mindx/utils/tools'
 
 const ModalWindowSquare = (props) => {
 	const {
@@ -32,6 +33,7 @@ const ModalWindowSquare = (props) => {
 					userAnswer: body.userAnswer,
 				};
 				setQuestions([...questions]);
+				ChangeScore(isCorrect ? 1 : -1);
 			})
 			.catch((error) => {
 				const errorsArray = error.response.data.errors;
@@ -40,7 +42,7 @@ const ModalWindowSquare = (props) => {
 			});
 	};
 
-	const handleAnswer = () => {
+	const handleAnswer = mindxDebounce(() => {
 		if (!currentQuestion.userAnswer && answer) {
 			const body = {
 				questionGameId: currentQuestion.id,
@@ -48,23 +50,11 @@ const ModalWindowSquare = (props) => {
 				points: level * 10,
 			};
 			postAnswer(body);
-			ChangeScore(1);
 			setCurrentQuestion(null);
 		} else {
 			ErrorEmmiter('Поле ответа не может быть пустым!');
 		}
-	};
-
-	const handleSurrender = () => {
-		const body = {
-			questionGameId: currentQuestion.id,
-			userAnswer: null,
-			points: level * 10,
-		};
-		postAnswer(body);
-		ChangeScore(-1);
-		setCurrentQuestion(null);
-	};
+	});
 
 	const ChangeScore = (koef) => {
 		setScore(score + scoreQuestion * koef);
@@ -111,12 +101,6 @@ const ModalWindowSquare = (props) => {
 									onClick={() => handleAnswer()}
 								>
 									Ответить
-								</button>
-								<button
-									className={`${classes.button} ${classes.red}`}
-									onClick={() => handleSurrender()}
-								>
-									Сдаться (-{scoreQuestion})
 								</button>
 							</>
 						) : (

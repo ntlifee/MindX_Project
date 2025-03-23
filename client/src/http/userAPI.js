@@ -20,8 +20,8 @@ const SignIn = async (username, password) => {
     return jwtDecode(data.token);
 };
 
-const SignUp = async (username, password, repeatPassword) => {
-    const { data } = await $host.post(`/api/user/signup`, { username, password, repeatPassword });
+const SignUp = async (username, password, confirmPassword) => {
+    const { data } = await $host.post(`/api/user/signup`, { username, password, confirmPassword });
     localStorage.setItem(`token`, data.token);
     return jwtDecode(data.token);
 };

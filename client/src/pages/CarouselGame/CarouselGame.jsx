@@ -1,143 +1,152 @@
-import classes from './carouselgame.module.css'
+import './carouselgame.scss';
+import { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 
-import WindowQuestion from './components/WindowQuestion/Windowquestion'
-import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel'
-
-import Data from './Questions_Carousel.json'
-
-/*import axios from 'axios' */
-import { useState } from 'react'
+import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel';
+import { API } from '@mindx/http/API';
+import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
+import { mindxDebounce } from '@mindx/utils/tools';
 
 const CarouselGame = () => {
+  const { id } = useParams();
 
-    const { scoreFirstQuestion, scoreSuccess, scoreFailure, progressUser, questionsGame } = Data
-    const [idx, setIdx] = useState(progressUser.length) //индекс вопроса ожидающего ответа
-    const [idxPre, setIdxPre] = useState(idx) //индекс текещего вопроса
-    const [value, setValue] = useState('') //значение введенное пользователем
-    const [questions] = useState(questionsGame) //вопросы
-    const [score, setScore] = useState(progressUser.reduce((acc, cur) => acc + (cur.isCorrect ? cur.points : 0), 0)) //счет пользователя
-    const [progress, setProgress] = useState([
-        ...progressUser,
-        ...Array.from({ length: questions.length - progressUser.length + 1 }, () => ({
-            points: scoreFirstQuestion,
-            isCorrect: null,
-        }))
-    ]) //прогресс пользователя
+  const [questions, setQuestions] = useState([]);
+  const [endDate, setEndDate] = useState(null);
+  const [carouselData, setCarouselData] = useState({});
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [lastQuestion, setLastQuestion] = useState(null);
+  const [userAnswer, setUserAnswer] = useState('');
 
-    const [isAnimationUp, setIsAnimationUp] = useState(false)
-    const [isAnimationDown, setIsAnimationDown] = useState(false)
+  const questionsListRef = useRef(null);
 
-    //проверяем ответ
-    const isCorrectAnswer = () => {
-        return questions[idx].answer === value
+  useEffect(() => {
+    API.game
+      .getByIdUser(id)
+      .then((response) => {
+        setQuestions(response.questionGames);
+        setEndDate(response.endDate);
+        setCarouselData(response.carouselData);
+      })
+      .catch((error) => {
+        const errorsArray = error.response.data.errors;
+        errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
+        console.error(error);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    const lastIndex = questions.findIndex((item) => item.userAnswer === null);
+    setLastQuestion(questions[lastIndex]);
+    setCurrentQuestionIndex(lastIndex);
+    setUserAnswer('');
+  }, [questions]);
+
+  useEffect(() => {
+    setCurrentQuestion(questions[currentQuestionIndex]);
+  }, [currentQuestionIndex]);
+
+  const handleSphereClick = (index) => {
+    setCurrentQuestionIndex(index);
+    setUserAnswer('');
+  };
+
+  const scrollQuestions = (direction) => {
+    if (questionsListRef.current) {
+      const scrollAmount = 100;
+      if (direction === 'left') {
+        questionsListRef.current.scrollLeft -= scrollAmount;
+      } else {
+        questionsListRef.current.scrollLeft += scrollAmount;
+      }
     }
+  };
 
-    const handleSubmit = () => {
-        const isCorrect = isCorrectAnswer()
-        if (idxPre !== questions.length - 1)
-            setIsAnimationUp(true)
-        const points = isCorrect ? progress[idx].points + scoreSuccess : Math.max(scoreFirstQuestion, progress[idx].points - scoreFailure)
-        //изменение прогресса
-        setProgress(prevState => {
-            const newProgress = [...prevState]
-            newProgress[idx].isCorrect = isCorrect
-            newProgress[idx + 1].points = points
-            return newProgress
+  const postAnswer = mindxDebounce(() => {
+    if (userAnswer) {
+      const body = {
+        questionGameId: lastQuestion.id,
+        userAnswer: userAnswer,
+        points: 10,
+      };
+      const gameId = id;
+      API.game
+        .postAnswer({ gameId, body })
+        .then(({ isCorrect }) => {
+          questions[currentQuestionIndex].userAnswer = {
+            isCorrect,
+            userAnswer: body.userAnswer,
+          };
+          setQuestions([...questions]);
         })
-        setScore(score + (isCorrect ? progress[idx].points : 0))
-        setValue('')
-        setIdx(idx + 1)
-        setTimeout(() => {
-            if (idx + 1 !== questions.length) {
-                setIdxPre(idxPre + 1)
-            }
-            setIsAnimationUp(false); // Сброс анимации после 1 секунды            
-        }, idxPre !== questions.length - 1 ? 950 : 0);
+        .catch((error) => {
+          const errorsArray = error.response.data.errors;
+          errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
+          console.error(error);
+        });
     }
+  });
 
-    const idxPreSub = () => {
-        if (idxPre > 0) {
-            setIsAnimationDown(true)
-            setTimeout(() => {
-                setIdxPre(idxPre - 1)
-                setIsAnimationDown(false); // Сброс анимации после 1 секунды            
-            }, 950);
-        }
-        return
-    }
-
-    const idxPreInc = () => {
-        if (idxPre < idx && idxPre < questions.length - 1) {
-            setIsAnimationUp(true)
-            setTimeout(() => {
-                setIdxPre(idxPre + 1)
-                setIsAnimationUp(false); // Сброс анимации после 1 секунды            
-            }, 950);
-        }
-        return
-    }
-
-    return (
-        <main className={classes.section}>
-            <div className="container">
-                <div className={classes.carousel_game}>
-
-                    <GameInformationPanel score={score} />
-
-                    <WindowQuestion key={idxPre - 1}
-                        question={questions[idxPre - 1]?.question}
-                        point={progress[idxPre - 1]?.points}
-                        inputValue={progress[idxPre - 1]?.isCorrect ? 'Верный ответ' : 'Неверный ответ'}
-                        isCorrect={progress[idxPre - 1]?.isCorrect}
-                        readOnly={true}
-                        idx={idxPre}
-                        visibility={(isAnimationDown && idxPre > 0) || idxPre > 0 ? classes.visible : classes.hidden}
-                        animation={isAnimationDown ? classes.action_down_previous : ''} />
-
-                    <WindowQuestion key={idxPre}
-                        question={questions[idxPre]?.question}
-                        point={progress[idxPre].points}
-                        inputValue={progress[idxPre].isCorrect ? 'Вверный ответ' :
-                            progress[idxPre].isCorrect === false ? 'Неверный ответ' : value}
-                        isCorrect={progress[idxPre].isCorrect}
-                        readOnly={progress[idxPre].isCorrect === null ? false : true}
-                        action={progress[idxPre].isCorrect === null ? setValue : null}
-                        idx={idxPre + 1}
-                        isCentre={true}
-                        visibility={classes.visible}
-                        animation={isAnimationDown ? classes.action_down_center : isAnimationUp ? classes.action_up_center : ''} />
-
-                    {(!isAnimationDown && !isAnimationUp) && <div className={classes.button_wrapper}>
-                        <button
-                            onClick={idxPreSub}
-                            className={`${classes.button_answer} ${idxPre !== 0 ? classes.visible : classes.hidden}`}
-                        >Предыдущий</button>
-
-                        <button
-                            onClick={!isAnimationUp && idx !== questions.length ? handleSubmit : null}
-                            className={`${classes.button_answer} ${idxPre === idx && idx !== questions.length ? classes.visible : classes.hidden}`}
-                        >Ответить</button>
-
-                        <button
-                            onClick={idxPreInc}
-                            className={`${classes.button_answer} ${idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}`}
-                        >Следующий</button>
-                    </div>}
-
-                    <WindowQuestion key={idxPre + 1}
-                        question={questions[idxPre + 1]?.question}
-                        point={progress[idxPre + 1]?.points}
-                        inputValue={progress[idxPre]?.isCorrect ? 'Верный ответ' :
-                            progress[idxPre + 1]?.isCorrect === false ? 'Неверный ответ' : value}
-                        isCorrect={progress[idxPre + 1]?.isCorrect}
-                        readOnly={true}
-                        idx={idxPre + 2}
-                        visibility={idxPre !== idx && idxPre !== questions.length - 1 ? classes.visible : classes.hidden}
-                        animation={isAnimationUp ? classes.action_up_next : ''} />
+  return (
+    <main className="carousel-section">
+      <div className="carousel-wrapper">
+        <div className="carousel">
+          <div className="questions__container">
+            <button className="scroll-button left" onClick={() => scrollQuestions('left')}>
+              &lt;
+            </button>
+            <div className="questions__list" ref={questionsListRef}>
+              {questions.map((item, index) => (
+                <div key={index} className="sphere-container">
+                  <button
+                    disabled={index > lastQuestion?.numberQuestion - 1}
+                    className={`sphere 
+                      ${index === currentQuestionIndex ? 'active' : ''}
+                      ${item?.userAnswer?.isCorrect === true && 'correct'}
+                      ${item?.userAnswer?.isCorrect === false && 'incorrect'}`}
+                    onClick={() => handleSphereClick(index)}
+                  >
+                    {index + 1}
+                  </button>
+                  {item?.userAnswer && (
+                    <div className="points">
+                      {item.userAnswer.isCorrect ? '+10' : '+0'}
+                    </div>
+                  )}
                 </div>
+              ))}
             </div>
-        </main>
-    )
-}
+            <button className="scroll-button right" onClick={() => scrollQuestions('right')}>
+              &gt;
+            </button>
+          </div>
+          <div className="carousel__item">
+            <div className="carousel_item-head">№{currentQuestionIndex + 1}</div>
+            <div className="carousel_item-body">
+              {questions[currentQuestionIndex]?.question.question}
+            </div>
+            <div className="answer-section">
+              <input
+                type="text"
+                readOnly={currentQuestion?.id !== lastQuestion?.id}
+                value={
+                  currentQuestion?.id !== lastQuestion?.id
+                    ? currentQuestion?.userAnswer?.userAnswer
+                    : userAnswer
+                }
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder="Введите ваш ответ"
+                className="answer-input"
+              />
+              <button className="submit-button" onClick={() => postAnswer()}>
+                Ответить
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+};
 
-export default CarouselGame
+export default CarouselGame;

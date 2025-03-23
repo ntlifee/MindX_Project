@@ -49,16 +49,6 @@ const Navbar = observer((props) => {
                                     </NavLink>
                                 </li>
                                 <li className="nav-list_item">
-                                    <NavLink to="/game3" className={({ isActive }) => `${isActive ? activeLink : passiveLink} ${strongLink}`}>
-                                        Игра3
-                                    </NavLink>
-                                </li>
-                                <li className="nav-list_item">
-                                    <NavLink to="/game4" className={({ isActive }) => `${isActive ? activeLink : passiveLink} ${strongLink}`}>
-                                        Игра4
-                                    </NavLink>
-                                </li>
-                                <li className="nav-list_item">
                                     <NavLink to="/rating" className={({ isActive }) => isActive ? activeLink : passiveLink}>
                                         Рейтинг
                                     </NavLink>
