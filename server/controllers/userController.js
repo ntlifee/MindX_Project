@@ -23,12 +23,6 @@ const generateHashPassword = (password) => {
     });
 }
 
-const FindRole = async (roleId) => {
-    const role = (await Role.findByPk(roleId, { attributes: ['name'] }))?.dataValues.name
-    validateCheck(!role)
-    return role
-}
-
 function errorHandling(error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
         error.message = 'Пользователь с таким именем уже существует!'
@@ -39,8 +33,11 @@ function errorHandling(error) {
 class UserController {
     async createUser(req, res, next) {
         try {
-            const { username, password, roleId } = req.body
-            await FindRole(roleId)
+            let { username, password, roleId } = req.body
+            const role = (await Role.findByPk(roleId, { attributes: ['name'] }))?.dataValues.name
+            if (!role) {
+                roleId = 'aff50f23-2fbc-41be-ba07-c1c69c5e388c' //UUID роли USER
+            }
             const hashPassword = await generateHashPassword(password)
             const user = await User.create({ username, password: hashPassword, roleId })
             return res.json({ message: "Пользователь создан!" })
@@ -80,7 +77,10 @@ class UserController {
     async check(req, res, next) {
         try {
             const roleId = (await User.findByPk(req.user.id, { attributes: ['roleId'] }))?.dataValues.roleId
-            const role = await FindRole(roleId)
+            const role = (await Role.findByPk(roleId, { attributes: ['name'] }))?.dataValues.name
+            if (!role) {
+                throw new Error()
+            }
             const token = generateJwt(req.user.id, req.user.username, role)
             res.json({ token })
         } catch (error) {
@@ -107,6 +107,9 @@ class UserController {
         try {
             const { id } = req.params
             validateCheck(!id, 'Не задан id пользователя')
+            if (id === req.user.id) {
+                throw new Error('Нельзя удалить самого себя!')
+            }
             const isDelete = await User.destroy({
                 where: {
                     id: id,
@@ -124,7 +127,7 @@ class UserController {
             const { id } = req.params
             validateCheck(!id, 'Не задан id пользователя')
             const { username, password, roleId } = req.body;
-            const hashPassword = await generateHashPassword(password)
+            const hashPassword = password && await generateHashPassword(password)
             const isUpdate = await User.update(
                 {
                     username: username,
@@ -149,7 +152,7 @@ class UserController {
         try {
             const id = req.user.id
             const { username, password } = req.body;
-            const hashPassword = await generateHashPassword(password)
+            const hashPassword = password && await generateHashPassword(password)
             const isUpdate = await User.update(
                 {
                     username: username,

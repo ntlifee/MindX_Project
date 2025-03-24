@@ -1,42 +1,54 @@
 const Joi = require("joi");
 
-const baseSchema = Joi.object({
-    password: Joi.string()
-        .min(8)
-        .pattern(/(?=.*[a-zа-яё])/, 'строчную букву')
-        .pattern(/(?=.*[A-ZА-ЯЁ])/, 'заглавную букву')
-        .pattern(/(?=.*\d)/, 'число')
-        .pattern(/(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, 'специальный символ')
-        .required(),
+// Базовая схема паролей
+const passwordSchema = Joi.string()
+    .min(8)
+    .pattern(/(?=.*[a-zа-яё])/, 'строчную букву')
+    .pattern(/(?=.*[A-ZА-ЯЁ])/, 'заглавную букву')
+    .pattern(/(?=.*\d)/, 'число')
+    .pattern(/(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, 'специальный символ')
+    .messages({
+        "string.min": "Поле {#key} должно содержать не менее 8 символов.",
+        "string.pattern.name": "Поле {#key} должно содержать {#name}.",
+    });
 
-    confirmPassword: Joi.required().valid(Joi.ref('password')),
-}).messages({
-    "string.base": "Поле {#key} должно быть строкой.",
-    "string.min": "Поле {#key} должно содержать не менее 8 символов.",
-    "string.pattern.name": "Поле {#key} должно содержать {#name}.",
-    "any.only": "Поле {#key} должно совпадать с паролем.",
-    "any.required": "Поле {#key} обязательно.",
-});
-
+// Базовая схема имени пользователя
 const usernameValidation = Joi.string()
     .pattern(/^[a-zA-Z0-9А-Яа-яЁё]+$/)
     .min(3)
     .max(30)
     .messages({
-        "string.base": "Поле {#key} должно быть строкой.",
         "string.pattern.base": "Поле {#key} должно содержать только буквы и цифры.",
         "string.min": "Поле {#key} должно содержать не менее 3 символов.",
         "string.max": "Поле {#key} должно содержать не более 30 символов.",
     });
 
-const userPutSchema = baseSchema.append({
+const userPutSchema = Joi.object({
     username: usernameValidation.optional(),
+    password: passwordSchema.required(),
+    confirmPassword: Joi.required()
+        .valid(Joi.ref('password'))
+        .messages({
+            "any.only": "Поле {#key} должно совпадать с паролем.",
+        }),
+}).messages({
+    "any.required": "Поле {#key} обязательно для заполнения.",
+    "string.empty": "Поле {#key} не может быть пустым.",
+    "string.base": "Поле {#key} должно быть строкой.",
 });
 
-const userPostSchema = baseSchema.append({
-    username: usernameValidation.required().messages({
-        "any.required": "Поле {#key} обязательно.",
-    }),
+const userPostSchema = Joi.object({
+    username: usernameValidation.required(),
+    password: passwordSchema.required(),
+    confirmPassword: Joi.required()
+        .valid(Joi.ref('password'))
+        .messages({
+            "any.only": "Поле {#key} должно совпадать с паролем.",
+        }),
+}).messages({
+    "any.required": "Поле {#key} обязательно для заполнения.",
+    "string.empty": "Поле {#key} не может быть пустым.",
+    "string.base": "Поле {#key} должно быть строкой.",
 });
 
 
@@ -48,16 +60,38 @@ const roleIdValidation = Joi.string()
         "string.guid": "Поле {#key} должно быть корректным UUID.",
     });
 
-const userPutSchemaForAdmin = baseSchema.append({
+const userPutSchemaForAdmin = Joi.object({
     username: usernameValidation.optional(),
-    roleId: roleIdValidation.optional(),
+    roleId: roleIdValidation.required(),
+    password: passwordSchema.optional().allow(''),
+    confirmPassword: Joi.optional()
+        .when('password', {
+            is: Joi.exist(), // Проверяем, что password существует
+            then: Joi.valid(Joi.ref('password')).required(), // Если существует, confirmPassword обязательно и должно совпадать
+            otherwise: Joi.optional(), // В противном случае confirmPassword не проверяется
+        })
+        .messages({
+            "any.only": "Поле {#key} должно совпадать с паролем.",
+            "any.required": "Поле {#key} обязательно для заполнения, если задан пароль."
+        }),
+}).messages({
+    "string.empty": "Поле {#key} не может быть пустым.",
+    "string.base": "Поле {#key} должно быть строкой.",
 });
 
-const userPostSchemaForAdmin = baseSchema.append({
-    username: usernameValidation.required().messages({
-        "any.required": "Поле {#key} обязательно.",
-    }),
-    roleId: roleIdValidation.optional(),
+const userPostSchemaForAdmin = Joi.object({
+    username: usernameValidation.required(),
+    roleId: roleIdValidation.optional().allow(null).default(''),
+    password: passwordSchema.required(),
+    confirmPassword: Joi.required()
+        .valid(Joi.ref('password'))
+        .messages({
+            "any.only": "Поле {#key} должно совпадать с паролем.",
+        }),
+}).messages({
+    "any.required": "Поле {#key} обязательно для заполнения.",
+    "string.empty": "Поле {#key} не может быть пустым.",
+    "string.base": "Поле {#key} должно быть строкой.",
 });
 
 
