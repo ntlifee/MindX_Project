@@ -12,7 +12,7 @@ module.exports = function () {
             if (isPlayGame.startDate > time) {
                 return res.status(403).json({ errors: ['Игра еще не началась!'] })
             }
-            if (isPlayGame.endDate < time) {
+            if (req.method === 'POST' && isPlayGame.endDate < time) {
                 return res.status(403).json({ errors: ['Игра уже закончилась!'] })
             }
             next()
