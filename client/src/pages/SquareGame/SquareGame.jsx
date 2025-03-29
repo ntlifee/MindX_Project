@@ -9,6 +9,7 @@ import BonusSquare from './components/BonusSquare/BonusSquare';
 import GameBlocking from '@mindx/components/GameBlocking/GameBlocking';
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
+import Loading from '@mindx/components/UI/Loading/Loading';
 
 const SquareGame = (props) => {
 	const { id } = useParams();
@@ -22,8 +23,10 @@ const SquareGame = (props) => {
 	const [startDate, setStartDate] = useState(null);
 	const [endDate, setEndDate] = useState(null);
 	const levels = [1, 2, 3, 4, 5];
+  const [loading, setLoading] = useState(true);
 
 	useDidMountEffect(() => {
+		setLoading(true);
 		API.game
 			.getByIdUser(id)
 			.then((response) => {
@@ -39,6 +42,7 @@ const SquareGame = (props) => {
           return accumulator;
 				}, 0)
 				setScore(currentPoints);
+				setLoading(false);
 			})
 			.catch((error) => {
 				const errorsArray = error.response.data.errors;
@@ -98,6 +102,9 @@ const SquareGame = (props) => {
 		<>
 			<main className={classes.section}>
 				{/* <GameBlocking /> */}
+				{
+					loading && <Loading/>
+				}
 				<div className='container'>
 					<div className={classes.wrapper}>
 						<GameInformationPanel score={score} endDate={endDate}/>
