@@ -1,12 +1,16 @@
 import './objectList.scss';
 import { FaTrashAlt, FaEdit, FaTimes } from 'react-icons/fa';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Image } from 'react-bootstrap';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify.jsx';
 import { API } from '@mindx/http/API.js'
+import { Context } from '@mindx/index.js';
 import moment from 'moment';
 
 const ObjectList = (props) => {
+	const { user } = useContext(Context);
 	const { template, data, type, setReload, state, setState } = props;
 	const [searchTerm, setSearchTerm] = useState('');
 
@@ -34,13 +38,28 @@ const ObjectList = (props) => {
 
 	const deleteItem = async (item) => {
 		try {
-			const data = await API[type].deleteById(item.id);
-			SuccessEmmiter(data.message);
-			setReload(true);
-		} catch (error) {
-			ErrorEmmiter(error.response.data.message);
-			console.error(error);
-		}
+      confirmAlert({
+        title: 'Подтверждение',
+        message: 'Вы уверены, что хотите удалить этот элемент?',
+        buttons: [
+          {
+            label: 'Да',
+            onClick: async () => {
+              const data = await API[type].deleteById(item.id);
+              SuccessEmmiter(data.message);
+              setReload(true);
+            }
+          },
+          {
+            label: 'Нет',
+            onClick: () => {}
+          }
+        ]
+      });
+    } catch (error) {
+      ErrorEmmiter(error?.response?.data?.message || 'Произошла ошибка при удалении');
+      console.error(error);
+    }
 	};
 
 	const createItem = () => {
@@ -94,6 +113,7 @@ const ObjectList = (props) => {
 							<td className='command-icons'>
 								{
 									(type !== 'role' || (row.name !== 'ADMIN' && row.name !== 'USER')) &&
+									(type !== 'user' || (row.id !== user.user.id)) &&
 									<>
 										<button onClick={() => editItem(row)}>
 											<FaEdit />

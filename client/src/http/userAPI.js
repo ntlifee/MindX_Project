@@ -42,6 +42,12 @@ const addItem = async (item) => {
     return data;
 }
 
+const deleteById = async (id) => {
+    console.log(id);
+	const { data } = await $authHost.delete(`/api/admin/user/${id}`);
+	return data;
+}
+
 export const userAPI = {
   getList,
   getById,
@@ -49,5 +55,6 @@ export const userAPI = {
   SignUp,
   check,
   update,
-  addItem
+  addItem,
+  deleteById
 };
