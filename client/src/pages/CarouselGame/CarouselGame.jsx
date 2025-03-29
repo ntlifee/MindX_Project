@@ -20,6 +20,7 @@ const CarouselGame = () => {
   const [userAnswer, setUserAnswer] = useState('');
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [endGame, setEndGame] = useState(false);
 
   const questionsListRef = useRef(null);
 
@@ -49,9 +50,17 @@ const CarouselGame = () => {
 
   useEffect(() => {
       const lastIndex = questions.findIndex((item) => item.userAnswer === null);
-      setLastQuestion(questions[lastIndex !== -1 ? lastIndex : questions.length - 1]);
       setCurrentQuestionIndex(lastIndex !== -1 ? lastIndex : questions.length - 1);
-      setUserAnswer('');
+      setLastQuestion(questions[lastIndex !== -1 ? lastIndex : questions.length - 1]);
+      if (lastIndex !== -1) {
+        setUserAnswer('');
+      }
+  }, [questions]);
+
+  useEffect(() => {
+    if (questions[questions.length - 1]?.userAnswer?.points) {
+      setEndGame(true);
+    }
   }, [questions]);
 
   useEffect(() => {
@@ -95,6 +104,10 @@ const CarouselGame = () => {
     setUserAnswer('');
   };
 
+  const returnToLastQuestion = () => {
+    setCurrentQuestionIndex(lastQuestion.numberQuestion - 1);
+  };
+
   const scrollQuestions = (direction) => {
     if (questionsListRef.current) {
       const scrollAmount = 100;
@@ -117,12 +130,16 @@ const CarouselGame = () => {
       API.game
         .postAnswer({ gameId, body })
         .then(({ isCorrect }) => {
-          questions[currentQuestionIndex].userAnswer = {
+          const currentIndex = currentQuestionIndex;
+          questions[currentIndex].userAnswer = {
             isCorrect,
             userAnswer: body.userAnswer,
             points: possibleScore,
           };
           setQuestions([...questions]);
+          if (questions[currentIndex].userAnswer.isCorrect) {
+            setScore(score + possibleScore);
+          }
         })
         .catch((error) => {
           const errorsArray = error.response.data.errors;
@@ -189,16 +206,27 @@ const CarouselGame = () => {
               placeholder="Введите ваш ответ"
               className="answer-input"
             />
+
             {
-              currentQuestion?.id !== lastQuestion?.id
+              !endGame 
               ?
-              <button className="red-button" onClick={() => {}}>
-                Вернуться к текущему вопросу
-              </button>
-                :
-                <button className="submit-button" onClick={() => postAnswer()}>
-                Ответить [+{possibleScore}]
-              </button>
+                <>
+                  {
+                    currentQuestion?.id !== lastQuestion?.id
+                    ?
+                      <button className="red-button" onClick={() => returnToLastQuestion()}>
+                        Вернуться к текущему вопросу
+                      </button>
+                    :
+                      <button className="submit-button" onClick={() => postAnswer()}>
+                        Ответить [+{possibleScore}]
+                      </button>
+                  }
+                </>
+              :
+                <button className="red-button" disabled={true}>
+                  Игра окончена!
+                </button>
             }
           </div>
           </div>

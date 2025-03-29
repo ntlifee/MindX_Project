@@ -4,7 +4,7 @@ import classes from './gameinformationpanel.module.css';
 
 const GameInformationPanel = (props) => {
     const { score, endDate } = props;
-    const [timeLeft, setTimeLeft] = useState('0д 00:00:00');
+    const [timeLeft, setTimeLeft] = useState('00:00:00');
 
     useEffect(() => {
         if (!endDate) return;
@@ -15,7 +15,7 @@ const GameInformationPanel = (props) => {
             const difference = moment.duration(end.diff(now));
 
             if (difference <= 0) {
-                setTimeLeft('0д 00:00:00');
+                setTimeLeft('00:00:00');
                 return;
             }
 
@@ -23,8 +23,11 @@ const GameInformationPanel = (props) => {
             const hours = difference.hours();
             const minutes = difference.minutes();
             const seconds = difference.seconds();
-
-            const formattedTime = `${days}д ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            let formattedTime = '';
+            if (days > 0) {
+                formattedTime = `${days}д `        
+            }
+            formattedTime += `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             setTimeLeft(formattedTime);
         };
 
