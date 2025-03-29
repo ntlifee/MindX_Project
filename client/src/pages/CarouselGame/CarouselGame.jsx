@@ -1,11 +1,12 @@
 import './carouselgame.scss';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel';
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
 import { mindxDebounce } from '@mindx/utils/tools';
+import Loading from '@mindx/components/UI/Loading/Loading';
 
 const CarouselGame = () => {
   const { id } = useParams();
@@ -17,16 +18,27 @@ const CarouselGame = () => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [lastQuestion, setLastQuestion] = useState(null);
   const [userAnswer, setUserAnswer] = useState('');
+  const [score, setScore] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const questionsListRef = useRef(null);
 
   useEffect(() => {
+    setLoading(true);
     API.game
       .getByIdUser(id)
       .then((response) => {
         setQuestions(response.questionGames);
         setEndDate(response.endDate);
         setCarouselData(response.carouselData);
+        const currentPoints = response.questionGames.reduce((accumulator, currentValue) => {
+					if (currentValue?.userAnswer?.isCorrect) {
+						accumulator += currentValue.userAnswer.points;
+					}
+          return accumulator;
+				}, 0);
+				setScore(currentPoints);
+        setLoading(false);
       })
       .catch((error) => {
         const errorsArray = error.response.data.errors;
@@ -36,14 +48,16 @@ const CarouselGame = () => {
   }, [id]);
 
   useEffect(() => {
-    const lastIndex = questions.findIndex((item) => item.userAnswer === null);
-    setLastQuestion(questions[lastIndex]);
-    setCurrentQuestionIndex(lastIndex);
-    setUserAnswer('');
+      const lastIndex = questions.findIndex((item) => item.userAnswer === null);
+      setLastQuestion(questions[lastIndex !== -1 ? lastIndex : questions.length - 1]);
+      setCurrentQuestionIndex(lastIndex !== -1 ? lastIndex : questions.length - 1);
+      setUserAnswer('');
   }, [questions]);
 
   useEffect(() => {
-    setCurrentQuestion(questions[currentQuestionIndex]);
+    if (Number.isFinite(currentQuestionIndex) && currentQuestionIndex >= 0) {
+      setCurrentQuestion(questions[currentQuestionIndex]);
+    }
   }, [currentQuestionIndex]);
 
   useEffect(() => {
@@ -58,6 +72,23 @@ const CarouselGame = () => {
       }
     }
   }, [currentQuestionIndex]);
+
+  const possibleScore = useMemo(() => {
+    let possibleScore = null;
+    if (currentQuestion?.id) {
+      const prevAnswer = questions[currentQuestionIndex - 1]?.userAnswer;
+      if (currentQuestion.numberQuestion === 1 ) {
+        possibleScore = carouselData.scoreFirst;
+      } else if (prevAnswer.isCorrect) {
+        possibleScore = prevAnswer?.points + carouselData.scoreSuccess;
+      } else {
+        possibleScore = prevAnswer?.points - carouselData.scoreFailure < carouselData.scoreFirst
+          ? carouselData.scoreFirst
+          : prevAnswer?.points - carouselData.scoreFailure
+      }
+    }
+    return possibleScore;
+  }, [currentQuestion]);
 
   const handleSphereClick = (index) => {
     setCurrentQuestionIndex(index);
@@ -77,17 +108,6 @@ const CarouselGame = () => {
 
   const postAnswer = mindxDebounce(() => {
     if (userAnswer) {
-      let possibleScore = null;
-      const prevAnswer = questions[currentQuestionIndex - 1]?.userAnswer;
-      if (lastQuestion.numberQuestion === 1 ) {
-        possibleScore = carouselData.scoreFirst;
-      } else if (prevAnswer.isCorrect) {
-        possibleScore = prevAnswer?.points + carouselData.scoreSuccess;
-      } else {
-        possibleScore = prevAnswer?.points - carouselData.scoreFailure < carouselData.scoreFirst
-          ? carouselData.scoreFirst
-          : prevAnswer?.points - carouselData.scoreFailure
-      }
       const body = {
         questionGameId: lastQuestion.id,
         userAnswer: userAnswer,
@@ -109,13 +129,18 @@ const CarouselGame = () => {
           errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
           console.error(error);
         });
+    } else {
+      ErrorEmmiter('Поле ответа не может быть пустым!');
     }
   });
 
   return (
     <main className="carousel-section">
+      {
+        loading && <Loading/>
+      }
       <div className="carousel-wrapper">
-      <GameInformationPanel endDate={endDate}/>
+      <GameInformationPanel score={score} endDate={endDate}/>
         <div className="carousel">
           <div className="questions__container">
             <button className="scroll-button left" onClick={() => scrollQuestions('left')}>
@@ -172,7 +197,7 @@ const CarouselGame = () => {
               </button>
                 :
                 <button className="submit-button" onClick={() => postAnswer()}>
-                Ответить
+                Ответить [+{possibleScore}]
               </button>
             }
           </div>
