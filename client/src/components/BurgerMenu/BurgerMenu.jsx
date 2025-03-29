@@ -1,8 +1,18 @@
 import './burgerMenu.scss'
 import { NavLink } from 'react-router-dom';
+import { useContext } from "react";
+import { Context } from '@mindx/index.js';
+import { observer } from 'mobx-react-lite';
 
-const BurgerMenu = (props) => {
+const BurgerMenu = observer((props) => {
+    const { user } = useContext(Context);
     const { isActiveBurger, setIsActiveBurger } = props;
+
+    const logout = () => {
+        user.setUser({});
+        user.setIsAuth(false);
+        localStorage.setItem(`token`, null);
+    };
     return (
         <div className={isActiveBurger ? `dark_theme active` : `dark_theme`} onClick={() => setIsActiveBurger(false)}>
             <div className='burger' onClick={(e) => e.stopPropagation()}>
@@ -15,16 +25,6 @@ const BurgerMenu = (props) => {
                     <li className='burger_list_item'>
                         <NavLink to="/carousel">
                             Карусель
-                        </NavLink>
-                    </li>
-                    <li className='burger_list_item'>
-                        <NavLink to="/game3">
-                            Игра3
-                        </NavLink>
-                    </li>
-                    <li className='burger_list_item'>
-                        <NavLink to="/game4">
-                            Игра4
                         </NavLink>
                     </li>
                     <li className='burger_list_item'>
@@ -46,6 +46,6 @@ const BurgerMenu = (props) => {
             </div>
         </div>
     );
-}
+});
 
 export default BurgerMenu;

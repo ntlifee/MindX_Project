@@ -26,6 +26,9 @@ const App = observer(() => {
       .then(data => {
         user.setUser(data);
         user.setIsAuth(true);
+        if (data.role === 'ADMIN') {
+          user.setIsAdmin(true);
+        }
       })
       .catch((error) => {
         console.error(error);

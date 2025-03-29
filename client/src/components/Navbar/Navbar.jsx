@@ -53,11 +53,14 @@ const Navbar = observer((props) => {
                                         Рейтинг
                                     </NavLink>
                                 </li>
-                                <li className="nav-list_item">
+                                {
+                                    user.isAdmin &&
+                                    <li className="nav-list_item">
                                     <NavLink to="/admin" className={({ isActive }) => isActive ? activeLink : passiveLink}>
                                         Админ-панель
                                     </NavLink>
                                 </li>
+                                }
                                 { !user.isAuth ? 
                                     <li className="nav-list_item">
                                         <NavLink to="/signin" className='button authorize'>

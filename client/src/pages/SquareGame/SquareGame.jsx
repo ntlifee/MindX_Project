@@ -6,7 +6,7 @@ import ModalWindowSquare from './components/ModalWindowSquare/ModalWindowSquare'
 import classes from './squaregame.module.css';
 import useDidMountEffect from '@mindx/customHooks/useDidMountEffect';
 import BonusSquare from './components/BonusSquare/BonusSquare';
-import GameBlocking from '@mindx/components/GameBlocking/GameBlocking';
+import BlockingWindow from '@mindx/components/BlockingWindow/BlockingWindow';
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
 import Loading from '@mindx/components/UI/Loading/Loading';
@@ -101,7 +101,6 @@ const SquareGame = (props) => {
 	return (
 		<>
 			<main className={classes.section}>
-				{/* <GameBlocking /> */}
 				{
 					loading && <Loading/>
 				}

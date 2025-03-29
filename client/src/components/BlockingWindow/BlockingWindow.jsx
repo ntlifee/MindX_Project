@@ -1,10 +1,10 @@
-import './gameBlocking.scss';
+import './BlockingWindow.scss';
 
-const GameBlocking = (props) => {
+const BlockingWindow = (props) => {
   const { message } = props;
   return ( 
     <>
-      <div className="game-blocking-section">
+      <div className="blocking-window-section">
         <h1>Отказано в доступе.</h1>
         <h1>{message}</h1>
       </div>
@@ -12,4 +12,4 @@ const GameBlocking = (props) => {
   );
 }
  
-export default GameBlocking;
+export default BlockingWindow;
