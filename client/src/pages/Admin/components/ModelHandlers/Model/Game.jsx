@@ -7,36 +7,63 @@ import moment from 'moment';
 
 const Game = (props) => {
   const { model } = props;
-  
+
   const TYPE_LIST = [
     {
       value: 'square',
-      label: 'Квадрат'
+      label: 'Квадрат',
     },
     {
       value: 'carousel',
-      label: 'Карусель'
-    }
+      label: 'Карусель',
+    },
   ];
   const pages = {
     square: 6,
-    carousel: 3
+    carousel: 2,
   };
 
-  const [typeGame, setTypeGame] = useState(model?.typeGame ? model.typeGame : '');
+  const [typeGame, setTypeGame] = useState(
+    model?.typeGame ? model.typeGame : ''
+  );
   const [name, setName] = useState(model?.name ? model.name : '');
-  const [startDate, setStartDate] = useState(model?.startDate ? moment(model.startDate) : null);
-  const [endDate, setEndDate] = useState(model?.endDate ? moment(model.endDate) : null);
+  const [startDate, setStartDate] = useState(
+    model?.startDate ? moment(model.startDate) : null
+  );
+  const [endDate, setEndDate] = useState(
+    model?.endDate ? moment(model.endDate) : null
+  );
   const [imageId, setImageId] = useState(null);
   const [accessGames, setAccessGames] = useState([]);
   const [page, setPage] = useState(1);
-  const [themeGames, setThemes] = useState(model?.themeGames ? model.themeGames : []);
-  const [questionGames, setQuestions] = useState(model?.questionGames ? model.questionGames : []);
-  
-  const totalPages = useMemo(() => {
-    return pages[typeGame] || 1;
-  }, [typeGame])
+  const [themeGames, setThemes] = useState(
+    model?.themeGames ? model.themeGames : []
+  );
+  const [questionGames, setQuestions] = useState(
+    model?.questionGames ? model.questionGames : []
+  );
+  const [scoreFirst, setScoreFirst] = useState(
+    model?.scoreFirst ? model?.scoreFirst : null
+  );
+  const [scoreSuccess, setScoreSuccess] = useState(
+    model?.scoreSuccess ? model?.scoreSuccess : null
+  );
+  const [scoreFailure, setScoreFailure] = useState(
+    model?.scoreFailure ? model?.scoreFailure : null
+  );
+  const [countQuestionsOfCarousel, setCountQuestionsOfCarousel] =
+    useState(model?.countQuestionsOfCarousel || null);
 
+  const totalPages = useMemo(() => {
+    if (pages[typeGame]) {
+      let total = JSON.parse(JSON.stringify(pages[typeGame]));
+      if (typeGame === 'carousel' && countQuestionsOfCarousel) {
+        total += Math.ceil(countQuestionsOfCarousel / 5);
+      }
+      return total;
+    }
+    return 1;
+  }, [typeGame, countQuestionsOfCarousel]);
 
   const handleThemeChange = (themeIndex, selectedTheme) => {
     setThemes((prevThemes) => {
@@ -46,13 +73,13 @@ const Game = (props) => {
     });
   };
 
-  const handleQuestionChange = (themeIndex, questionIndex, selectedQuestion) => {
+  const handleQuestionChange = (
+    questionIndex,
+    selectedQuestion
+  ) => {
     setQuestions((prevQuestions) => {
       const newQuestions = [...prevQuestions];
-      if (!newQuestions[themeIndex]) {
-        newQuestions[themeIndex] = [];
-      }
-      newQuestions[themeIndex][questionIndex] = selectedQuestion;
+      newQuestions[questionIndex] = selectedQuestion;
       return newQuestions;
     });
   };
@@ -89,6 +116,22 @@ const Game = (props) => {
     model.questionGames = questionGames;
   }, [questionGames]);
 
+  useEffect(() => {
+    model.scoreFirst = scoreFirst;
+  }, [scoreFirst]);
+
+  useEffect(() => {
+    model.scoreSuccess = scoreSuccess;
+  }, [scoreSuccess]);
+
+  useEffect(() => {
+    model.scoreFailure = scoreFailure;
+  }, [scoreFailure]);
+
+  useEffect(() => {
+    model.countQuestionsOfCarousel = countQuestionsOfCarousel;
+  }, [countQuestionsOfCarousel]);
+
   const nextPage = () => {
     if (page < totalPages) {
       setPage(page + 1);
@@ -101,62 +144,74 @@ const Game = (props) => {
     }
   };
 
+  const getCarouselQuestionsRange = () => {
+    if (page <= 2) return [];
+    const questionsPerPage = 5;
+    const startIndex = (page - 3) * questionsPerPage;
+    const endIndex = Math.min(startIndex + questionsPerPage, countQuestionsOfCarousel);
+    return Array.from({ length: endIndex - startIndex }, (_, i) => startIndex + i);
+  };
+
   return (
-    <div className="model-section">
+    <div className='model-section'>
       <form onSubmit={(e) => e.preventDefault()}>
         {page === 1 && (
           <>
-            <div className="group-label">
+            <div className='group-label'>
               <label>Тип</label>
               <MXSelect
                 options={TYPE_LIST}
                 onChange={setTypeGame}
                 defaultValue={model?.typeGame ? model.typeGame : null}
-                placeholder="Выберите тип..."
+                placeholder='Выберите тип...'
               />
             </div>
-            <div className="group-label">
+            <div className='group-label'>
               <label>Название</label>
               <input
-                type="text"
-                placeholder="Название..."
-                value={name}
+                type='text'
+                placeholder='Название...'
+                value={name || ''}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div className="group-label">
+            <div className='group-label'>
               <label>Дата начала</label>
               <MXDatetime
-                initialValue={moment(model?.startDate ? moment(model.startDate) : null)}
+                initialValue={moment(
+                  model?.startDate ? moment(model.startDate) : null
+                )}
                 onChange={setStartDate}
               />
             </div>
-            <div className="group-label">
+            <div className='group-label'>
               <label>Дата окончания</label>
               <MXDatetime
-                initialValue={moment(model?.endDate ? moment(model.endDate) : null)}
+                initialValue={moment(
+                  model?.endDate ? moment(model.endDate) : null
+                )}
                 onChange={setEndDate}
               />
             </div>
-            <div className="group-label">
+            <div className='group-label'>
               <label>Изображение</label>
               <CatalogRef
                 defaultValue={model.imageId ? model.imageId : null}
                 onChange={setImageId}
-                url={"image"}
+                url={'image'}
                 img={true}
-                placeholder="Выберите изображение..."
+                placeholder='Выберите изображение...'
               />
             </div>
-            <div className="group-label">
+            <div className='group-label'>
               <label>Доступно для ролей</label>
               <CatalogRef
                 defaultValue={model.accessGames ? model.accessGames : null}
                 onChange={setAccessGames}
                 isMulti
-                url={"role"}
-                path={"name"}
-                placeholder="Выберите роли..."
+                url={'role'}
+                path={'name'}
+                placeholder='Выберите роли...'
               />
             </div>
           </>
@@ -164,44 +219,147 @@ const Game = (props) => {
         {typeGame === 'square' && (
           <>
             {[1, 2, 3, 4, 5].map((item, themeIndex) => (
-              <React.Fragment key={item + 311}>
+              <React.Fragment key={`theme-fragment-${item}`}>
                 {page === item + 1 && (
-                  <div className="group-label">
+                  <div
+                    className='group-label'
+                    key={`theme-group-${item}`}
+                  >
                     <label>{`Тема №${item}`}</label>
                     <CatalogRef
                       defaultValue={themeGames[themeIndex] || null}
-                      onChange={(selectedTheme) => handleThemeChange(themeIndex, selectedTheme)}
-                      url={"theme"}
-                      path={"name"}
+                      onChange={(selectedTheme) =>
+                        handleThemeChange(themeIndex, selectedTheme)
+                      }
+                      url={'theme'}
+                      path={'name'}
                       placeholder={`Выберите тему №${item}...`}
                     />
                   </div>
                 )}
                 {page === item + 1 &&
                   [1, 2, 3, 4, 5].map((question, questionIndex) => (
-                    <div className="group-label">
-                        <label>{`Вопрос LVL ${question}`}</label>
-                        <CatalogRef
-                          defaultValue={questionGames[themeIndex]?.[questionIndex] || null}
-                          onChange={(selectedQuestion) =>
-                            handleQuestionChange(themeIndex, questionIndex, selectedQuestion)
-                          }
-                          url={"question"}
-                          path={"question"}
-                          placeholder={`Выберите вопрос LVL ${question}`}
-                        />
-                      </div>
+                    <div
+                      className='group-label'
+                      key={`question-group-${item}-${question}`}
+                    >
+                      <label>{`Вопрос LVL ${question}`}</label>
+                      <CatalogRef
+                        defaultValue={
+                          questionGames[themeIndex]?.[questionIndex] || null
+                        }
+                        onChange={(selectedQuestion) =>
+                          handleQuestionChange(
+                            themeIndex,
+                            questionIndex,
+                            selectedQuestion
+                          )
+                        }
+                        url={'question'}
+                        path={'question'}
+                        placeholder={`Выберите вопрос LVL ${question}`}
+                      />
+                    </div>
                   ))}
               </React.Fragment>
             ))}
           </>
         )}
-        <div className="button-group">
-          <button className={page === 1 ? 'visible_false' : ''} hidden type="button" onClick={() => prevPage()}>
+        {typeGame === 'carousel' && (
+          <>
+            {page === 2 && (
+              <React.Fragment key='carousel-scores'>
+                <div
+                  className='group-label'
+                  key='score-first'
+                >
+                  <label>Начальное значение очков</label>
+                  <input
+                    type='number'
+                    placeholder='Кол-во...'
+                    value={scoreFirst || ''}
+                    onChange={(e) => setScoreFirst(e.target.value)}
+                  />
+                </div>
+                <div
+                  className='group-label'
+                  key='score-success'
+                >
+                  <label>Бонус за правильный ответ</label>
+                  <input
+                    type='number'
+                    placeholder='Кол-во...'
+                    value={scoreSuccess || ''}
+                    onChange={(e) => setScoreSuccess(e.target.value)}
+                  />
+                </div>
+                <div
+                  className='group-label'
+                  key='score-failure'
+                >
+                  <label>Штраф за неверный ответ</label>
+                  <input
+                    type='number'
+                    placeholder='Кол-во...'
+                    value={scoreFailure || ''}
+                    onChange={(e) => setScoreFailure(e.target.value)}
+                  />
+                </div>
+                <div
+                  className='group-label'
+                  key='questions-count'
+                >
+                  <label>Количество вопросов</label>
+                  <input
+                    type='number'
+                    placeholder='Кол-во...'
+                    value={countQuestionsOfCarousel || ''}
+                    onChange={(e) =>
+                      setCountQuestionsOfCarousel(Number(e.target.value))
+                    }
+                  />
+                </div>
+              </React.Fragment>
+            )}
+            {page > 2 && countQuestionsOfCarousel > 0 && (
+              <>
+                {getCarouselQuestionsRange().map((questionIndex) => (
+                  <div
+                    className='group-label'
+                    key={`carousel-question-${questionIndex}`}
+                  >
+                    <label>{`Вопрос №${questionIndex + 1}`}</label>
+                    <CatalogRef
+                      defaultValue={questionGames[questionIndex] || null}
+                      onChange={(selectedQuestion) =>
+                        handleQuestionChange(questionIndex, selectedQuestion)
+                      }
+                      url={'question'}
+                      path={'question'}
+                      placeholder={`Выберите вопрос №${questionIndex + 1}`}
+                    />
+                  </div>
+                ))}
+              </>
+            )}
+          </>
+        )}
+        <div className='button-group'>
+          <button
+            className={page === 1 ? 'visible_false' : ''}
+            type='button'
+            onClick={() => prevPage()}
+          >
             Назад
           </button>
-          <label>{page}/{totalPages}</label>
-          <button className={page === totalPages ? 'visible_false' : ''} type="button" onClick={() => nextPage()}>
+          <label>
+            {page}/{totalPages}
+          </label>
+          <button
+            className={page === totalPages ? 'visible_false' : ''}
+            type='button'
+            onClick={() => nextPage()}
+          >
             Далее
           </button>
         </div>

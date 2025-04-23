@@ -37,7 +37,7 @@ const SquareGame = (props) => {
 				const currentPoints = response.questionGames.flat().reduce((accumulator, currentValue) => {
 					if (currentValue?.userAnswer?.points) {
 						const curPoints = currentValue.userAnswer.points;
-						accumulator += currentValue.userAnswer.isCorrect ? curPoints : curPoints * (-1);
+						accumulator += currentValue.userAnswer.isCorrect ? curPoints : 0;
 					}
           return accumulator;
 				}, 0)

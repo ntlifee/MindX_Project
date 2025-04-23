@@ -33,7 +33,7 @@ const ModalWindowSquare = (props) => {
 					userAnswer: body.userAnswer,
 				};
 				setQuestions([...questions]);
-				ChangeScore(isCorrect ? 1 : -1);
+				ChangeScore(isCorrect ? 1 : 0);
 			})
 			.catch((error) => {
 				const errorsArray = error.response.data.errors;

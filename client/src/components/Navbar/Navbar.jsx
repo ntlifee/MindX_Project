@@ -26,6 +26,7 @@ const Navbar = observer((props) => {
         user.setUser({});
         user.setIsAuth(false);
         localStorage.setItem(`token`, null);
+        window.location.reload();
     };
 
     return (

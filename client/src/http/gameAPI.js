@@ -4,15 +4,24 @@ const getList = async () => {
 	const { data } = await $authHost.get('/api/admin/game');
 	for (const game of data) {
 		game.accessGames = game.accessGames.map((item) => item.role);
-		game.themeGames = game.themeGames.map((item) => item.theme);
-		const questionArray = [];
-		const chunkSize = 5;
-		for (let i = 0; i < game.questionGames.length; i += chunkSize) {
-			const chunk = game.questionGames.slice(i, i + chunkSize);
-			const questionsChunk = chunk.map(item => item.question);
-			questionArray.push(questionsChunk);
+		if (game.typeGame === 'square') {
+			game.themeGames = game.themeGames.map((item) => item.theme);
+			const questionArray = [];
+			const chunkSize = 5;
+			for (let i = 0; i < game.questionGames.length; i += chunkSize) {
+				const chunk = game.questionGames.slice(i, i + chunkSize);
+				const questionsChunk = chunk.map(item => item.question);
+				questionArray.push(questionsChunk);
+			}
+			game.questionGames = questionArray;
+		} else if (game.typeGame === 'carousel') {
+				game.countQuestionsOfCarousel = game?.questionGames.length;
+				game.scoreFailure = JSON.parse(JSON.stringify(game?.carouselData?.scoreFailure));
+				game.scoreFirst	= JSON.parse(JSON.stringify(game?.carouselData?.scoreFirst));
+				game.scoreSuccess	= JSON.parse(JSON.stringify(game?.carouselData?.scoreSuccess));
+				game.questionGames = game.questionGames.map(item => item.question);
+				delete game.carouselData;
 		}
-		game.questionGames = questionArray;
 	};
 	return data;
 };
@@ -34,7 +43,6 @@ const getByIdUser = async (id) => {
 		}
 		data.questionGames = questionArray;
 	}
-
 	return data;
 };
 
@@ -45,6 +53,13 @@ const postAnswer = async ({gameId, body}) => {
 
 const update = async (item) => {
 	item.questionGames = item.questionGames.flat();
+	if (item.typeGame === 'carousel') {
+		item.carouselData = {
+			scoreFirst: item?.scoreFirst,
+			scoreSuccess: item?.scoreSuccess,
+			scoreFailure: item?.scoreFailure,
+		}
+	}
 	const { data } = await $authHost.put(`/api/admin/game/${item.id}`, item);
 	return data;
 }
@@ -56,6 +71,13 @@ const deleteById = async (id) => {
 
 const addItem = async (item) => {
 	item.questionGames = item.questionGames.flat();
+	if (item.typeGame === 'carousel') {
+		item.carouselData = {
+			scoreFirst: item?.scoreFirst,
+			scoreSuccess: item?.scoreSuccess,
+			scoreFailure: item?.scoreFailure,
+		}
+	}
 	const { data } = await $authHost.post(`/api/admin/game`, item);
   return data;
 }
