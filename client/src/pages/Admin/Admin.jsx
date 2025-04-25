@@ -1,6 +1,6 @@
 import './admin.scss';
-import ObjectList from './components/ObjectList/ObjectList';
-import Tabs from './components/Tabs/Tabs';
+import MindxTable from '@mindx/components/MindxTable/MindxTable';
+import MindxTabs from '@mindx/components/MindxTabs/MindxTabs';
 import { useState } from 'react';
 import ModelHandler from './components/ModelHandlers/ModelHandler.jsx';
 
@@ -18,10 +18,10 @@ const AdminPage = () => {
       }
       <main className="admin-section">
         <div className='tabs'>
-          <Tabs setTemplate={setTemplate} setData={setData} reload={reload} setReload={setReload}/>
+          <MindxTabs setTemplate={setTemplate} setData={setData} reload={reload} setReload={setReload}/>
         </div>
         <div className='objects-list'>
-          <ObjectList 
+          <MindxTable 
             template={template?.fileds} 
             type={template?.type} 
             data={data} 

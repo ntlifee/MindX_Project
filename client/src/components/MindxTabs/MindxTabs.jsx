@@ -1,10 +1,10 @@
-import './tabs.scss';
+import './mindxTabs.scss';
 import { useState, useEffect } from 'react';
 import { templates } from '@mindx/templateModels/index'
 import Loading from '@mindx/components/UI/Loading/Loading.jsx';
 
 
-const Tabs = (props) => {
+const MindxTabs = (props) => {
 	const { setTemplate, setData, reload, setReload } = props;
 	const [loading, setLoading] = useState(false);
 	//TODO: Использовать для теста overflow
@@ -66,4 +66,4 @@ const Tabs = (props) => {
 	);
 };
 
-export default Tabs;
+export default MindxTabs;

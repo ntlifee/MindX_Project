@@ -1,4 +1,4 @@
-import './objectList.scss';
+import './mindxTable.scss';
 import { FaTrashAlt, FaEdit, FaTimes } from 'react-icons/fa';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -9,9 +9,9 @@ import { API } from '@mindx/http/API.js'
 import { Context } from '@mindx/index.js';
 import moment from 'moment';
 
-const ObjectList = (props) => {
+const MindxTable = (props) => {
 	const { user } = useContext(Context);
-	const { template, data, type, setReload, state, setState } = props;
+	const { template, data, type, setReload, state, setState, settings } = props;
 	const [searchTerm, setSearchTerm] = useState('');
 
 	const filteredData = useMemo(() => {
@@ -79,7 +79,9 @@ const ObjectList = (props) => {
 					value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}
 				/>
-				<button onClick={createItem}>Создать объект</button>
+				{ !settings?.off_CUD &&
+					<button onClick={createItem}>Создать объект</button>
+				}
 			</div>
 			<table className='objectlist-section'>
 				<thead>
@@ -111,7 +113,7 @@ const ObjectList = (props) => {
 								</td>
 							))}
 							<td className='command-icons'>
-								{
+								{ !settings?.off_CUD &&
 									(type !== 'role' || (row.name !== 'ADMIN' && row.name !== 'USER')) &&
 									(type !== 'user' || (row.id !== user.user.id)) &&
 									<>
@@ -132,4 +134,4 @@ const ObjectList = (props) => {
 	);
 };
 
-export default ObjectList;
+export default MindxTable;
