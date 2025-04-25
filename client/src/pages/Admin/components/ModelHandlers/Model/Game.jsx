@@ -85,6 +85,18 @@ const Game = (props) => {
   };
 
   useEffect(() => {
+    if (typeGame === 'carousel' && countQuestionsOfCarousel !== null && questionGames.length > countQuestionsOfCarousel) {
+      setQuestions(prevQuestions => prevQuestions.slice(0, countQuestionsOfCarousel));
+    }
+  }, [countQuestionsOfCarousel, typeGame]);
+
+  useEffect(() => {
+    if (model?.typeGame && model.typeGame !== typeGame) {
+      clearQuestions();
+      if (typeGame !== 'carousel') {
+        clearCarouselDataValues();
+      }
+    }
     model.typeGame = typeGame;
   }, [typeGame]);
 
@@ -117,19 +129,35 @@ const Game = (props) => {
   }, [questionGames]);
 
   useEffect(() => {
-    model.scoreFirst = scoreFirst;
+    if (scoreFirst) {
+      model.scoreFirst = scoreFirst;
+    } else {
+      delete model.scoreFirst;
+    }
   }, [scoreFirst]);
 
   useEffect(() => {
-    model.scoreSuccess = scoreSuccess;
+    if (scoreSuccess) {
+      model.scoreSuccess = scoreSuccess;
+    } else {
+      delete model.scoreSuccess;
+    }
   }, [scoreSuccess]);
 
   useEffect(() => {
-    model.scoreFailure = scoreFailure;
+    if (scoreFailure) {
+      model.scoreFailure = scoreFailure;
+    } else {
+      delete model.scoreFailure;
+    }
   }, [scoreFailure]);
 
   useEffect(() => {
-    model.countQuestionsOfCarousel = countQuestionsOfCarousel;
+    if (countQuestionsOfCarousel) {
+      model.countQuestionsOfCarousel = countQuestionsOfCarousel;
+    } else {
+      delete model.countQuestionsOfCarousel;
+    }
   }, [countQuestionsOfCarousel]);
 
   const nextPage = () => {
@@ -150,6 +178,17 @@ const Game = (props) => {
     const startIndex = (page - 3) * questionsPerPage;
     const endIndex = Math.min(startIndex + questionsPerPage, countQuestionsOfCarousel);
     return Array.from({ length: endIndex - startIndex }, (_, i) => startIndex + i);
+  };
+
+  const clearCarouselDataValues = () => {
+    setScoreFailure(null);
+    setScoreFirst(null);
+    setScoreSuccess(null);
+    setCountQuestionsOfCarousel(null);
+  };
+
+  const clearQuestions = () => {
+    setQuestions([]);
   };
 
   return (

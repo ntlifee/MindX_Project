@@ -196,12 +196,8 @@ const CarouselGame = () => {
             <div className="answer-section">
             <input
               type="text"
-              readOnly={currentQuestion?.id !== lastQuestion?.id}
-              value={
-                currentQuestion?.id !== lastQuestion?.id
-                  ? currentQuestion?.userAnswer?.userAnswer || ''
-                  : userAnswer
-              }
+              readOnly={currentQuestion?.id !== lastQuestion?.id || endGame}
+              value={currentQuestion?.userAnswer?.userAnswer || userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
               placeholder="Введите ваш ответ"
               className="answer-input"
