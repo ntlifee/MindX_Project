@@ -6,6 +6,7 @@ import Lobby from './pages/Lobby/Lobby';
 import SquareGame from './pages/SquareGame/SquareGame';
 import SignIn from './pages/Auth/SignIn';
 import SignUp from './pages/Auth/SingUp';
+import Rating from './pages/Rating/Rating'
 
 export const PUBLIC_ROUTES = [
 	{
@@ -20,6 +21,10 @@ export const PUBLIC_ROUTES = [
 		path: ROUTES.SIGNIN_ROUTE,
 		Component: SignIn,
 	},
+	{
+		path: ROUTES.RATING_ROUTE,
+		Component: Rating,
+	}
 ];
 
 export const AUTH_ROUTES = [

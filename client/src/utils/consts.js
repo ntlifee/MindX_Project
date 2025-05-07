@@ -5,4 +5,5 @@ export const ROUTES = {
 	HOME_ROUTE: '/',
 	SIGNIN_ROUTE: '/signin',
 	SIGNUP_ROUTE: '/signup',
+	RATING_ROUTE: '/rating'
 };

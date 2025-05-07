@@ -1,9 +1,69 @@
 import './rating.scss';
+import { templates } from '@mindx/metadata/RatingTable'
+import { useState } from 'react';
+import MindxTable from '@mindx/components/MindxTable/MindxTable';
+import MindxTabs from '@mindx/components/MindxTabs/MindxTabs';
+import { API } from '@mindx/http/API.js'
 
 const Rating = () => {
+  const [data, setData] = useState([]);
+  const [template, setTemplate] = useState({});
+  const [reload, setReload] = useState(false);
+  const [state, setState] = useState({});
+  const settings = {
+    off_CUD: true,
+    customTab: true,
+    type: 'rating',
+    typeTabItems: 'game',
+  }
+
+  const getTabList = () => {
+    API?.game?.getList()
+      .then(response => {
+        return Object.values(response).map((game) => ({
+          id: game?.id,
+          name: game?.name,
+        }));
+      })
+      .catch(error => console.error(error))
+  }
+
+  const changeData = (newTemplate, removeLoading, id) => {
+    newTemplate?.api.getById(id)
+      .then(response => setData(response?.rating || []))
+      .catch(error => console.error(error))
+      .finally(() => {
+        removeLoading();
+      });
+  }
   return ( 
     <main className="rating-section">
-
+      <>
+        <main className="admin-section">
+          <div className='tabs'>
+            <MindxTabs 
+              setTemplate={setTemplate} 
+              templates={templates} 
+              setData={setData} 
+              reload={reload} 
+              setReload={setReload}
+              changeData={changeData}
+              settings={settings}
+            />
+          </div>
+          <div className='objects-list'>
+            <MindxTable 
+              template={template?.fileds} 
+              type={template?.type} 
+              data={data} 
+              state={state}
+              setState={setState}
+              reload={reload} setReload={setReload}
+              settings={settings}
+            />
+          </div>
+        </main>
+      </>
     </main>
   );
 }

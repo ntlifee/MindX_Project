@@ -6,6 +6,7 @@ import { userAnswerAPI } from './userAnswerAPI';
 import { roleAPI } from './roleAPI';
 import { imageAPI } from './imageAPI';
 import { lobbyAPI } from './lobbyAPI';
+import { ratingAPI } from './ratingAPI'
 
 export const API = {
 	question: questionAPI,
@@ -16,4 +17,5 @@ export const API = {
 	role: roleAPI,
 	image: imageAPI,
 	lobby: lobbyAPI,
+	rating: ratingAPI,
 };
