@@ -72,7 +72,7 @@ const ModalWindowSquare = (props) => {
 				<div className={classes.content_question}>
 					{currentQuestion.question.imageId && (
 						<Image
-							src={`http://localhost:3001/${currentQuestion.question.imageId}.jpg`}
+							src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${currentQuestion.question.imageId}.jpg`}
 						/>
 					)}
 					{currentQuestion.question.question}

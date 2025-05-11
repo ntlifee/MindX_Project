@@ -43,7 +43,7 @@ const GameCard = (props) => {
                     width={300}
                     height={300}
                     className={classes.game_img}
-                    src={`http://localhost:3001/${model.imageId || 'without_image'}.jpg`}
+                    src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${model.imageId || 'without_image'}.jpg`}
                 />
                 <div className={classes.game_name}>{model.name}</div>
                 <div className={classes.game_info}>

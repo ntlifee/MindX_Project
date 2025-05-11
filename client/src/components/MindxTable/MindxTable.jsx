@@ -102,7 +102,7 @@ const MindxTable = (props) => {
 										?	<Image
 												width={150}
 												height={150}
-												src={`http://localhost:3001/${row[column.type]}.jpg`}
+												src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${row[column.type]}.jpg`}
 											/>
 										: <>{"-"}</>
 									) : (

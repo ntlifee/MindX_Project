@@ -15,18 +15,20 @@ const Rating = () => {
     customTab: true,
     type: 'rating',
     typeTabItems: 'game',
+    getTabList: async () => await getTabList(),
   }
 
-  const getTabList = () => {
-    API?.game?.getList()
-      .then(response => {
-        return Object.values(response).map((game) => ({
-          id: game?.id,
-          name: game?.name,
-        }));
-      })
-      .catch(error => console.error(error))
-  }
+  const getTabList = async () => {
+    try {
+      const response = await API?.game?.getList();
+      return Object.values(response ?? {}).map((game) => ({
+        id: game?.id,
+        label: game?.name,
+      }));
+    } catch (error) {
+      throw error;
+    }
+  };
 
   const changeData = (newTemplate, removeLoading, id) => {
     newTemplate?.api.getById(id)

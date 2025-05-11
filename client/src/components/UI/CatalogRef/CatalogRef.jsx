@@ -27,7 +27,7 @@ const CatalogRef = (props) => {
         const options = response.map(item => ({
           value: item.id,
           label: img 
-            ? <Image width={200} height={200} src={`http://localhost:3001/${item.id}.jpg`}/>
+            ? <Image width={200} height={200} src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${item.id}.jpg`}/>
             : item[path],
           data: item
         }));
@@ -48,7 +48,7 @@ const CatalogRef = (props) => {
             {
               value: item.id,
               label: img 
-              ? <Image width={200} height={200} src={`http://localhost:3001/${item.id}.jpg`}/>
+              ? <Image width={200} height={200} src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${item.id}.jpg`}/>
               : item[path],
               data: item
             }
@@ -58,7 +58,7 @@ const CatalogRef = (props) => {
         selectRef.current.setValue({
           value: img ? defaultValue : defaultValue.id,
           label: img
-          ? <Image width={200} height={200} src={`http://localhost:3001/${defaultValue}.jpg`}/>
+          ? <Image width={200} height={200} src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${defaultValue}.jpg`}/>
           : defaultValue[path],
           data: defaultValue
         })

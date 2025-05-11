@@ -8,6 +8,7 @@ const MindxTabs = (props) => {
 	const [loading, setLoading] = useState(false);
 	const [tabList, setTabList] = useState([]);
 	const [currentTab, setTab] = useState(0);
+
   function changeTab(tab, id) {
 		if(tab !== currentTab) {
 			setData(null);
@@ -32,21 +33,30 @@ const MindxTabs = (props) => {
   }
 	
 	useEffect(() => {
-		let tab_list = [];
-    if (!settings?.customTab) {
-			tab_list = Object.values(templates).map((template) => ({
-				type: template.type,
-				label: template.label,
-			}));
-		} else {
-			tab_list = settings.getTabList();
+		const initialize = async () => {
+			let tab_list = [];
+			if (!settings?.customTab) {
+				tab_list = Object.values(templates).map((template) => ({
+					type: template.type,
+					label: template.label,
+				}));
+			} else {
+				tab_list = await settings.getTabList();
+			}
+			setTabList(tab_list);
 		}
-		setTabList(tab_list);
-  }, [tabList])
-
-  useEffect(() => {
-    changeTab(0)
-  }, []);
+		initialize();
+	}, []);
+	
+	useEffect(() => {
+		if (tabList?.length > 0) {
+			if (settings?.customTab) {
+				changeTab(0, tabList[0]?.id);
+			} else {
+				changeTab(0);
+			}
+		}
+	}, [tabList]);
 
 	useEffect(() => {
 		if (reload) {
@@ -63,7 +73,7 @@ const MindxTabs = (props) => {
 				{tabList?.map((tab, index) => (
 					<button
 						className={currentTab === index ? 'tab active' : 'tab'}
-						key={tab.label}
+						key={tab?.label || tab?.id}
 						onClick={() => changeTab(index, tab?.id)}
 					>
 						{tab.label}
