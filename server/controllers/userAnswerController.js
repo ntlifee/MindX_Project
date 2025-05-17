@@ -75,32 +75,28 @@ class userAnswerController {
             const userAnswerData = await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
 
             //Начисление бонуса, если выполнены условия
+            let bonuses = []
             if (isCorrect && typeGame === 'square') {
                 const row = Math.ceil(questionData.numberQuestion / 5)
                 const column = (questionData.numberQuestion - 1) % 5 + 1
-                const bonusData = await Bonus.findOne({
-                    where: {
-                        userId: req.user.id,
-                        gameId: req.params.id,
-                        lvl: [row, column],
-                        type: ['row', 'column'],
-                    }
-                })
-                if (!bonusData || !bonusData[0] || !bonusData[1]) {
-                    const checks = await Promise.all([
-                        this.check(req, '("questionGame"."numberQuestion" - 1) / 5 + 1'),
-                        this.check(req, '("questionGame"."numberQuestion" - 1) % 5 + 1')
-                    ])
-                    if (checks[0].includes(row)) {
-                        await Bonus.create({ points: BONUS['column'][`${row}`], type: 'row', lvl: row, userId: req.user.id, gameId: req.params.id })
-                    }
-                    if (checks[1].includes(column)) {
-                        await Bonus.create({ points: BONUS['column'][`${column}`], type: 'column', lvl: column, userId: req.user.id, gameId: req.params.id })
-                    }
+                const checks = await Promise.all([
+                    this.check(req, '("questionGame"."numberQuestion" - 1) / 5 + 1'),
+                    this.check(req, '("questionGame"."numberQuestion" - 1) % 5 + 1')
+                ])
+                let insert_data
+                if (checks[0].includes(row)) {
+                    insert_data = { points: BONUS['row'][`${row}`], type: 'row', lvl: row }
+                    await Bonus.create({ ...insert_data, userId: req.user.id, gameId: req.params.id })
+                    bonuses.push(insert_data)
+                }
+                if (checks[1].includes(column)) {
+                    insert_data = { points: BONUS['column'][`${column}`], type: 'column', lvl: column }
+                    await Bonus.create({ ...insert_data, userId: req.user.id, gameId: req.params.id })
+                    bonuses.push(insert_data)
                 }
             }
 
-            res.json({ message: 'Ответ добавлен', isCorrect })
+            res.json({ message: 'Ответ добавлен', isCorrect, bonuses })
         } catch (error) {
             return next(ApiError.badRequest(`${error.message}`))
         }
