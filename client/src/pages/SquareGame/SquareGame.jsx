@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel';
 import QuestionButton from './components/QuestionButton/QuestionButton';
@@ -11,12 +11,12 @@ import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
 import Loading from '@mindx/components/UI/Loading/Loading';
 
-const SquareGame = (props) => {
+const SquareGame = () => {
 	const { id } = useParams();
 	const [currentQuestion, setCurrentQuestion] = useState(null);
 	const [currentTheme, setCurrentTheme] = useState(null);
-	const [bonusRow, setBonusRow] = useState(new Array(5).fill(null));
-	const [bonusCol, setBonusCol] = useState(new Array(5).fill(null));
+	const [bonusRow, setBonusRow] = useState([]);
+	const [bonusCol, setBonusCol] = useState([]);
 	const [score, setScore] = useState(0);
 	const [questions, setQuestions] = useState([]);
 	const [themes, setThemes] = useState([]);
@@ -24,9 +24,11 @@ const SquareGame = (props) => {
 	const [endDate, setEndDate] = useState(null);
 	const levels = [1, 2, 3, 4, 5];
   const [loading, setLoading] = useState(true);
+	const [initialized, setInitialized] = useState(false);
 
 	useDidMountEffect(() => {
 		setLoading(true);
+		setInitialized(false);
 		API.game
 			.getByIdUser(id)
 			.then((response) => {
@@ -34,15 +36,33 @@ const SquareGame = (props) => {
 				setQuestions(response.questionGames);
 				setStartDate(response.startDate);
 				setEndDate(response.endDate);
-				const currentPoints = response.questionGames.flat().reduce((accumulator, currentValue) => {
+				const initialRow = Array(5).fill(null);
+				const initialCol = Array(5).fill(null);
+				response?.bonuses.forEach(bonus => {
+					if (bonus.type === 'row') {
+						initialRow[bonus.lvl - 1] = bonus;
+					} else {
+						initialCol[bonus.lvl - 1] = bonus;
+					}
+				});
+				setBonusCol(initialCol);
+				setBonusRow(initialRow);
+				let currentPoints = response.questionGames.flat().reduce((accumulator, currentValue) => {
 					if (currentValue?.userAnswer?.points) {
 						const curPoints = currentValue.userAnswer.points;
 						accumulator += currentValue.userAnswer.isCorrect ? curPoints : 0;
 					}
           return accumulator;
 				}, 0)
+				currentPoints += response?.bonuses.reduce((accumulator, currentValue) => {
+					if (currentValue.points) {
+						accumulator += currentValue.points;
+					}
+					return accumulator;
+				}, 0);
 				setScore(currentPoints);
 				setLoading(false);
+				setInitialized(true);
 			})
 			.catch((error) => {
 				const errorsArray = error.response.data.errors;
@@ -51,53 +71,39 @@ const SquareGame = (props) => {
 			});
 	}, [id]);
 
-	/* 
-    useDidMountEffect(() => {
-        if (isCloseQuestions[numberQuestion - 1] !== null) {
-            const indexRow = Math.floor((numberQuestion - 1) / 5)
-            const indexCol = (numberQuestion - 1) % 5
+	useEffect(() => {
+		if (initialized && questions.length) {
+			for (let i = 0; i < 5; i++) {
+				checkColumn(i);
+				checkRow(i);
+			}
+		}
+	}, [questions, initialized])
 
-            let newBonusRow = [...bonusRow]
-            let newBonusCol = [...bonusCol]
+	const checkColumn = (index) => {
+		for (let i = 0; i < 5; i++) {
+			if (questions[i][index]?.userAnswer?.isCorrect === false) {
+				setBonusCol(prev => {
+					const newCol = [...prev];
+					newCol[index] = false;
+					return newCol;
+				});
+				return;
+			}
+		}
+	}
 
-            if (newBonusRow[indexRow] === null) {
-                let count = 0
-                for (let i = 0; i < 5; i++) {
-                    if (isCloseQuestions[indexRow * 5 + i] === true) {
-                        count++
-                        continue
-                    } else if (isCloseQuestions[indexRow * 5 + i] === false) {
-                        newBonusRow[indexRow] = false
-                        break
-                    }
-                }
-                if (count === 5) {
-                    newBonusRow[indexRow] = true
-                    setScore(score + (indexRow + 1) * 10)
-                }
-            }
-
-
-            if (newBonusCol[indexCol] === null) {
-                let count = 0
-                for (let i = 0; i < 5; i++) {
-                    if (isCloseQuestions[i * 5 + indexCol] === true) {
-                        count++
-                        continue
-                    } else if (isCloseQuestions[i * 5 + indexCol] === false) {
-                        newBonusCol[indexCol] = false
-                        break
-                    }
-                }
-                if (count === 5) {
-                    newBonusCol[indexCol] = true
-                    setScore(score + (indexCol + 1) * 10)
-                }
-            }
-            setBonusRow(newBonusRow)
-            setBonusCol(newBonusCol)
-        }
-    }, [isCloseQuestions[numberQuestion - 1]]) */
+	const checkRow = (index) => {
+		if (questions[index].some(item => item?.userAnswer?.isCorrect === false)) {
+			setBonusRow(prev => {
+				const newRow = [...prev];
+				newRow[index] = false;
+				return newRow;
+			});
+			return;
+		}
+	}
+	
 	return (
 		<>
 			<main className={classes.section}>
@@ -160,7 +166,7 @@ const SquareGame = (props) => {
 										))}
 										<BonusSquare
 											key={numberTheme + 1}
-											value={numberTheme * 10}
+											value={50}
 											bonus={bonusRow[numberTheme - 1]}
 										/>
 									</tr>

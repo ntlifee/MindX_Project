@@ -6,6 +6,7 @@
     align-items: center;
     border-radius: 7px;
     margin: 20px;
+    padding: 3px;
 }
 
 .time, .score{
@@ -16,14 +17,14 @@
 }
 
 .score_string, .time_string{
-    font-size: clamp(4px, 1.5vw, 16px);
+    font-size: clamp(6px, 1vw, 14px);
     font-family: 'DM Sans', sans-serif;
     text-align: center;
     color: gray;
 }
 
 .score_int, .time_date{
-    font-size: clamp(4px, 3vw,20px);
+    font-size: clamp(8px, 1.2vw, 18px);
     font-family: 'DM Sans', sans-serif;
     text-align: center;
     color: black;

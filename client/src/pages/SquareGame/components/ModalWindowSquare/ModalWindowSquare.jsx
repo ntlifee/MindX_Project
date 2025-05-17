@@ -88,10 +88,8 @@ const ModalWindowSquare = (props) => {
 						<textarea
 							readOnly
 							className={classes.text_answer}
-						>
-							{currentQuestion.userAnswer.userAnswer ||
-								'(Вы ничего не ответили.)'}
-						</textarea>
+							defaultValue={currentQuestion.userAnswer.userAnswer || '(Вы ничего не ответили.)'}
+						/>
 					)}
 					<div className={classes.content_buttons}>
 						{!currentQuestion.userAnswer ? (
