@@ -1,4 +1,6 @@
+const ApiError = require('../error/ApiError');
 const { Game } = require('../models/index')
+
 module.exports = function () {
     return async function (req, res, next) {
         if (req.method === 'OPTIONS') {
@@ -10,14 +12,14 @@ module.exports = function () {
             })
             const time = new Date()
             if (isPlayGame.startDate > time) {
-                return res.status(403).json({ errors: ['Игра еще не началась!'] })
+                return next(ApiError.forbidden('Игра еще не началась!'))
             }
             if (req.method === 'POST' && isPlayGame.endDate < time) {
-                return res.status(403).json({ errors: ['Игра уже закончилась!'] })
+                return next(ApiError.forbidden('Игра уже закончилась!'))
             }
             next()
         } catch (err) {
-            return res.status(500).json({ errors: ['Ошибка запроса времени игры!'] })
+            return next(ApiError.forbidden('Ошибка запроса времени игры!'))
         }
     }
 }

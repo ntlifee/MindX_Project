@@ -1,3 +1,5 @@
+const ApiError = require('../error/ApiError');
+
 const validateRequest = (schema) => {
     return (req, res, next) => {
         const { error, value } = schema.validate(req.body, {
@@ -13,7 +15,7 @@ const validateRequest = (schema) => {
                     ? `${detail.message} в строке #${lineNumber + 1}`
                     : detail.message;
             });
-            return res.status(400).json({ errors });
+            return next(ApiError.badRequest(errors))
         }
         req.body = value; // Обновляем тело запроса (только валидные поля)
         next();

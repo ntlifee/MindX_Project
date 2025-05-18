@@ -1,4 +1,6 @@
+const ApiError = require('../error/ApiError');
 const { Role, AccessGame } = require('../models/index')
+
 module.exports = function () {
     return async function (req, res, next) {
         if (req.method === 'OPTIONS') {
@@ -18,11 +20,11 @@ module.exports = function () {
                 attributes: ['id'],
             })
             if (!roleGame) {
-                return res.status(403).json({ errors: ['Нет доступа к данной игре!'] })
+                return next(ApiError.forbidden('Нет доступа к данной игре!'))
             }
             next()
         } catch (error) {
-            return res.status(400).json({ errors: ['Ошибка доступа к игре!'] })
+            return next(ApiError.badRequest('Ошибка доступа к игре!'))
         }
     }
 }

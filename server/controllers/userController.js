@@ -76,12 +76,19 @@ class UserController {
 
     async check(req, res, next) {
         try {
-            const roleId = (await User.findByPk(req.user.id, { attributes: ['roleId'] }))?.dataValues.roleId
-            const role = (await Role.findByPk(roleId, { attributes: ['name'] }))?.dataValues.name
-            if (!role) {
-                throw new Error()
-            }
-            const token = generateJwt(req.user.id, req.user.username, role)
+            const user = await User.findByPk(req.user.id, {
+                attributes: ['roleId'],
+                rejectOnEmpty: true
+            });
+            const role = await Role.findByPk(user.roleId, {
+                attributes: ['name'],
+                rejectOnEmpty: true
+            });
+            const token = generateJwt(
+                req.user.id,
+                req.user.username,
+                role.name
+            )
             res.json({ token })
         } catch (error) {
             return next(ApiError.unauthorized('Токен устарел'))

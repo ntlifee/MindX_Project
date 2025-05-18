@@ -1,4 +1,6 @@
+const ApiError = require('../error/ApiError');
 const verifyToken = require('../utils/verifyToken');
+
 module.exports = function () {
     return function (req, res, next) {
         if (req.method === 'OPTIONS') {
@@ -8,7 +10,7 @@ module.exports = function () {
             req.user = verifyToken(req)
             next()
         } catch (error) {
-            return res.status(401).json({ errors: ['Не авторизован'] })
+            return next(ApiError.unauthorized(error.message))
         }
     }
 }

@@ -1,3 +1,5 @@
+const ApiError = require('../error/ApiError');
+
 module.exports = function (role) {
     return function (req, res, next) {
         if (req.method === 'OPTIONS') {
@@ -5,11 +7,11 @@ module.exports = function (role) {
         }
         try {
             if (req.user.role !== role) {
-                return res.status(403).json({ errors: ['Недостаточно прав'] })
+                return next(ApiError.forbidden('Недостаточно прав'))
             }
             next()
         } catch (error) {
-            return res.status(401).json({ errors: ['Не авторизован'] })
+            return next(ApiError.unauthorized('Не авторизован'))
         }
     }
 }
