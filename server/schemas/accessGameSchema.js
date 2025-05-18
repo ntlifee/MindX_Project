@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require('../utils/validation');
 
 const accessGameSchema = Joi.object({
     roleId: Joi.string()

@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require('../utils/validation');
 
 // Базовая схема паролей
 const passwordSchema = Joi.string()

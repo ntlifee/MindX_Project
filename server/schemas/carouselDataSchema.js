@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('../utils/validation');
 
 const carouselDataSchema = Joi.object({
     gameId: Joi.string().guid().required(),

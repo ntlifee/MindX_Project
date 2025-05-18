@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('../utils/validation');
 
 const questionGamePutSchema = Joi.object({
     questionId: Joi.string()

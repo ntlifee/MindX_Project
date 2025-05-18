@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('../utils/validation');
 
 const commonStringRules = Joi.string().messages({
     'string.empty': 'Поле {#key} не может быть пустым',

@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('../utils/validation');
 
 const questionSchema = Joi.object({
     question: Joi.string().required(),
