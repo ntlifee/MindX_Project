@@ -70,6 +70,42 @@ const MindxTable = (props) => {
 		})
 	};
 
+	const getColumnValue = (column, row) => {
+    const columnMeta = column?.meta;
+    const value = row[column.type];
+    
+    switch (columnMeta) {
+      case 'img':
+        return value 
+          ? <Image
+              width={150}
+              height={150}
+              src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${value}.jpg`}
+            />
+          : <>{"-"}</>
+      case 'datetime':
+        return moment(new Date(value)).format('DD.MM.YYYY HH:mm');
+      case 'question-list': 
+        return Array.isArray(value) ? (
+        <div className="compact-questions-container">
+          <div className="compact-questions-list">
+            {value.map((item, idx) => (
+              <div 
+                key={idx} 
+                className={`compact-question ${item.isCorrect ? 'correct' : 'incorrect'}`}
+              >
+                <span className="compact-number">#{ item?.numberQuestion }</span>
+                <span className="compact-points">{ item?.isCorrect ? item?.points : 0 }</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : <>{"-"}</>;
+      default:
+        return value;
+    }
+  }
+
 	return (
 		<>
 			<div className='table-header'>
@@ -97,19 +133,9 @@ const MindxTable = (props) => {
 						<tr key={index}>
 							{template?.map((column, index) => (
 								<td key={index}>
-									{column.meta === 'img' ? (
-										row[column.type] 
-										?	<Image
-												width={150}
-												height={150}
-												src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${row[column.type]}.jpg`}
-											/>
-										: <>{"-"}</>
-									) : (
-										column.meta === 'datetime'
-										? moment(new Date(row[column.type])).format('DD.MM.YYYY HH:mm')
-										: row[column.type]
-									)}
+									{
+										getColumnValue(column, row)
+									}
 								</td>
 							))}
 							<td className='command-icons'>

@@ -41,7 +41,9 @@ const SignIn = observer( () => {
           <div>
             <label htmlFor='password'>Пароль</label>
             <input type='password' required id='password' className='auth-input'
-                  value={password} onChange={e => setPassword(e.target.value)}/>
+                  value={password} onChange={e => setPassword(e.target.value)}
+                  minLength={3} maxLength={30}
+            />
           </div>
           <div className='btn-section'>
             <a className='btn sign' href={ROUTES.SIGNUP_ROUTE}>Нет аккаунта?</a>

@@ -14,13 +14,12 @@ const Rating = () => {
     off_CUD: true,
     customTab: true,
     type: 'rating',
-    typeTabItems: 'game',
     getTabList: async () => await getTabList(),
   }
 
   const getTabList = async () => {
     try {
-      const response = await API?.game?.getList();
+      const response = await API?.rating?.getList();
       return Object.values(response ?? {}).map((game) => ({
         id: game?.id,
         label: game?.name,

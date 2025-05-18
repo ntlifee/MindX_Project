@@ -12,7 +12,7 @@
 
 .handler-section {
   position: absolute;
-  width: 600px;
+  width: clamp(300px, 30vw, 600px);
   height: 100%;
   background: url("../../../../img/background-site.jpg") no-repeat;
     background-size: cover;
@@ -31,7 +31,7 @@
     margin: 5px;
     gap: 3px;
     flex-direction: row;
-    height: 40px;
+    font-size: clamp(10px, 3vw, 18px);
 
     .btn {
       color: white;

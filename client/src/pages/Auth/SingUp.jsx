@@ -37,17 +37,23 @@ const SignUp = observer(() => {
           <div>
             <label htmlFor='login'>Логин</label>
             <input type='text' id='login' className='auth-input'
-                  value={username} onChange={e => setUsername(e.target.value)}/>
+                  value={username} onChange={e => setUsername(e.target.value)}
+                  minLength={3} maxLength={30}
+            />
           </div>
           <div>
             <label htmlFor='password'>Пароль</label>
             <input type='password' id='password' className='auth-input'
-                  value={password} onChange={e => setPassword(e.target.value)}/>
+                  value={password} onChange={e => setPassword(e.target.value)}
+                  minLength={3} maxLength={30}
+            />
           </div>
           <div>
             <label htmlFor='repeat_password'>Повторите пароль</label>
             <input type='password' id='repeat_password' className='auth-input'
-                  value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}/>
+                  value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+                  minLength={3} maxLength={30}
+            />
           </div>
           <div className='btn-section'>
             <a className='btn sign' href={ROUTES.SIGNIN_ROUTE}>Уже есть аккаунт?</a>
