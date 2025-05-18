@@ -42,9 +42,8 @@ const CarouselGame = () => {
         setLoading(false);
       })
       .catch((error) => {
-        const errorsArray = error.response.data.errors;
-        errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
         console.error(error);
+				ErrorEmmiter(error?.response.data?.error);
       });
   }, [id]);
 
@@ -142,9 +141,7 @@ const CarouselGame = () => {
           }
         })
         .catch((error) => {
-          const errorsArray = error.response.data.errors;
-          errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
-          console.error(error);
+          console.error(error?.response?.data?.error);
         });
     } else {
       ErrorEmmiter('Поле ответа не может быть пустым!');

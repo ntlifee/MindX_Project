@@ -31,7 +31,20 @@ const Rating = () => {
 
   const changeData = (newTemplate, removeLoading, id) => {
     newTemplate?.api.getById(id)
-      .then(response => setData(response?.rating || []))
+      .then(response => {
+        const rating = response?.rating || [];
+        const countQuestions = response?.countQuestion;
+        if (countQuestions) {
+          for (const user of rating) {
+            let userAnswers = Array(countQuestions).fill(null);
+            user?.userAnswers?.forEach(answer => {
+              userAnswers[answer.numberQuestion - 1] = answer;
+            });
+            user.userAnswers = userAnswers;
+          }
+        }
+        setData(rating);
+      })
       .catch(error => console.error(error))
       .finally(() => {
         removeLoading();

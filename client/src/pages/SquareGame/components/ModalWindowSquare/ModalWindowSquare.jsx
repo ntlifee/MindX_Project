@@ -36,9 +36,8 @@ const ModalWindowSquare = (props) => {
 				ChangeScore(isCorrect ? 1 : 0);
 			})
 			.catch((error) => {
-				const errorsArray = error.response.data.errors;
-				errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
 				console.error(error);
+				ErrorEmmiter(error?.response.data?.error);
 			});
 	};
 

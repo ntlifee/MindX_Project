@@ -70,6 +70,22 @@ const MindxTable = (props) => {
 		})
 	};
 
+	const getPointsValue = (item) => {
+		if (item) {
+			return item?.isCorrect ? item?.points : 0;
+		} else {
+			return '-';
+		}
+	};
+
+	const getAnswerStatus = (item) => {
+		if (item) {
+			return item.isCorrect ? 'correct' : 'incorrect';
+		} else {
+			return 'none';
+		}
+	};
+
 	const getColumnValue = (column, row) => {
     const columnMeta = column?.meta;
     const value = row[column.type];
@@ -91,11 +107,13 @@ const MindxTable = (props) => {
           <div className="compact-questions-list">
             {value.map((item, idx) => (
               <div 
-                key={idx} 
-                className={`compact-question ${item.isCorrect ? 'correct' : 'incorrect'}`}
+                key={`LISTQ-${idx}`} 
+                className={`compact-question ${getAnswerStatus(item)}`}
               >
-                <span className="compact-number">#{ item?.numberQuestion }</span>
-                <span className="compact-points">{ item?.isCorrect ? item?.points : 0 }</span>
+                <span className="compact-number">#{ idx + 1 }</span>
+                <span className={`compact-points ${getAnswerStatus(item)}`}>
+									{ getPointsValue(item) }
+								</span>
               </div>
             ))}
           </div>

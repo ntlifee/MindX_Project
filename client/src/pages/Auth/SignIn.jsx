@@ -23,9 +23,8 @@ const SignIn = observer( () => {
         window.location.reload();
       }
     } catch(error) {     
-      const errorsArray = error.response.data.errors;
-      errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
       console.error(error);
+      ErrorEmmiter(error?.response.data?.error);
     }
   });
   return ( 

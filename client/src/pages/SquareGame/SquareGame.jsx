@@ -65,9 +65,8 @@ const SquareGame = () => {
 				setInitialized(true);
 			})
 			.catch((error) => {
-				const errorsArray = error.response.data.errors;
-				errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
 				console.error(error);
+				ErrorEmmiter(error?.response.data?.error);
 			});
 	}, [id]);
 

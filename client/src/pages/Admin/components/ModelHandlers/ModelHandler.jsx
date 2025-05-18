@@ -45,9 +45,8 @@ const ModelHandler = (props) => {
       setReload(true);
       cancel();
     } catch(error) {
-      const errorsArray = error.response.data.errors;
-      errorsArray.forEach((errorMessage) => ErrorEmmiter(errorMessage));
       console.error(error);
+      ErrorEmmiter(error?.response.data?.error);
     }
   });
 
