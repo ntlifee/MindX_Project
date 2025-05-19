@@ -1,4 +1,4 @@
-const { where } = require('sequelize')
+const { where, Op } = require('sequelize')
 const sequelize = require('../database.js')
 const ApiError = require('../error/ApiError')
 const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData, Question, Theme, Role, UserAnswer, Bonus } = require('../models/index')
@@ -66,31 +66,56 @@ class GameController {
 
     async getAllUser(req, res, next) {
         try {
-            const { typeGame } = req.query
-            const roleId = (await Role.findOne({
-                where: { name: req.user.role }
-            }))?.dataValues?.id
-            validateCheck(!roleId, "Роль не найдена!")
-            const currentDate = new Date();
-            const gamesData = await Game.findAll({
-                include: [{
-                    model: AccessGame,
-                    attributes: [],
-                    required: true,
-                    where: { roleId }
-                }],
-                order: [
-                    [sequelize.literal(`CASE WHEN "endDate" > '${currentDate.toISOString()}' THEN 1 ELSE 0 END`), 'DESC'],
-                    ["startDate", 'ASC'],
-                    ['name', 'ASC']
-                ],
-                ...(typeGame && { where: { typeGame } })
-            })
-
+            const gamesData = await this.getGamesData(req)
             res.json(gamesData)
         } catch (error) {
             return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
         }
+    }
+
+    async getRating(req, res, next) {
+        try {
+            req.query.completedOnly = true
+            const gamesData = await this.getGamesData(req)
+            res.json(gamesData)
+        } catch (error) {
+            return next(ApiError.badRequest(`Ошибка получения: ${error.message}`))
+        }
+    }
+
+    async getGamesData(req) {
+        const { typeGame, completedOnly } = req.query
+        const roleId = (await Role.findOne({
+            where: { name: req.user.role }
+        }))?.dataValues?.id
+        validateCheck(!roleId, "Роль не найдена!")
+        const currentDate = new Date();
+
+        const whereConditions = {};
+        // Добавляем условие для типа игры, если оно указано
+        if (typeGame) {
+            whereConditions.typeGame = typeGame;
+        }
+        // Если запрос только для завершенных игр
+        if (completedOnly) {
+            whereConditions.endDate = { [Op.lt]: currentDate };
+        }
+
+        const gamesData = await Game.findAll({
+            include: [{
+                model: AccessGame,
+                attributes: [],
+                required: true,
+                where: { roleId }
+            }],
+            order: [
+                [sequelize.literal(`CASE WHEN "endDate" > '${currentDate.toISOString()}' THEN 1 ELSE 0 END`), 'DESC'],
+                ["startDate", 'ASC'],
+                ['name', 'ASC']
+            ],
+            where: whereConditions,
+        })
+        return gamesData
     }
 
     async getAllAdmin(req, res, next) {
