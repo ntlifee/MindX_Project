@@ -22,7 +22,7 @@ const User = (props) => {
   },[]);
 
   useEffect(() => {
-    model.username = username;
+    model.username = (username).trim();
   }, [username]);
   useEffect(() => {
     model.password = password;

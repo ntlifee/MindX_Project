@@ -4,17 +4,20 @@ import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
 import { Image } from 'react-bootstrap';
 import { mindxDebounce } from '@mindx/utils/tools'
+import moment from 'moment';
 
 const ModalWindowSquare = (props) => {
 	const {
 		setCurrentQuestion,
 		currentQuestion,
 		currentTheme,
-		score,
 		setScore,
 		gameId,
 		questions,
 		setQuestions,
+		setBonusRow,
+		setBonusCol,
+		endDate
 	} = props;
 
 	const scoreQuestion = (((currentQuestion.numberQuestion - 1) % 5) + 1) * 10;
@@ -27,13 +30,31 @@ const ModalWindowSquare = (props) => {
 	const postAnswer = (body) => {
 		API.game
 			.postAnswer({ gameId, body })
-			.then(({ isCorrect }) => {
+			.then(({ isCorrect, bonuses }) => {
 				questions[currentTheme - 1][level - 1].userAnswer = {
 					isCorrect,
 					userAnswer: body.userAnswer,
 				};
+				bonuses.forEach(bonus => {
+					if (bonus.type === 'row') {
+						setBonusRow(prev => {
+							const newRow = [...prev];
+							newRow[bonus.lvl - 1] = bonus;
+							return newRow;
+						});
+					} else {
+						setBonusCol(prev => {
+							const newCol = [...prev];
+							newCol[bonus.lvl - 1] = bonus;
+							return newCol;
+						});
+					}
+					ChangeScore(bonus.points);
+				});
 				setQuestions([...questions]);
-				ChangeScore(isCorrect ? 1 : 0);
+				if (isCorrect) {
+					ChangeScore(scoreQuestion);
+				}
 			})
 			.catch((error) => {
 				console.error(error);
@@ -45,7 +66,7 @@ const ModalWindowSquare = (props) => {
 		if (!currentQuestion.userAnswer && answer) {
 			const body = {
 				questionGameId: currentQuestion.id,
-				userAnswer: answer,
+				userAnswer: (answer).trim(),
 				points: level * 10,
 			};
 			postAnswer(body);
@@ -55,8 +76,8 @@ const ModalWindowSquare = (props) => {
 		}
 	});
 
-	const ChangeScore = (koef) => {
-		setScore(score + scoreQuestion * koef);
+	const ChangeScore = (points) => {
+		setScore(prev => prev + points);
 	};
 
 	return (
@@ -91,7 +112,7 @@ const ModalWindowSquare = (props) => {
 						/>
 					)}
 					<div className={classes.content_buttons}>
-						{!currentQuestion.userAnswer ? (
+						{ moment() < moment(endDate) && !currentQuestion.userAnswer ? (
 							<>
 								<button
 									className={`${classes.button} ${classes.green}`}

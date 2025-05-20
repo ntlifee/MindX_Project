@@ -13,6 +13,7 @@ import Loading from '@mindx/components/UI/Loading/Loading';
 
 const SquareGame = () => {
 	const { id } = useParams();
+	const [block, setBlock] = useState(null);
 	const [currentQuestion, setCurrentQuestion] = useState(null);
 	const [currentTheme, setCurrentTheme] = useState(null);
 	const [bonusRow, setBonusRow] = useState([]);
@@ -65,8 +66,10 @@ const SquareGame = () => {
 				setInitialized(true);
 			})
 			.catch((error) => {
+				const message = error?.response.data?.error;
+				setBlock(message);
 				console.error(error);
-				ErrorEmmiter(error?.response.data?.error);
+				ErrorEmmiter(message);
 			});
 	}, [id]);
 
@@ -105,86 +108,93 @@ const SquareGame = () => {
 	
 	return (
 		<>
-			<main className={classes.section}>
-				{
-					loading && <Loading/>
-				}
-				<div className='container'>
-					<div className={classes.wrapper}>
-						<GameInformationPanel score={score} endDate={endDate}/>
-						{currentQuestion && (
-							<ModalWindowSquare
-								key={currentQuestion.question.id}
-								gameId={id}
-								currentTheme={currentTheme}
-								currentQuestion={currentQuestion}
-								setCurrentQuestion={setCurrentQuestion}
-								score={score}
-								setScore={setScore}
-								questions={questions}
-								setQuestions={setQuestions}
-							/>
-						)}
-						<table className={classes.table_square}>
-							<thead>
-								<tr className={classes.tr_square}>
-									<th className={classes.th_square}>Тема</th>
-									{levels.map((level) => (
-										<td
-											className={classes.td_square}
-											key={level}
+			{
+				block 
+				? <BlockingWindow message={block}/>
+				: 
+				<main className={classes.section}>
+					{
+						loading && <Loading/>
+					}
+					<div className='container'>
+						<div className={classes.wrapper}>
+							<GameInformationPanel score={score} endDate={endDate}/>
+							{currentQuestion && (
+								<ModalWindowSquare
+									key={currentQuestion.question.id}
+									gameId={id}
+									currentTheme={currentTheme}
+									currentQuestion={currentQuestion}
+									setCurrentQuestion={setCurrentQuestion}
+									setScore={setScore}
+									questions={questions}
+									setQuestions={setQuestions}
+									setBonusRow={setBonusRow}
+									setBonusCol={setBonusCol}
+									endDate={endDate}
+								/>
+							)}
+							<table className={classes.table_square}>
+								<thead>
+									<tr className={classes.tr_square}>
+										<th className={classes.th_square}>Тема</th>
+										{levels.map((level) => (
+											<td
+												className={classes.td_square}
+												key={level}
+											>
+												Уровень {level}
+											</td>
+										))}
+										<th className={classes.th_square}>Бонус</th>
+									</tr>
+								</thead>
+								<tbody>
+									{themes.map(({ id, numberTheme, theme }) => (
+										<tr
+											key={id}
+											className={classes.tr_square}
 										>
-											Уровень {level}
-										</td>
+											<td className={`${classes.theme} ${classes.td_square}`}>
+												<span className={classes.theme_text}>{theme.name}</span>
+											</td>
+											{questions[numberTheme - 1].map((item) => (
+												<QuestionButton
+													key={item.id}
+													model={item}
+													setCurrentQuestion={setCurrentQuestion}
+													level={
+														item.numberQuestion % 5 === 0
+															? 5
+															: item.numberQuestion % 5
+													}
+													setCurrentTheme={setCurrentTheme}
+													numberTheme={numberTheme}
+												/>
+											))}
+											<BonusSquare
+												key={numberTheme + 1}
+												value={50}
+												bonus={bonusRow[numberTheme - 1]}
+											/>
+										</tr>
 									))}
-									<th className={classes.th_square}>Бонус</th>
-								</tr>
-							</thead>
-							<tbody>
-								{themes.map(({ id, numberTheme, theme }) => (
-									<tr
-										key={id}
-										className={classes.tr_square}
-									>
-										<td className={`${classes.theme} ${classes.td_square}`}>
-											<span className={classes.theme_text}>{theme.name}</span>
-										</td>
-										{questions[numberTheme - 1].map((item) => (
-											<QuestionButton
-												key={item.id}
-												model={item}
-												setCurrentQuestion={setCurrentQuestion}
-												level={
-													item.numberQuestion % 5 === 0
-														? 5
-														: item.numberQuestion % 5
-												}
-												setCurrentTheme={setCurrentTheme}
-												numberTheme={numberTheme}
+									<tr className={classes.tr_square}>
+										<th className={classes.th_square}>Бонус</th>
+										{levels.map((level) => (
+											<BonusSquare
+												key={level}
+												value={level * 10}
+												bonus={bonusCol[level - 1]}
 											/>
 										))}
-										<BonusSquare
-											key={numberTheme + 1}
-											value={50}
-											bonus={bonusRow[numberTheme - 1]}
-										/>
 									</tr>
-								))}
-								<tr className={classes.tr_square}>
-									<th className={classes.th_square}>Бонус</th>
-									{levels.map((level) => (
-										<BonusSquare
-											key={level}
-											value={level * 10}
-											bonus={bonusCol[level - 1]}
-										/>
-									))}
-								</tr>
-							</tbody>
-						</table>
+								</tbody>
+							</table>
+						</div>
 					</div>
-				</div>
-			</main>
+				</main>
+			}
 		</>
 	);
 };

@@ -1,16 +1,17 @@
 import './carouselgame.scss';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-
+import BlockingWindow from '@mindx/components/BlockingWindow/BlockingWindow';
 import GameInformationPanel from '@mindx/components/GameInformationPanel/GameInformationPanel';
 import { API } from '@mindx/http/API';
 import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
 import { mindxDebounce } from '@mindx/utils/tools';
 import Loading from '@mindx/components/UI/Loading/Loading';
+import moment from 'moment';
 
 const CarouselGame = () => {
   const { id } = useParams();
-
+	const [block, setBlock] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [endDate, setEndDate] = useState(null);
   const [carouselData, setCarouselData] = useState({});
@@ -42,8 +43,10 @@ const CarouselGame = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
-				ErrorEmmiter(error?.response.data?.error);
+        const message = error?.response.data?.error;
+				setBlock(message);
+				console.error(error);
+				ErrorEmmiter(message);
       });
   }, [id]);
 
@@ -122,7 +125,7 @@ const CarouselGame = () => {
     if (userAnswer) {
       const body = {
         questionGameId: lastQuestion.id,
-        userAnswer: userAnswer,
+        userAnswer: (userAnswer).trim(),
         points: possibleScore,
       };
       const gameId = id;
@@ -149,84 +152,91 @@ const CarouselGame = () => {
   });
 
   return (
-    <main className="carousel-section">
+    <>
       {
-        loading && <Loading/>
-      }
-      <div className="carousel-wrapper">
-      <GameInformationPanel score={score} endDate={endDate}/>
-        <div className="carousel">
-          <div className="questions__container">
-            <button className="scroll-button left" onClick={() => scrollQuestions('left')}>
-              &lt;
-            </button>
-            <div className="questions__list" ref={questionsListRef}>
-              {questions.map((item, index) => (
-                <div key={index} className="sphere-container">
-                  <button
-                    disabled={index > lastQuestion?.numberQuestion - 1}
-                    className={`sphere 
-                      ${index === currentQuestionIndex ? 'active' : ''}
-                      ${item?.userAnswer?.isCorrect === true && 'correct'}
-                      ${item?.userAnswer?.isCorrect === false && 'incorrect'}`}
-                    onClick={() => handleSphereClick(index)}
-                  >
-                    {index + 1}
-                  </button>
-                  {item?.userAnswer && (
-                    <div className="points">
-                      {item?.userAnswer?.isCorrect ? `+${item.userAnswer.points}` : '+0'}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            <button className="scroll-button right" onClick={() => scrollQuestions('right')}>
-              &gt;
-            </button>
-          </div>
-          <div className="carousel__item">
-            <div className="carousel_item-head">№{currentQuestionIndex + 1}</div>
-            <div className="carousel_item-body">
-              {questions[currentQuestionIndex]?.question.question}
-            </div>
-            <div className="answer-section">
-            <input
-              type="text"
-              readOnly={currentQuestion?.id !== lastQuestion?.id || endGame}
-              value={currentQuestion?.userAnswer?.userAnswer || userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              placeholder="Введите ваш ответ"
-              className="answer-input"
-            />
-
-            {
-              !endGame 
-              ?
-                <>
-                  {
-                    currentQuestion?.id !== lastQuestion?.id
-                    ?
-                      <button className="red-button" onClick={() => returnToLastQuestion()}>
-                        Вернуться к текущему вопросу
-                      </button>
-                    :
-                      <button className="submit-button" onClick={() => postAnswer()}>
-                        Ответить [+{possibleScore}]
-                      </button>
-                  }
-                </>
-              :
-                <button className="red-button" disabled={true}>
-                  Игра окончена!
+        block 
+				? <BlockingWindow message={block}/>
+				: 
+        <main className="carousel-section">
+          {
+            loading && <Loading/>
+          }
+          <div className="carousel-wrapper">
+          <GameInformationPanel score={score} endDate={endDate}/>
+            <div className="carousel">
+              <div className="questions__container">
+                <button className="scroll-button left" onClick={() => scrollQuestions('left')}>
+                  &lt;
                 </button>
-            }
-          </div>
-          </div>
+                <div className="questions__list" ref={questionsListRef}>
+                  {questions.map((item, index) => (
+                    <div key={index} className="sphere-container">
+                      <button
+                        disabled={index > lastQuestion?.numberQuestion - 1}
+                        className={`sphere 
+                          ${index === currentQuestionIndex ? 'active' : ''}
+                          ${item?.userAnswer?.isCorrect === true && 'correct'}
+                          ${item?.userAnswer?.isCorrect === false && 'incorrect'}`}
+                        onClick={() => handleSphereClick(index)}
+                      >
+                        {index + 1}
+                      </button>
+                      {item?.userAnswer && (
+                        <div className="points">
+                          {item?.userAnswer?.isCorrect ? `+${item.userAnswer.points}` : '+0'}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <button className="scroll-button right" onClick={() => scrollQuestions('right')}>
+                  &gt;
+                </button>
+              </div>
+              <div className="carousel__item">
+                <div className="carousel_item-head">№{currentQuestionIndex + 1}</div>
+                <div className="carousel_item-body">
+                  {questions[currentQuestionIndex]?.question.question}
+                </div>
+                <div className="answer-section">
+                <input
+                  type="text"
+                  readOnly={currentQuestion?.id !== lastQuestion?.id || endGame}
+                  value={currentQuestion?.userAnswer?.userAnswer || userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  placeholder="Введите ваш ответ"
+                  className="answer-input"
+                />
 
-        </div>
-      </div>
-    </main>
+                {
+                  moment() < moment(endDate) && !endGame
+                  ?
+                    <>
+                      {
+                        currentQuestion?.id !== lastQuestion?.id
+                        ?
+                          <button className="red-button" onClick={() => returnToLastQuestion()}>
+                            Вернуться к текущему вопросу
+                          </button>
+                        :
+                          <button className="submit-button" onClick={() => postAnswer()}>
+                            Ответить [+{possibleScore}]
+                          </button>
+                      }
+                    </>
+                  :
+                    <button className="red-button" disabled={true}>
+                      Игра окончена!
+                    </button>
+                }
+              </div>
+              </div>
+
+            </div>
+          </div>
+        </main>
+      }
+    </>
   );
 };
 

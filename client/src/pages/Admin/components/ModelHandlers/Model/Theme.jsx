@@ -8,7 +8,7 @@ const Theme = (props) => {
   const [theme, setTheme] = useState(model?.name ? model.name : '');
 
   useEffect(() => {
-    model.name = theme;
+    model.name = (theme).trim();
   }, [theme])
 
   return (    
@@ -23,5 +23,5 @@ const Theme = (props) => {
     </div>
   );
 }
- 
+
 export default Theme;

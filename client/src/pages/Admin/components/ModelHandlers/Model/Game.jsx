@@ -101,7 +101,7 @@ const Game = (props) => {
   }, [typeGame]);
 
   useEffect(() => {
-    model.name = name;
+    model.name = (name).trim();
   }, [name]);
 
   useEffect(() => {

@@ -16,7 +16,7 @@ const SignUp = observer(() => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const click = mindxDebounce(async () => {
     try {
-      const data = await API.user.SignUp(username, password, confirmPassword);
+      const data = await API.user.SignUp((username).trim(), password, confirmPassword);
       if (data) {
         user.setUser(data);
         user.setIsAuth(true);

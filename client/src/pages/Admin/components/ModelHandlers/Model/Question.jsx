@@ -10,10 +10,10 @@ const Question = (props) => {
   const [imageId, setImageId] = useState(null);
 
   useEffect(() => {
-    model.question = question;
+    model.question = (question).trim();
   }, [question])
   useEffect(() => {
-    model.answer = answer;
+    model.answer = (answer).trim();
   }, [answer])
   useEffect(() => {
     model.imageId = imageId;

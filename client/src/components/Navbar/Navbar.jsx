@@ -39,21 +39,26 @@ const Navbar = observer((props) => {
                                 <Logo Width='70px' Height='42px' />
                             </NavLink>
                             <ul className="nav-list">
-                                <li className="nav-list_item">
-                                    <NavLink to="/square" className={({ isActive }) => `${isActive ? activeLink : passiveLink} ${strongLink}`}>
-                                        Квадрат
-                                    </NavLink>
-                                </li>
-                                <li className="nav-list_item">
-                                    <NavLink to="/carousel" className={({ isActive }) => `${isActive ? activeLink : passiveLink} ${strongLink}`}>
-                                        Карусель
-                                    </NavLink>
-                                </li>
-                                <li className="nav-list_item">
-                                    <NavLink to="/rating" className={({ isActive }) => isActive ? activeLink : passiveLink}>
-                                        Рейтинг
-                                    </NavLink>
-                                </li>
+                                {
+                                    user.isAuth &&
+                                    <>
+                                        <li className="nav-list_item">
+                                            <NavLink to="/square" className={({ isActive }) => `${isActive ? activeLink : passiveLink} ${strongLink}`}>
+                                                Квадрат
+                                            </NavLink>
+                                        </li>
+                                        <li className="nav-list_item">
+                                            <NavLink to="/carousel" className={({ isActive }) => `${isActive ? activeLink : passiveLink} ${strongLink}`}>
+                                                Карусель
+                                            </NavLink>
+                                        </li>
+                                        <li className="nav-list_item">
+                                            <NavLink to="/rating" className={({ isActive }) => isActive ? activeLink : passiveLink}>
+                                                Рейтинг
+                                            </NavLink>
+                                        </li>
+                                    </>
+                                }
                                 {
                                     user.isAdmin &&
                                     <li className="nav-list_item">
