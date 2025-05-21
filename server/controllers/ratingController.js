@@ -1,7 +1,7 @@
 const { Sequelize, where, Op } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { UserAnswer, QuestionGame, User, AccessGame, Role, Bonus, Game } = require('../models/index')
-const { validateCheck } = require('../validators/isNullValidator')
+const validateCheck = require('../validators/isNullValidator')
 
 
 class ratingController {

@@ -4,4 +4,4 @@ function validateCheck(isBool, msg) {
     }
 }
 
-module.exports = { validateCheck };
+module.exports = validateCheck

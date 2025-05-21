@@ -1,7 +1,7 @@
 const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { QuestionGame, Question, UserAnswer } = require('../models/index')
-const { validateCheck } = require('../validators/isNullValidator')
+const validateCheck = require('../validators/isNullValidator')
 
 class questionGameController {
     async createForGame(questionGame, transaction) {

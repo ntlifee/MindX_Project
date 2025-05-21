@@ -4,7 +4,7 @@ const path = require('path')
 const fs = require('fs')
 const ApiError = require('../error/ApiError')
 const { Image } = require('../models/index')
-const { validateCheck } = require('../validators/isNullValidator')
+const validateCheck = require('../validators/isNullValidator')
 class imageController {
     async create(req, res, next) {
         try {

@@ -1,7 +1,7 @@
 const { where, Op } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { Role } = require('../models/index')
-const { validateCheck } = require('../validators/isNullValidator')
+const validateCheck = require('../validators/isNullValidator')
 
 function errorHandling(error, msg) {
     if (error.name === 'SequelizeUniqueConstraintError') {

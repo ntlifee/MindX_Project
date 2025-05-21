@@ -6,7 +6,7 @@ const questionGameController = require('./questionGameController')
 const carouselDataController = require('./carouselDataController')
 const accessGameController = require('./accessGameController')
 const themeGameController = require('./themeGameController')
-const { validateCheck } = require('../validators/isNullValidator')
+const validateCheck = require('../validators/isNullValidator')
 
 class GameController {
     async create(req, res, next) {
