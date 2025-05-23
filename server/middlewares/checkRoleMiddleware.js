@@ -11,7 +11,7 @@ module.exports = function (role) {
             }
             next()
         } catch (error) {
-            return next(ApiError.unauthorized('Не авторизован'))
+            return next(ApiError.badRequest(error.message))
         }
     }
 }

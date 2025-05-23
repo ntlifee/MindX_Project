@@ -11,7 +11,6 @@ function errorHandling(error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
         error.message = 'Пользователь с таким именем уже существует!'
     }
-
 }
 
 class UserController {
