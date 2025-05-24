@@ -20,6 +20,12 @@ export default class userStore {
 		this._user = value;
 	}
 
+	logout() {
+		this._isAuth = false;
+		this._isAdmin = false;
+		this._user = {};
+	}
+
 	get isAuth() {
 		return this._isAuth;
 	}

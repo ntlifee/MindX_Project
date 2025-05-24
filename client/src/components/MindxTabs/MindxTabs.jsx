@@ -76,7 +76,11 @@ const MindxTabs = (props) => {
 						key={tab?.label || tab?.id}
 						onClick={() => changeTab(index, tab?.id)}
 					>
-						{tab.label}
+						{
+							settings?.showType &&
+							<p className='tab_type'>{tab.type}</p>
+						}
+						<p>{tab.label}</p>
 					</button>
 				))}
 			</div>

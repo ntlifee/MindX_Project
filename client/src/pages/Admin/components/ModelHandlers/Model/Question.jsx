@@ -4,7 +4,7 @@ import CatalogRef from '@mindx/components/UI/CatalogRef/CatalogRef';
 
 const Question = (props) => { 
   const { model } = props;
-
+  
   const [question, setQuestion] = useState(model?.question ? model.question : '');
   const [answer, setAnswer] = useState(model?.answer ? model.answer : '');
   const [imageId, setImageId] = useState(null);

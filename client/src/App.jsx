@@ -31,6 +31,8 @@ const App = observer(() => {
         }
       })
       .catch((error) => {
+        user.logout();
+        localStorage.setItem(`token`, null);
         console.error(error);
       })
       .finally(() => {

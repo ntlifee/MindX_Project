@@ -9,6 +9,8 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 const ModelHandler = (props) => {
   const { state, setState, setReload } = props;
   const Component = Model[state.type];
+  const copyObject = {};
+  Object.assign(copyObject, state.item);
 
   const put = mindxDebounce(() => {
     confirmAlert({
@@ -19,7 +21,7 @@ const ModelHandler = (props) => {
           label: 'Да',
           onClick: async () => {
             try {
-              const data = await API[state.type].update(state.item);
+              const data = await API[state.type].update(copyObject);
               SuccessEmmiter(data.message);
               setReload(true);
               cancel();
@@ -40,7 +42,7 @@ const ModelHandler = (props) => {
 
   const create = mindxDebounce(async () => {
     try {
-      const data = await API[state.type].addItem(state.item);
+      const data = await API[state.type].addItem(copyObject);
       SuccessEmmiter(data.message);
       setReload(true);
       cancel();
@@ -74,7 +76,7 @@ const ModelHandler = (props) => {
           </>
         }
         { Component 
-          ? <Component model={state.item}/> 
+          ? <Component model={copyObject}/> 
           : <></> 
         }
       </div>

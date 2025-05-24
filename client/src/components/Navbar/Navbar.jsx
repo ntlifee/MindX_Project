@@ -15,7 +15,7 @@ const Navbar = observer((props) => {
     const { isActiveBurger, setIsActiveBurger } = props;
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
+            setIsMobile(window.innerWidth <= 800);
         };       
         handleResize();
         window.addEventListener("resize", handleResize);
@@ -23,8 +23,7 @@ const Navbar = observer((props) => {
     }, []);
 
     const logout = () => {
-        user.setUser({});
-        user.setIsAuth(false);
+        user.logout();
         localStorage.setItem(`token`, null);
         window.location.reload();
     };

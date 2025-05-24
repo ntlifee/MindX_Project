@@ -15,6 +15,7 @@ const Rating = () => {
     customTab: true,
     type: 'rating',
     getTabList: async () => await getTabList(),
+    showType: true
   }
 
   const getTabList = async () => {
@@ -23,6 +24,7 @@ const Rating = () => {
       return Object.values(response ?? {}).map((game) => ({
         id: game?.id,
         label: game?.name,
+        type: game?.typeGame === 'carousel' ? 'Карусель' : 'Квадрат'
       }));
     } catch (error) {
       throw error;

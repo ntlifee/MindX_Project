@@ -10,12 +10,18 @@
   
   .tab {
     display: flex;
+    flex-direction: column;
     width: 100%;
     justify-content: center;
     align-items: center;
     font-size: clamp(15px, 2vw, 25px);
     padding: 10px;
     background-color: white;
+
+    .tab_type {
+      color: rgb(146, 107, 23);
+      font-size: clamp(10px, 2vw, 15px) !important;
+    }
 
     &.active {
       color: #F79361;

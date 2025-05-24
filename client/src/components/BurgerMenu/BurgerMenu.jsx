@@ -1,47 +1,67 @@
-import './burgerMenu.scss'
+import './burgerMenu.scss';
 import { NavLink } from 'react-router-dom';
 import { useContext } from "react";
 import { Context } from '@mindx/index.js';
 import { observer } from 'mobx-react-lite';
+import { CloseOutlined } from '@ant-design/icons';
 
 const BurgerMenu = observer((props) => {
     const { user } = useContext(Context);
     const { isActiveBurger, setIsActiveBurger } = props;
 
     const logout = () => {
-        user.setUser({});
-        user.setIsAuth(false);
-        localStorage.setItem(`token`, null);
+        user.logout();
+        localStorage.setItem('token', null);
+        setIsActiveBurger(false);
     };
+
     return (
-        <div className={isActiveBurger ? `dark_theme active` : `dark_theme`} onClick={() => setIsActiveBurger(false)}>
-            <div className='burger' onClick={(e) => e.stopPropagation()}>
-                <ul className='burger_list'>
-                    <li className='burger_list_item'>
-                        <NavLink to="/square">
-                            Квадрат
-                        </NavLink>
-                    </li>
-                    <li className='burger_list_item'>
-                        <NavLink to="/carousel">
-                            Карусель
-                        </NavLink>
-                    </li>
-                    <li className='burger_list_item'>
-                        <NavLink to="/rating">
-                            Рейтинг
-                        </NavLink>
-                    </li>
-                    <li className='burger_list_item'>
-                        <NavLink to="/admin">
-                            Админ-панель
-                        </NavLink>
-                    </li>
-                    <li className="burger_list_item authorize">
-                        <NavLink to="/signin">
-                            Войти
-                        </NavLink>
-                    </li>
+        <div className={`burger-overlay ${isActiveBurger ? 'active' : ''}`} onClick={() => setIsActiveBurger(false)}>
+            <div className='burger-menu' onClick={(e) => e.stopPropagation()}>
+                <button className="burger-close-btn" onClick={() => setIsActiveBurger(false)}>
+                    <CloseOutlined />
+                </button>
+                
+                <ul className='burger-list'>
+                    {
+                        user.isAuth &&
+                        <>
+                            <li className='burger-list__item'>
+                                <NavLink to="/square" onClick={() => setIsActiveBurger(false)}>
+                                    Квадрат
+                                </NavLink>
+                            </li>
+                            <li className='burger-list__item'>
+                                <NavLink to="/carousel" onClick={() => setIsActiveBurger(false)}>
+                                    Карусель
+                                </NavLink>
+                            </li>
+                            <li className='burger-list__item'>
+                                <NavLink to="/rating" onClick={() => setIsActiveBurger(false)}>
+                                    Рейтинг
+                                </NavLink>
+                            </li>
+                        </>
+                    }
+                    {user.isAdmin && (
+                        <li className='burger-list__item'>
+                            <NavLink to="/admin" onClick={() => setIsActiveBurger(false)}>
+                                Админ-панель
+                            </NavLink>
+                        </li>
+                    )}
+                    
+                    {user.isAuth ? (
+                        <li className="burger-list__item logout" onClick={logout}>
+                            Выйти
+                        </li>
+                    ) : (
+                        <li className="burger-list__item login">
+                            <NavLink to="/signin" onClick={() => setIsActiveBurger(false)}>
+                                Войти
+                            </NavLink>
+                        </li>
+                    )}
                 </ul>
             </div>
         </div>
