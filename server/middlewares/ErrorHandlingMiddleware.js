@@ -1,9 +1,7 @@
 const ApiError = require('../error/ApiError');
+const { ValidationError } = require('../utils/validation');
 
 module.exports = function (err, req, res, next) {
-    if (err.message instanceof Array) {
-        err.message = err.message[0]
-    }
     if (req.path !== '/api/user/auth') {
         console.error('[ERROR HANDLER]', {
             date: new Date().toISOString(),

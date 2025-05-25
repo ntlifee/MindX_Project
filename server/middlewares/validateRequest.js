@@ -9,14 +9,9 @@ const validateRequest = (schema) => {
         });
 
         if (error) {
-            const errors = error.details.map((detail) => {
-                const lineNumber = detail.path.find((item) => typeof item === 'number');
-                return lineNumber !== undefined
-                    ? `${detail.message} в строке #${lineNumber + 1}`
-                    : detail.message;
-            });
-            return next(ApiError.badRequest(errors))
+            return next(ApiError.badRequest(error.message))
         }
+
         req.body = value; // Обновляем тело запроса (только валидные поля)
         next();
     };
