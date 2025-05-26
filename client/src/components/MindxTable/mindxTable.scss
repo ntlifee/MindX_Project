@@ -33,6 +33,7 @@
 }
 
 .objectlist-section {
+  table-layout: fixed;
   min-width: 500px;
   border-collapse: collapse;
   font-family: "Lucida Grande", sans-serif;
@@ -46,7 +47,10 @@
     text-align: center;
     font-size: clamp(10px, 2vw, 20px);
     max-width: 200px;
-  }
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  };
   th {
     font-size: 18px;
   }

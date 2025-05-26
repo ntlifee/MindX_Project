@@ -8,6 +8,7 @@ import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Noti
 import { API } from '@mindx/http/API.js'
 import { Context } from '@mindx/index.js';
 import moment from 'moment';
+import { Tooltip } from 'react-tooltip';
 
 const MindxTable = (props) => {
 	const { user } = useContext(Context);
@@ -86,6 +87,15 @@ const MindxTable = (props) => {
 		}
 	};
 
+	const getTooltipContent = (column, row) => {
+    const value = row[column.type];
+    const columnMeta = column?.meta;
+    if (!['img', 'question-list'].includes(columnMeta)) {
+      return String(value);
+    }
+    return null;
+  };
+
 	const getColumnValue = (column, row) => {
     const columnMeta = column?.meta;
     const value = row[column.type];
@@ -97,6 +107,10 @@ const MindxTable = (props) => {
               width={150}
               height={150}
               src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${value}.jpg`}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/without_image.jpg`;
+              }}
             />
           : <>{"-"}</>
       case 'datetime':
@@ -125,57 +139,89 @@ const MindxTable = (props) => {
   }
 
 	return (
-		<>
-			<div className='table-header'>
-				<input 
-					type='text' 
-					placeholder='Поиск...'
-					value={searchTerm}
-					onChange={(e) => setSearchTerm(e.target.value)}
-				/>
-				{ !settings?.off_CUD &&
-					<button onClick={createItem}>Создать объект</button>
-				}
-			</div>
-			<table className='objectlist-section'>
-				<thead>
-					<tr>
-						{template?.map((column, index) => (
-							<th key={index}>{column.label}</th>
-						))}
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					{filteredData?.map((row, index) => (
-						<tr key={index}>
-							{template?.map((column, index) => (
-								<td key={index}>
-									{
-										getColumnValue(column, row)
-									}
-								</td>
-							))}
-							<td className='command-icons'>
-								{ !settings?.off_CUD &&
-									(type !== 'role' || (row.name !== 'ADMIN' && row.name !== 'USER')) &&
-									(type !== 'user' || (row.id !== user.user.id)) &&
-									<>
-										<button onClick={() => editItem(row)}>
-											<FaEdit />
-										</button>
-										<button>
-											<FaTrashAlt onClick={() => deleteItem(row)}/>
-										</button>
-									</>
-								}
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</>
-	);
+    <>
+      <div className='table-header'>
+        <input 
+          type='text' 
+          placeholder='Поиск...'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {!settings?.off_CUD && (
+          <button onClick={createItem}>Создать объект</button>
+        )}
+      </div>
+      
+      <table className='objectlist-section'>
+        <thead>
+          <tr>
+            {template?.map((column, index) => (
+              <th key={index}>{column.label}</th>
+            ))}
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredData?.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {template?.map((column, colIndex) => {
+                const tooltipId = `tooltip-${rowIndex}-${colIndex}`;
+                const tooltipContent = getTooltipContent(column, row);
+                
+                return (
+                  <td 
+                    key={colIndex}
+                    data-tooltip-id={tooltipContent ? tooltipId : undefined}
+                    data-tooltip-content={tooltipContent}
+                  >
+                    {getColumnValue(column, row)}
+                  </td>
+                );
+              })}
+              <td className='command-icons'>
+                {!settings?.off_CUD &&
+                  (type !== 'role' || (row.name !== 'ADMIN' && row.name !== 'USER')) &&
+                  (type !== 'user' || (row.id !== user.user.id)) && (
+                  <>
+                    <button onClick={() => editItem(row)}>
+                      <FaEdit />
+                    </button>
+                    <button onClick={() => deleteItem(row)}>
+                      <FaTrashAlt />
+                    </button>
+                  </>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {filteredData?.map((row, rowIndex) => (
+        template?.map((column, colIndex) => {
+          const tooltipId = `tooltip-${rowIndex}-${colIndex}`;
+          const tooltipContent = getTooltipContent(column, row);
+          
+          return tooltipContent ? (
+            <Tooltip
+              key={tooltipId}
+              id={tooltipId}
+              place="top"
+              effect="solid"
+              style={{
+                maxWidth: "300px",
+                maxHeight: "300px",
+                overflow: "hidden",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+                zIndex: 9999,
+              }}
+            />
+          ) : null;
+        })
+      ))}
+    </>
+  );
 };
 
 export default MindxTable;

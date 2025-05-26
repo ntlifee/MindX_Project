@@ -8,6 +8,7 @@ import { ErrorEmmiter } from '@mindx/components/UI/Toastify/Notify';
 import { mindxDebounce } from '@mindx/utils/tools';
 import Loading from '@mindx/components/UI/Loading/Loading';
 import moment from 'moment';
+import { Image } from 'react-bootstrap';
 
 const CarouselGame = () => {
   const { id } = useParams();
@@ -197,7 +198,21 @@ const CarouselGame = () => {
                 <div className="carousel__item">
                   <div className="carousel_item-head">№{currentQuestionIndex + 1}</div>
                   <div className="carousel_item-body">
-                    {questions[currentQuestionIndex]?.question.question}
+                    {questions[currentQuestionIndex]?.question?.imageId && (
+                      <div className="image-container">
+                        <Image
+                          src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${questions[currentQuestionIndex]?.question?.imageId}.jpg`}
+                          className="question-image"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/without_image.jpg`;
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="question-text">
+                      {questions[currentQuestionIndex]?.question?.question}
+                    </div>
                   </div>
                   <div className="answer-section">
                   <input
@@ -216,17 +231,17 @@ const CarouselGame = () => {
                         {
                           currentQuestion?.id !== lastQuestion?.id
                           ?
-                            <button className="red-button" onClick={() => returnToLastQuestion()}>
+                            <button className="button red-button" onClick={() => returnToLastQuestion()}>
                               Вернуться к текущему вопросу
                             </button>
                           :
-                            <button className="submit-button" onClick={() => postAnswer()}>
+                            <button className="button submit-button" onClick={() => postAnswer()}>
                               Ответить [+{possibleScore}]
                             </button>
                         }
                       </>
                     :
-                      <button className="red-button" disabled={true}>
+                      <button className="button red-button" disabled={true}>
                         Игра окончена!
                       </button>
                   }

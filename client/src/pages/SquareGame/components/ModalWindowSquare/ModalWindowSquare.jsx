@@ -93,6 +93,10 @@ const ModalWindowSquare = (props) => {
 					{currentQuestion.question.imageId && (
 						<Image
 							src={`http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/${currentQuestion.question.imageId}.jpg`}
+							onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/without_image.jpg`;
+              }}
 						/>
 					)}
 					{currentQuestion.question.question}

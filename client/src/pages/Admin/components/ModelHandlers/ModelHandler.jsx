@@ -1,6 +1,7 @@
 import './handler.scss'
 import Model from './Models';
 import { API } from '@mindx/http/API';
+import { useState, useEffect } from 'react'
 import { ErrorEmmiter, SuccessEmmiter } from '@mindx/components/UI/Toastify/Notify';
 import { mindxDebounce } from '@mindx/utils/tools';
 import { confirmAlert } from 'react-confirm-alert';
@@ -9,8 +10,10 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 const ModelHandler = (props) => {
   const { state, setState, setReload } = props;
   const Component = Model[state.type];
-  const copyObject = {};
-  Object.assign(copyObject, state.item);
+  const [copyObject, setCopyObject] = useState(null);
+  useEffect(() => {
+    setCopyObject(JSON.parse(JSON.stringify(state.item)));
+  }, [state.item])
 
   const put = mindxDebounce(() => {
     confirmAlert({
@@ -75,7 +78,7 @@ const ModelHandler = (props) => {
             </div>
           </>
         }
-        { Component 
+        { Component && copyObject 
           ? <Component model={copyObject}/> 
           : <></> 
         }

@@ -73,13 +73,13 @@ const Game = (props) => {
     });
   };
 
-  const handleQuestionChange = (
-    questionIndex,
-    selectedQuestion
-  ) => {
+  const handleQuestionChange = (themeIndex, questionIndex, selectedQuestion) => {
     setQuestions((prevQuestions) => {
       const newQuestions = [...prevQuestions];
-      newQuestions[questionIndex] = selectedQuestion;
+      if (!newQuestions[themeIndex]) {
+        newQuestions[themeIndex] = [];
+      }
+      newQuestions[themeIndex][questionIndex] = selectedQuestion;
       return newQuestions;
     });
   };
@@ -235,7 +235,7 @@ const Game = (props) => {
             <div className='group-label'>
               <label>Изображение</label>
               <CatalogRef
-                defaultValue={model.imageId ? model.imageId : null}
+                defaultValue={model?.imageId ? model.imageId : null}
                 onChange={setImageId}
                 url={'image'}
                 img={true}
@@ -245,7 +245,7 @@ const Game = (props) => {
             <div className='group-label'>
               <label>Доступно для ролей</label>
               <CatalogRef
-                defaultValue={model.accessGames ? model.accessGames : null}
+                defaultValue={model?.accessGames ? model.accessGames : null}
                 onChange={setAccessGames}
                 isMulti
                 url={'role'}
