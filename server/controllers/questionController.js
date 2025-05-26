@@ -12,8 +12,9 @@ function errorHandling(error, msg) {
 class questionController {
     async create(req, res, next) {
         try {
-            const questions = req.body
-            const questionsData = await Question.create({ ...questions })
+            let { question, answer, imageId } = req.body
+            answer = answer.trim().toLowerCase()
+            const questionsData = await Question.create({ question, answer, imageId })
             res.json({ message: 'Вопрос добавлен', questionsData })
         } catch (error) {
             errorHandling(error, 'вставки')
@@ -50,7 +51,8 @@ class questionController {
         try {
             const { id } = req.params
             validateCheck(!id, 'Не задан id вопроса')
-            const { question, answer, imageId } = req.body;
+            let { question, answer, imageId } = req.body;
+            answer = answer.trim().toLowerCase()
             const isUpdate = await Question.update(
                 {
                     question: question,

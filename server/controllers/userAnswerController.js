@@ -27,6 +27,7 @@ class userAnswerController {
     async create(req, res, next) {
         try {
             let { questionGameId, points, userAnswer } = req.body
+            userAnswer = userAnswer.trim().toLowerCase()
             const [{ typeGame }, questionData] = await Promise.all([
                 Game.findByPk(req.params.id, { attributes: ["typeGame"] }),
                 QuestionGame.findOne({
