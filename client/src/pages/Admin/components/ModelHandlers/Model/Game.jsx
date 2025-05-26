@@ -73,13 +73,24 @@ const Game = (props) => {
     });
   };
 
-  const handleQuestionChange = (themeIndex, questionIndex, selectedQuestion) => {
+  const handleSquareQuestionChange = (themeIndex, questionIndex, selectedQuestion) => {
     setQuestions((prevQuestions) => {
       const newQuestions = [...prevQuestions];
       if (!newQuestions[themeIndex]) {
         newQuestions[themeIndex] = [];
       }
       newQuestions[themeIndex][questionIndex] = selectedQuestion;
+      return newQuestions;
+    });
+  };
+
+  const handleCarouselQuestionChange = (
+    questionIndex,
+    selectedQuestion
+  ) => {
+    setQuestions((prevQuestions) => {
+      const newQuestions = [...prevQuestions];
+      newQuestions[questionIndex] = selectedQuestion;
       return newQuestions;
     });
   };
@@ -288,7 +299,7 @@ const Game = (props) => {
                           questionGames[themeIndex]?.[questionIndex] || null
                         }
                         onChange={(selectedQuestion) =>
-                          handleQuestionChange(
+                          handleSquareQuestionChange(
                             themeIndex,
                             questionIndex,
                             selectedQuestion
@@ -371,7 +382,7 @@ const Game = (props) => {
                     <CatalogRef
                       defaultValue={questionGames[questionIndex] || null}
                       onChange={(selectedQuestion) =>
-                        handleQuestionChange(questionIndex, selectedQuestion)
+                        handleCarouselQuestionChange(questionIndex, selectedQuestion)
                       }
                       url={'question'}
                       path={'question'}
