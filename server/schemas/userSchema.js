@@ -24,7 +24,7 @@ const usernameValidation = Joi.string()
     });
 
 const userPutSchema = Joi.object({
-    username: usernameValidation.optional(),
+    username: usernameValidation.optional().allow(null),
     password: passwordSchema.required(),
     confirmPassword: Joi.required()
         .valid(Joi.ref('password'))
@@ -63,7 +63,7 @@ const roleIdValidation = Joi.string()
 const userPutSchemaForAdmin = Joi.object({
     username: usernameValidation.optional(),
     roleId: roleIdValidation.required(),
-    password: passwordSchema.optional().allow(''),
+    password: passwordSchema.optional().allow(null),
     confirmPassword: Joi.optional()
         .when('password', {
             is: Joi.exist(), // Проверяем, что password существует

@@ -121,7 +121,7 @@ class UserController {
             const isUpdate = await User.update(
                 {
                     username: username,
-                    password: hashPassword,
+                    ...(hashPassword && { password: hashPassword }),
                     roleId: roleId
                 },
                 {
@@ -145,7 +145,7 @@ class UserController {
             const hashPassword = password && await generateHashPassword(password)
             const isUpdate = await User.update(
                 {
-                    username: username,
+                    ...(username && { username: username }),
                     password: hashPassword
                 },
                 {
