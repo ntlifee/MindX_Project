@@ -201,11 +201,11 @@ const CarouselGame = () => {
                     {questions[currentQuestionIndex]?.question?.imageId && (
                       <div className="image-container">
                         <Image
-                          src={`${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/${questions[currentQuestionIndex]?.question?.imageId}.jpg`}
+                          src={`${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/api/${questions[currentQuestionIndex]?.question?.imageId}.jpg`}
                           className="question-image"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/without_image.jpg`;
+                            e.target.src = `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/api/without_image.jpg`;
                           }}
                         />
                       </div>

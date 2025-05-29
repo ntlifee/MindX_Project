@@ -28,10 +28,10 @@ const CatalogRef = (props) => {
           value: item.id,
           label: img 
             ? <Image 
-              width={200} height={200} src={`${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/${item.id}.jpg`}
+              width={200} height={200} src={`${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/api/${item.id}.jpg`}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/without_image.jpg`;
+                e.target.src = `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/api/without_image.jpg`;
               }}
             />
             : item[path],
@@ -54,10 +54,10 @@ const CatalogRef = (props) => {
             {
               value: item.id,
               label: img 
-              ? <Image width={200} height={200} src={`${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/${item.id}.jpg`}
+              ? <Image width={200} height={200} src={`${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/api/${item.id}.jpg`}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/without_image.jpg`;
+                  e.target.src = `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/api/without_image.jpg`;
                 }}
               />
               : item[path],
@@ -69,10 +69,10 @@ const CatalogRef = (props) => {
         selectRef.current.setValue({
           value: img ? defaultValue : defaultValue.id,
           label: img
-          ? <Image width={200} height={200} src={`${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/${defaultValue}.jpg`}
+          ? <Image width={200} height={200} src={`${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/api/${defaultValue}.jpg`}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/without_image.jpg`;
+                e.target.src = `${process.env.REACT_APP_PROTOCOL}://${process.env.REACT_APP_HOST}${process.env.REACT_APP_PORT}/api/without_image.jpg`;
               }}
           />
           : defaultValue[path],
