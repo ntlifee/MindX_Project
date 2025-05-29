@@ -13,7 +13,16 @@ const gameCreateSchema = Joi.object({
     name: commonStringRules.required(),
     imageId: commonStringRules.guid().allow(null).default(null),
     startDate: commonStringRules.isoDate().required(),
-    endDate: commonStringRules.isoDate().required(),
+    endDate: commonStringRules.isoDate().required().custom((value, helpers) => {
+        const startDate = new Date(helpers.state.ancestors[0].startDate);
+        const endDate = new Date(value);
+
+        if (endDate <= startDate) {
+            return helpers.message('Конечная дата должна быть больше или равна начальной дате')
+        }
+
+        return value; // Валидация пройдена
+    }, 'Date comparison'),
 
     questionGames: Joi.array().items(
         Joi.object({

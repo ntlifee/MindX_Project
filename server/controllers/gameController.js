@@ -75,7 +75,7 @@ class GameController {
 
     async getRating(req, res, next) {
         try {
-            req.query.completedOnly = true
+            req.query.noWaiting = true //Запрос игры, который не в статусе "Ожидание"
             const gamesData = await this.getGamesData(req)
             res.json(gamesData)
         } catch (error) {
@@ -84,7 +84,7 @@ class GameController {
     }
 
     async getGamesData(req) {
-        const { typeGame, completedOnly } = req.query
+        const { typeGame, noWaiting } = req.query
         const roleId = (await Role.findOne({
             where: { name: req.user.role }
         }))?.dataValues?.id
@@ -96,9 +96,9 @@ class GameController {
         if (typeGame) {
             whereConditions.typeGame = typeGame;
         }
-        // Если запрос только для завершенных игр
-        if (completedOnly) {
-            whereConditions.endDate = { [Op.lt]: currentDate };
+        // Если запрос только для начавшийся или завершенных игр
+        if (noWaiting) {
+            whereConditions.startDate = { [Op.lt]: currentDate };
         }
 
         const gamesData = await Game.findAll({
