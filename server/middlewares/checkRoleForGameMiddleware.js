@@ -23,7 +23,7 @@ module.exports = function () {
                 return next(ApiError.forbidden('Нет доступа к данной игре!'))
             }
             next()
-        } catch (error) {
+        } catch {
             return next(ApiError.badRequest('Ошибка доступа к игре!'))
         }
     }

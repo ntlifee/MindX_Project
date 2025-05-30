@@ -4,7 +4,6 @@ const router = require('./routes/indexRouter.js')
 const cors = require('cors')
 const fileUpload = require('express-fileupload')
 const sequelize = require('./database.js')
-const models = require('./models/index.js')
 const errorHandler = require('./middlewares/ErrorHandlingMiddleware')
 const path = require('path')
 

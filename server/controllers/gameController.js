@@ -1,4 +1,4 @@
-const { where, Op } = require('sequelize')
+const { Op } = require('sequelize')
 const sequelize = require('../database.js')
 const ApiError = require('../error/ApiError')
 const { Game, AccessGame, QuestionGame, ThemeGame, CarouselData, Question, Theme, Role, UserAnswer, Bonus } = require('../models/index')

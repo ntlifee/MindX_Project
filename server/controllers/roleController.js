@@ -1,4 +1,4 @@
-const { where, Op } = require('sequelize')
+const { Op } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { Role } = require('../models/index')
 const validateCheck = require('../validators/isNullValidator')

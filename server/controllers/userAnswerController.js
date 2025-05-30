@@ -1,4 +1,4 @@
-const { where, Sequelize } = require('sequelize')
+const { Sequelize } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { UserAnswer, User, QuestionGame, Question, Game, Bonus } = require('../models/index')
 const validateCheck = require('../validators/isNullValidator')
@@ -73,7 +73,7 @@ class userAnswerController {
             let isCorrect
             const { answer } = questionData.question
             isCorrect = answer === userAnswer ? true : false
-            const userAnswerData = await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
+            await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
 
             //Начисление бонуса, если выполнены условия
             let bonuses = []

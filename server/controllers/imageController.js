@@ -1,4 +1,3 @@
-const { where } = require('sequelize')
 const uuid = require('uuid')
 const path = require('path')
 const fs = require('fs')
@@ -20,7 +19,7 @@ class imageController {
             try {
                 await image.mv(savePath);
             } catch (error) {
-                return next(ApiError.badRequest(`Ошибка сохранения файла ${image.name}: ${err.message}`));
+                return next(ApiError.badRequest(`Ошибка сохранения файла ${image.name}: ${error.message}`));
             }
 
             const imageData = await Image.create({ id: fileId });

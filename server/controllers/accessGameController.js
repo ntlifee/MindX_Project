@@ -1,4 +1,3 @@
-const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { AccessGame } = require('../models/index')
 const validateCheck = require('../validators/isNullValidator')

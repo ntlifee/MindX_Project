@@ -1,6 +1,4 @@
-
 const argon2 = require('argon2')
-const { where } = require('sequelize')
 const ApiError = require('../error/ApiError')
 const { User, Role } = require('../models/index')
 const validateCheck = require('../validators/isNullValidator')
@@ -22,7 +20,7 @@ class UserController {
                 roleId = 'aff50f23-2fbc-41be-ba07-c1c69c5e388c' //UUID роли USER
             }
             const hashPassword = await generateHashPassword(password)
-            const user = await User.create({ username, password: hashPassword, roleId })
+            await User.create({ username, password: hashPassword, roleId })
             return res.json({ message: "Пользователь создан!" })
         } catch (error) {
             errorHandling(error)
@@ -73,7 +71,7 @@ class UserController {
                 role.name
             )
             res.json({ token })
-        } catch (error) {
+        } catch {
             return next(ApiError.unauthorized('Токен устарел'))
         }
     }

@@ -18,7 +18,7 @@ module.exports = function () {
                 return next(ApiError.forbidden('Игра уже закончилась!'))
             }
             next()
-        } catch (err) {
+        } catch {
             return next(ApiError.forbidden('Ошибка запроса времени игры!'))
         }
     }

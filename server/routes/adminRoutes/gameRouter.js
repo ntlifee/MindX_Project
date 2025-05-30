@@ -2,7 +2,7 @@ const Router = require('express')
 const router = new Router()
 const gameController = require('../../controllers/gameController')
 const validateRequest = require("../../middlewares/validateRequest");
-const { gameCreateSchema, gamePutSchema } = require("../../schemas/gameCreateSchema");
+const { gameCreateSchema } = require("../../schemas/gameCreateSchema");
 
 router.delete('/:id', gameController.delete.bind(gameController))
 router.put('/:id', validateRequest(gameCreateSchema), gameController.update.bind(gameController))
