@@ -2,21 +2,36 @@ require('dotenv').config()
 const express = require('express')
 const router = require('./routes/indexRouter.js')
 const cors = require('cors')
+const rateLimit = require('express-rate-limit');
+const helmet = require("helmet");
 const fileUpload = require('express-fileupload')
 const sequelize = require('./database.js')
 const errorHandler = require('./middlewares/ErrorHandlingMiddleware')
 const path = require('path')
 
+
 const PORT = process.env.PORT
 
+const corsOptions = {
+    origin: 'https://playmindx.online',
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization'
+}
+
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // минута
+    max: 100, // Максимум 100 запросов с одного IP за указанный промежуток времени
+    message: 'Слишком много запросов, пожалуйста, повторите попытку позже.'
+})
+
 const app = express()
-app.use(cors())
+app.use(cors(corsOptions))
+app.use(helmet());
+app.use(limiter);
 app.use(express.json())
 app.use('/api', express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
 app.use('/api', router)
-
-
 //Последний middlware
 app.use(errorHandler)
 
