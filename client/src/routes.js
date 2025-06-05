@@ -21,17 +21,9 @@ export const PUBLIC_ROUTES = [
 		path: ROUTES.SIGNIN_ROUTE,
 		Component: SignIn,
 	},
-	{
-		path: ROUTES.RATING_ROUTE,
-		Component: Rating,
-	}
 ];
 
 export const AUTH_ROUTES = [
-	{
-		path: ROUTES.ADMIN_ROUTE,
-		Component: AdminPage,
-	},
 	{
 		path: `${ROUTES.SQUARE_ROUTE}/:id`,
 		Component: SquareGame,
@@ -49,5 +41,16 @@ export const AUTH_ROUTES = [
 		path: ROUTES.SQUARE_ROUTE,
 		Component: Lobby,
 		type: 'square',
+	},
+	{
+		path: ROUTES.RATING_ROUTE,
+		Component: Rating,
+	}
+];
+
+export const ADMIN_ROUTES = [
+	{
+		path: ROUTES.ADMIN_ROUTE,
+		Component: AdminPage,
 	},
 ];
