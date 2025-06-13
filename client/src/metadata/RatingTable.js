@@ -7,6 +7,7 @@ const ratingTemplate = {
 	fileds: [
 		{ type: 'position', label: '№', meta: 'number' },
 		{ type: 'username', label: 'Имя пользователя', meta: 'string' },
+		{ type: 'pointsBonuses', label: 'Бонусы', meta: 'number' },
 		{ type: 'totalPoints', label: 'Всего очков', meta: 'number' },
 		{ type: 'userAnswers', label: 'Ответы', meta: 'question-list' },
 	],

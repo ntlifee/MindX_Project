@@ -29,10 +29,6 @@ const CatalogRef = (props) => {
           label: img 
             ? <Image 
               width={200} height={200} src={`${process.env.REACT_APP_HOST}/api/${item.id}.jpg`}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = `${process.env.REACT_APP_HOST}/api/without_image.jpg`;
-              }}
             />
             : item[path],
           data: item
@@ -55,10 +51,6 @@ const CatalogRef = (props) => {
               value: item.id,
               label: img 
               ? <Image width={200} height={200} src={`${process.env.REACT_APP_HOST}/api/${item.id}.jpg`}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = `${process.env.REACT_APP_HOST}/api/without_image.jpg`;
-                }}
               />
               : item[path],
               data: item
@@ -69,12 +61,7 @@ const CatalogRef = (props) => {
         selectRef.current.setValue({
           value: img ? defaultValue : defaultValue.id,
           label: img
-          ? <Image width={200} height={200} src={`${process.env.REACT_APP_HOST}/api/${defaultValue}.jpg`}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = `${process.env.REACT_APP_HOST}/api/without_image.jpg`;
-              }}
-          />
+          ? <Image width={200} height={200} src={`${process.env.REACT_APP_HOST}/api/${defaultValue}.jpg`} />
           : defaultValue[path],
           data: defaultValue
         })

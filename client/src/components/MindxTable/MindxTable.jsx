@@ -107,10 +107,6 @@ const MindxTable = (props) => {
               width={150}
               height={150}
               src={`${process.env.REACT_APP_HOST}/api/${value}.jpg`}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = `${process.env.REACT_APP_HOST}/api/without_image.jpg`;
-              }}
             />
           : <>{"-"}</>
       case 'datetime':

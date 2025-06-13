@@ -44,10 +44,6 @@ const GameCard = (props) => {
                     height={300}
                     className={classes.game_img}
                     src={`${process.env.REACT_APP_HOST}/api/${model.imageId || 'without_image'}.jpg`}
-                    onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = `${process.env.REACT_APP_HOST}/api/without_image.jpg`;
-                    }}
                 />
                 <div className={classes.game_name}>{model.name}</div>
                 <div className={classes.game_info}>

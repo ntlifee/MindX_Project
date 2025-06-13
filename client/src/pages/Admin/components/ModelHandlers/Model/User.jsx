@@ -1,34 +1,22 @@
 import './model.scss';
 import { useState, useEffect } from 'react';
-import { API } from '@mindx/http/API';
 import CatalogRef from '@mindx/components/UI/CatalogRef/CatalogRef';
 
 const User = (props) => { 
   const { model } = props;
   const [username, setUsername] = useState(model?.username ? model.username : '');
-  const [password, setPassword] = useState(model?.password ? model.password : '');
-  const [confirmPassword, setConfirmPassword] = useState(model?.password ? model.password : '');
+  const [password, setPassword] = useState(model?.password ? model.password : null);
+  const [confirmPassword, setConfirmPassword] = useState(model?.password ? model.password : null);
   const [roleId, setRoleId] = useState(model?.role ? model.role.id : null);
-  const [roleList, setRoleList] = useState([]);
-
-  const getRoles = async () => {
-    API.role.getList()
-      .then(response => setRoleList(response))
-      .catch(error => console.error(error)); 
-  };
-
-  useEffect(() => {
-    getRoles();
-  },[]);
 
   useEffect(() => {
     model.username = (username).trim();
   }, [username]);
   useEffect(() => {
-    model.password = password;
+    model.password = password || null;
   }, [password]);
   useEffect(() => {
-    model.confirmPassword = confirmPassword;
+    model.confirmPassword = confirmPassword || null;
   }, [confirmPassword]);
   useEffect(() => {
     model.roleId = roleId;

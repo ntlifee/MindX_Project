@@ -203,10 +203,6 @@ const CarouselGame = () => {
                         <Image
                           src={`${process.env.REACT_APP_HOST}/api/${questions[currentQuestionIndex]?.question?.imageId}.jpg`}
                           className="question-image"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = `${process.env.REACT_APP_HOST}/api/without_image.jpg`;
-                          }}
                         />
                       </div>
                     )}
