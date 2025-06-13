@@ -25,9 +25,13 @@ const limiter = rateLimit({
 })
 
 const app = express()
-app.use(cors(corsOptions))
-app.use(helmet());
-app.use(limiter);
+if (process.env.MODE === 'PROD') {
+    app.use(cors(corsOptions))
+    app.use(limiter);
+    app.use(helmet());
+} else {
+    app.use(cors())
+}
 app.use(express.json())
 app.use('/api', express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))

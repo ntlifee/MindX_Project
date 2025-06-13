@@ -24,13 +24,15 @@ const Question = (props) => {
       <form onSubmit={e => e.preventDefault()}>
         <div className='group-label'>
           <label>Текст вопроса</label>
-          <input type="text" placeholder="Текст вопроса..."
-            value={question} onChange={(e) => setQuestion(e.target.value)}/> 
+          <textarea placeholder="Текст вопроса..."
+            value={question} onChange={(e) => setQuestion(e.target.value)} 
+            rows={10}/> 
         </div>     
         <div className='group-label'>
           <label>Текст ответа</label>
-          <input type="text" placeholder="Текст ответа..."
-            value={answer} onChange={(e) => setAnswer(e.target.value)}/>
+          <textarea placeholder="Текст ответа..."
+            value={answer} onChange={(e) => setAnswer(e.target.value)} 
+            rows={5}/>
         </div>
         <div className='group-label'>
         <label>Изображение</label>
