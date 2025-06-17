@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize')
 const ApiError = require('../error/ApiError')
-const { UserAnswer, User, QuestionGame, Question, Game, Bonus } = require('../models/index')
+const { UserAnswer, User, QuestionGame, Question, Game, Bonus, CarouselData } = require('../models/index')
 const validateCheck = require('../validators/isNullValidator')
 const ratingController = require('./ratingController')
 
@@ -26,7 +26,7 @@ const BONUS = {
 class userAnswerController {
     async create(req, res, next) {
         try {
-            let { questionGameId, points, userAnswer } = req.body
+            let { questionGameId, userAnswer } = req.body
             userAnswer = userAnswer.trim().toLowerCase()
             const [{ typeGame }, questionData] = await Promise.all([
                 Game.findByPk(req.params.id, { attributes: ["typeGame"] }),
@@ -50,6 +50,9 @@ class userAnswerController {
             ])
             validateCheck(questionData.userAnswers.length, 'Ответ был дан ранее!')
 
+            const { answer } = questionData.question
+            let isCorrect = answer === userAnswer ? true : false
+            let points
             //Проверяет, что пользователь отвечает на следующий вопрос
             if (typeGame === 'carousel') {
                 const countAnswer = await UserAnswer.count({
@@ -68,12 +71,46 @@ class userAnswerController {
                 if (countAnswer !== questionData.numberQuestion - 1) {
                     throw new Error('Ошибка отправки ответа. Сперва ответьте на предыдущий вопрос.')
                 }
-            }
 
-            let isCorrect
-            const { answer } = questionData.question
-            isCorrect = answer === userAnswer ? true : false
-            await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
+                const caruselData = await CarouselData.findOne({
+                    where: {
+                        gameId: req.params.id,
+                    }
+                })
+
+                //Высчитывание баллов за вопрос по правилам математической карусели
+                if (countAnswer === 0) {
+                    points = caruselData.scoreFirst
+                }
+                else {
+                    const preDataAnswer = await UserAnswer.findOne({
+                        attributes: ['points', 'isCorrect'],
+                        include: [{
+                            model: QuestionGame,
+                            attributes: [],
+                            required: true,
+                            where: {
+                                gameId: req.params.id,
+                                numberQuestion: countAnswer
+                            }
+                        }],
+                        where: {
+                            userId: req.user.id,
+                        }
+                    })
+                    if (preDataAnswer.isCorrect) {
+                        points = preDataAnswer.points + caruselData.scoreSuccess
+                    }
+                    else {
+                        if (preDataAnswer.points - caruselData.scoreFailure >= caruselData.scoreFirst) {
+                            points = preDataAnswer.points - caruselData.scoreFailure
+                        }
+                        else {
+                            points = caruselData.scoreFirst
+                        }
+                    }
+                }
+            }
 
             //Начисление бонуса, если выполнены условия
             let bonuses = []
@@ -95,7 +132,10 @@ class userAnswerController {
                     await Bonus.create({ ...insert_data, userId: req.user.id, gameId: req.params.id })
                     bonuses.push(insert_data)
                 }
+                points = BONUS['column'][`${column}`]
             }
+
+            await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
 
             res.json({ message: 'Ответ добавлен', isCorrect, bonuses })
         } catch (error) {
