@@ -112,11 +112,15 @@ class userAnswerController {
                 }
             }
 
+            //Сохранение ответа
+            const column = (questionData.numberQuestion - 1) % 5 + 1
+            points = BONUS['column'][`${column}`]
+            await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
+
             //Начисление бонуса, если выполнены условия
             let bonuses = []
             if (isCorrect && typeGame === 'square') {
                 const row = Math.ceil(questionData.numberQuestion / 5)
-                const column = (questionData.numberQuestion - 1) % 5 + 1
                 const checks = await Promise.all([
                     this.check(req, '("questionGame"."numberQuestion" - 1) / 5 + 1'),
                     this.check(req, '("questionGame"."numberQuestion" - 1) % 5 + 1')
@@ -132,10 +136,7 @@ class userAnswerController {
                     await Bonus.create({ ...insert_data, userId: req.user.id, gameId: req.params.id })
                     bonuses.push(insert_data)
                 }
-                points = BONUS['column'][`${column}`]
             }
-
-            await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
 
             res.json({ message: 'Ответ добавлен', isCorrect, bonuses })
         } catch (error) {
