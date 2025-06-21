@@ -53,95 +53,107 @@ class userAnswerController {
             const { answer } = questionData.question
             let isCorrect = answer === userAnswer ? true : false
             let points
-            //Проверяет, что пользователь отвечает на следующий вопрос
+
             if (typeGame === 'carousel') {
-                const countAnswer = await UserAnswer.count({
-                    include: [{
-                        model: QuestionGame,
-                        attributes: [],
-                        required: true,
-                        where: {
-                            gameId: req.params.id
-                        }
-                    }],
-                    where: {
-                        userId: req.user.id,
-                    }
-                })
-                if (countAnswer !== questionData.numberQuestion - 1) {
-                    throw new Error('Ошибка отправки ответа. Сперва ответьте на предыдущий вопрос.')
-                }
-
-                const caruselData = await CarouselData.findOne({
-                    where: {
-                        gameId: req.params.id,
-                    }
-                })
-
                 //Высчитывание баллов за вопрос по правилам математической карусели
-                if (countAnswer === 0) {
-                    points = caruselData.scoreFirst
-                }
-                else {
-                    const preDataAnswer = await UserAnswer.findOne({
-                        attributes: ['points', 'isCorrect'],
-                        include: [{
-                            model: QuestionGame,
-                            attributes: [],
-                            required: true,
-                            where: {
-                                gameId: req.params.id,
-                                numberQuestion: countAnswer
-                            }
-                        }],
-                        where: {
-                            userId: req.user.id,
-                        }
-                    })
-                    if (preDataAnswer.isCorrect) {
-                        points = preDataAnswer.points + caruselData.scoreSuccess
-                    }
-                    else {
-                        if (preDataAnswer.points - caruselData.scoreFailure >= caruselData.scoreFirst) {
-                            points = preDataAnswer.points - caruselData.scoreFailure
-                        }
-                        else {
-                            points = caruselData.scoreFirst
-                        }
-                    }
-                }
+                points = await this.answerCarousel(questionData.numberQuestion, req)
+            }
+
+            let bonuses
+            if (typeGame === 'square') {
+                //Высчитывание баллов за вопрос и бонусов по правилам математического квадрата
+                ({ points, bonuses } = await this.answerSquare(isCorrect, questionData, req))
             }
 
             //Сохранение ответа
-            const column = (questionData.numberQuestion - 1) % 5 + 1
-            points = BONUS['column'][`${column}`]
             await UserAnswer.create({ questionGameId, userId: req.user.id, points, userAnswer, isCorrect })
-
-            //Начисление бонуса, если выполнены условия
-            let bonuses = []
-            if (isCorrect && typeGame === 'square') {
-                const row = Math.ceil(questionData.numberQuestion / 5)
-                const checks = await Promise.all([
-                    this.check(req, '("questionGame"."numberQuestion" - 1) / 5 + 1'),
-                    this.check(req, '("questionGame"."numberQuestion" - 1) % 5 + 1')
-                ])
-                let insert_data
-                if (checks[0].includes(row)) {
-                    insert_data = { points: BONUS['row'][`${row}`], type: 'row', lvl: row }
-                    await Bonus.create({ ...insert_data, userId: req.user.id, gameId: req.params.id })
-                    bonuses.push(insert_data)
-                }
-                if (checks[1].includes(column)) {
-                    insert_data = { points: BONUS['column'][`${column}`], type: 'column', lvl: column }
-                    await Bonus.create({ ...insert_data, userId: req.user.id, gameId: req.params.id })
-                    bonuses.push(insert_data)
-                }
-            }
-
             res.json({ message: 'Ответ добавлен', isCorrect, bonuses })
         } catch (error) {
             return next(ApiError.badRequest(`${error.message}`))
         }
+    }
+
+    async answerCarousel(number, req) {
+        const countAnswer = await UserAnswer.count({
+            include: [{
+                model: QuestionGame,
+                attributes: [],
+                required: true,
+                where: {
+                    gameId: req.params.id
+                }
+            }],
+            where: {
+                userId: req.user.id,
+            }
+        })
+        //Проверяет, что пользователь отвечает на следующий вопрос
+        if (countAnswer !== number - 1) {
+            throw new Error('Ошибка отправки ответа. Сперва ответьте на предыдущий вопрос.')
+        }
+        const caruselData = await CarouselData.findOne({
+            where: {
+                gameId: req.params.id,
+            }
+        })
+        let points
+        if (countAnswer === 0) {
+            points = caruselData.scoreFirst
+        }
+        else {
+            const preDataAnswer = await UserAnswer.findOne({
+                attributes: ['points', 'isCorrect'],
+                include: [{
+                    model: QuestionGame,
+                    attributes: [],
+                    required: true,
+                    where: {
+                        gameId: req.params.id,
+                        numberQuestion: countAnswer
+                    }
+                }],
+                where: {
+                    userId: req.user.id,
+                }
+            })
+            if (preDataAnswer.isCorrect) {
+                points = preDataAnswer.points + caruselData.scoreSuccess
+            }
+            else {
+                if (preDataAnswer.points - caruselData.scoreFailure >= caruselData.scoreFirst) {
+                    points = preDataAnswer.points - caruselData.scoreFailure
+                }
+                else {
+                    points = caruselData.scoreFirst
+                }
+            }
+        }
+        return points
+    }
+
+    async answerSquare(isCorrect, questionData, req) {
+        let bonuses = []
+        const row = Math.ceil(questionData.numberQuestion / 5)
+        const column = (questionData.numberQuestion - 1) % 5 + 1
+        const points = BONUS['column'][`${column}`]
+        if (isCorrect) {
+            const checks = await Promise.all([
+                this.check(req, '("questionGame"."numberQuestion" - 1) / 5 + 1'),
+                this.check(req, '("questionGame"."numberQuestion" - 1) % 5 + 1')
+            ])
+            let insert_data
+            if (checks[0].includes(row)) {
+                insert_data = { points: BONUS['row'][`${row}`], type: 'row', lvl: row }
+                await Bonus.create({ ...insert_data, userId: req.user.id, gameId: req.params.id })
+                bonuses.push(insert_data)
+            }
+            if (checks[1].includes(column)) {
+                insert_data = { points: BONUS['column'][`${column}`], type: 'column', lvl: column }
+                await Bonus.create({ ...insert_data, userId: req.user.id, gameId: req.params.id })
+                bonuses.push(insert_data)
+            }
+        }
+        return { points, bonuses }
     }
 
     async getAll(req, res, next) {
@@ -260,7 +272,7 @@ class userAnswerController {
                 isCorrect: true
             },
             group: [Sequelize.literal('number')],
-            having: Sequelize.literal('COUNT("userAnswer"."isCorrect") = 5')
+            having: Sequelize.literal('COUNT("userAnswer"."isCorrect") = 4')
         });
 
         return rows.map(row => row.dataValues.number);
