@@ -68,3 +68,9 @@
 .question_button.red:hover {
     background: #ed142e;
 }
+
+.icon {
+    vertical-align: middle;
+    margin-left: 2px;
+    stroke-width: 1.5;
+}

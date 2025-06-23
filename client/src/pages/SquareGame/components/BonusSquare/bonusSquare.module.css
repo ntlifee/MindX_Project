@@ -14,3 +14,9 @@
     color:red;
     font-weight: 700;
 }
+
+.icon {
+    vertical-align: middle;
+    margin-left: 2px;
+    stroke-width: 4;
+}

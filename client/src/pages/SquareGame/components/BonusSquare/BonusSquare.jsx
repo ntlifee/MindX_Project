@@ -1,4 +1,5 @@
 import classes from './bonusSquare.module.css'
+import { HiCheck, HiX } from 'react-icons/hi';
 
 const BonusSquare = (props) => {
     const { value, bonus } = props
@@ -6,8 +7,8 @@ const BonusSquare = (props) => {
         (bonus === null ?
             <td className={classes.bonus}>+{value}</td> :
             bonus ?
-                <td className={`${classes.bonus} ${classes.true}`}>+{value} &#9989;</td> :
-                <td className={`${classes.bonus} ${classes.false}`}>&#10060;</td>
+                <td className={`${classes.bonus} ${classes.true}`}>+{value} <HiCheck className={classes.icon}/> </td> :
+                <td className={`${classes.bonus} ${classes.false}`}><HiX className={classes.icon}/></td>
         )
     );
 }
